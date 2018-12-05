@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/ll_login_activity"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:background="@drawable/background"
+              android:orientation="vertical"
+              android:fitsSystemWindows="true"
+              tools:context=".login.ui.activity.LoginActivity">
+    <!--title for login-->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:gravity="center_vertical|center">
+
+        <ImageView
+                android:layout_width="272dp"
+                android:layout_height="28dp"
+                android:background="@drawable/login_title"
+                tools:ignore="ContentDescription"/>
+    </LinearLayout>
+    <!--body for login-->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+        <!-- inputting for user info -->
+        <LinearLayout
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_white_fillet_rectangle"
+                android:orientation="vertical">
+            <!--inputting for user name-->
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
+
+                <TextView
+                        style="@style/text_white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="-10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/customers"/>
+
+                <EditText
+                        android:text="gz-rh"
+                        android:id="@+id/etLoginUsername"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_login_edit"
+                        android:ems="10"
+                        android:hint="@string/loginUserNameHint"
+                        android:inputType="text" tools:ignore="Autofill">
+                </EditText>
+            </LinearLayout>
+
+            <View android:background="@color/colorPrimaryDark"
+                  android:layout_width="match_parent"
+                  android:layout_height="1dp"
+                  android:layout_marginStart="10dp"
+                  android:layout_marginEnd="10dp"
+            />
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp">
+
+                <TextView
+                        style="@style/text_white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="-10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/administrative_docs"/>
+
+                <EditText
+                        android:text="1"
+                        android:id="@+id/etLoginPassword"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_login_edit"
+                        android:ems="10"
+                        android:hint="@string/loginPassWordHint"
+                        android:inputType="textPassword"
+                        tools:ignore="Autofill"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+            <CheckBox
+                    android:layout_marginEnd="20dp"
+                    android:layout_gravity="end"
+                    android:id="@+id/cbLoginRememberMe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableStart="@drawable/check_state"
+                    android:drawablePadding="3dp"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:text="@string/loginRememberMe"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical">
+            <Button
+                    android:id="@+id/btnLoginSubmit"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/select_login_btn"
+                    android:text="@string/loginSubmit"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"/>
+
+            <TextView
+                    android:id="@+id/tv_LoginRegisteredUser"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:textSize="15sp"
+                    android:text="@string/registered"/>
+
+            <TextView
+                    android:id="@+id/tvLoginRegisterDevice"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:textSize="15sp"
+                    android:text="@string/registerNewDevice"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+            />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="0dp"
+                      android:orientation="vertical"
+                      android:layout_weight="1"
+                      tools:ignore="NestedWeights"
+                      android:gravity="bottom"
+        >
+            <TextView
+                    android:id="@+id/tvVerNameAndDevModel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="V2.0.0 debug"
+                    android:textSize="10sp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dp"
+                    tools:ignore="SmallSp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="vertical">
+
+        <TextView
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/loginVersion"
+                android:textSize="12sp"/>
+    </LinearLayout>
+
+
+</LinearLayout>
