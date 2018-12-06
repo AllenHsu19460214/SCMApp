@@ -38,15 +38,15 @@
                 android:name=".common.SplashActivity"
                 android:theme="@style/AppTheme.FullScreen">
         </activity>
-        <activity android:name=".ChuKu.ui.activity.ChuKuActivity">
+        <activity android:name=".chuku.ui.activity.ChuKuActivity">
         </activity>
-        <activity android:name=".ChuKu.ui.activity.RuKuActivity">
+        <activity android:name=".chuku.ui.activity.RuKuActivity">
         </activity>
-        <activity android:name=".ChuKu.ui.activity.SearchActivity">
+        <activity android:name=".chuku.ui.activity.SearchActivity">
         </activity>
-        <activity android:name=".ChuKu.ui.activity.InventoryActivity">
+        <activity android:name=".chuku.ui.activity.InventoryActivity">
         </activity>
-        <activity android:name=".ChuKu.ui.activity.StandingbookActivity">
+        <activity android:name=".chuku.ui.activity.StandingbookActivity">
         </activity>
     </application>
 

@@ -42,6 +42,7 @@
     <string name="idCardCheckMsg">身份证格式不正确！</string>
     <string name="compNameTitle">选择所属公司</string>
     <string name="userJsCheckMsg">选择用户角色</string>
+    <string name="setting">设置</string>
 
 
 </resources>

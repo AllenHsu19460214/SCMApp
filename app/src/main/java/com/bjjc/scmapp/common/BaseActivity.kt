@@ -17,9 +17,9 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getLayoutId()) //Set layout of view for current activity with ID.
-        setView() //Initialize widget object on current activity.
-        setListener() //Set listener for widget.
-        setData()   //Initialize data.
+        initView() //Initialize widget object on current activity.
+        initListener() //Set listener for widget.
+        initData()   //Initialize data.
     }
 
     /**
@@ -30,20 +30,20 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
     /**
      * To initialize widget view.
      */
-    protected open fun setView() {
+    protected open fun initView() {
 
     }
 
     /**
      * To set Listener for widget view.
      */
-    protected open fun setListener() {
+    protected open fun initListener() {
     }
 
     /**
      *  To initialize corresponding data.
      */
-    protected open fun setData() {
+    protected open fun initData() {
     }
 
     /**

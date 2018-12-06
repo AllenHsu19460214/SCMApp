@@ -38,7 +38,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         return R.layout.activity_login
     }
 
-    override fun setView() {
+    override fun initView() {
         //判断设备是否由虚拟按键，如果有则增加paddingBottom=50dp
         if (checkDeviceHasNavigationBar(this)) {
             ll_login_activity.setPadding(0, 0, 0, 50.dp2px(this))
@@ -47,12 +47,12 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         info { username }
     }
 
-    override fun setListener() {
+    override fun initListener() {
         btnLoginSubmit.setOnClickListener(this)
     }
 
     @SuppressLint("SetTextI18n")
-    override fun setData() {
+    override fun initData() {
         //obtain the verName and devModel.
         tvVerNameAndDevModel.text="V"+App.verName+"-"+ App.devModel
         //Obtain the phone IMEI.
@@ -100,7 +100,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
      * 跳转到主页面
      */
     private fun gotoMainActivity() {
-        var intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("sfBean",App.sfBean)
         startActivity(intent)
     }

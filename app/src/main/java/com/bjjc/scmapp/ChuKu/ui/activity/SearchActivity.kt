@@ -1,4 +1,4 @@
-package com.bjjc.scmapp.ChuKu.ui.activity
+package com.bjjc.scmapp.chuku.ui.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity

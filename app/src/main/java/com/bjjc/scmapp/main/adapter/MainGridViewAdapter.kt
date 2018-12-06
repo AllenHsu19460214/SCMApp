@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import com.bjjc.scmapp.ChuKu.ui.activity.*
+import com.bjjc.scmapp.chuku.ui.activity.*
 import com.bjjc.scmapp.R
 import org.jetbrains.anko.find
 
