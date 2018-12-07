@@ -21,10 +21,10 @@
                 android:name="DEV_MODEL"
                 android:value="debug"/>
 
-        <activity android:name=".main.ui.activity.MainActivity">
+        <activity android:name=".ui.activity.MainActivity">
         </activity>
         <activity
-                android:name=".login.ui.activity.LoginActivity"
+                android:name=".ui.activity.LoginActivity"
                 android:theme="@style/AppTheme.intrusiveMood">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -35,18 +35,36 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".common.SplashActivity"
+                android:name=".ui.activity.SplashActivity"
                 android:theme="@style/AppTheme.FullScreen">
         </activity>
-        <activity android:name=".chuku.ui.activity.ChuKuActivity">
+        <activity android:name=".ui.activity.ChuKuModeChoiceActivity">
         </activity>
-        <activity android:name=".chuku.ui.activity.RuKuActivity">
+        <activity android:name=".ui.activity.RuKuActivity">
         </activity>
-        <activity android:name=".chuku.ui.activity.SearchActivity">
+        <activity android:name=".ui.activity.SearchActivity">
         </activity>
-        <activity android:name=".chuku.ui.activity.InventoryActivity">
+        <activity android:name=".ui.activity.InventoryActivity">
         </activity>
-        <activity android:name=".chuku.ui.activity.StandingbookActivity">
+        <activity android:name=".ui.activity.StandingbookActivity">
+        </activity>
+        <activity android:name=".setting.ui.activity.SettingActivity">
+        </activity>
+        <activity android:name=".ui.activity.AboutActivity">
+        </activity>
+        <activity android:name=".ui.activity.CenterDistributionOrderOutputActivity">
+        </activity>
+        <activity android:name=".ui.activity.CenterOutputActivity">
+        </activity>
+        <activity android:name=".ui.activity.CenterTransferOrderOutputActivity">
+        </activity>
+        <activity android:name=".ui.activity.CenterReverseOrderOutputActivity">
+        </activity>
+        <activity android:name=".ui.activity.RuKuModeChoiceActivity">
+        </activity>
+        <activity android:name=".ui.activity.CenterPutInActivity">
+        </activity>
+        <activity android:name=".ui.activity.CenterTransferOrderPutInActivity">
         </activity>
     </application>
 

@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import com.bjjc.scmapp.R
-import com.bjjc.scmapp.login.model.bean.SfBean
+import com.bjjc.scmapp.model.bean.SfBean
 import java.io.InputStream
 import java.util.*
 

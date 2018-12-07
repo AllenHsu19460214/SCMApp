@@ -43,6 +43,10 @@
     <string name="compNameTitle">选择所属公司</string>
     <string name="userJsCheckMsg">选择用户角色</string>
     <string name="setting">设置</string>
+    <string name="title">标题</string>
+    <string name="clear_cache">清除缓存</string>
+    <string name="push_notice">推送通知</string>
+    <string name="about">关于</string>
 
 
 </resources>

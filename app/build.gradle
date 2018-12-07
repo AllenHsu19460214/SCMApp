@@ -1,9 +1,14 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
+apply plugin: "kotlin-allopen"
+apply plugin: "kotlin-noarg"
+noArg {
+    annotation("com.bjjc.scmapp.annotation.Poko")
+}
+allOpen {
+    annotation("com.bjjc.scmapp.annotation.Poko")
+}
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -18,6 +23,14 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            // 这里写 `libs`，它就会去 `libs` 目录中找，也可以放在其它任何目录中。
+            //jniLibs.srcDirs = ['libs']
+            //jniLibs.srcDirs = ['src/main/jniLibs']
+            //aidl.srcDirs = ['src/main/aidl']
         }
     }
 }
@@ -35,4 +48,5 @@ dependencies {
     }
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.android.support:preference-v7:28.0.0'
 }

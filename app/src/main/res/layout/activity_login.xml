@@ -8,7 +8,7 @@
               android:background="@drawable/background"
               android:orientation="vertical"
               android:fitsSystemWindows="true"
-              tools:context=".login.ui.activity.LoginActivity">
+              tools:context=".ui.activity.LoginActivity">
     <!--title for login-->
     <LinearLayout
             android:layout_width="match_parent"
