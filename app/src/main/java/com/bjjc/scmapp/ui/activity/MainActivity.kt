@@ -1,10 +1,13 @@
 package com.bjjc.scmapp.ui.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
+import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.TextView
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.adapter.MainGridViewAdapter
@@ -19,6 +22,11 @@ import org.jetbrains.anko.find
 
 
 
+
+
+
+
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class MainActivity : BaseActivity(), ToolbarManager {
     override val context: Context by lazy { this }
     override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
@@ -34,7 +42,9 @@ class MainActivity : BaseActivity(), ToolbarManager {
         gvMain.adapter = MainGridViewAdapter(this, phoneRoleData)
     }
 
+    @SuppressLint("InflateParams")
     override fun onBackPressed() {
+        /*
         val alertDialog=AlertDialog.Builder(this,R.style.appalertdialog)
             .setMessage("你确定要退出登录吗？")
             .setTitle("对话框")
@@ -73,6 +83,33 @@ class MainActivity : BaseActivity(), ToolbarManager {
             e2.printStackTrace()
         }
         */
+        */
+        val inflater = LayoutInflater.from(this)
+        val dialogView = inflater.inflate(R.layout.dialog_custom_yes_no, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogView.find<TextView>(R.id.tvTitle).text = "提示"
+        dialogView.find<TextView>(R.id.tvMessage).text = "你确定要退出登录吗?"
+        dialogView.find<Button>(R.id.btnYes).setOnClickListener {
+            dialog.dismiss()
+            finish()
+        }
+
+        dialogView.find<Button>(R.id.btnNo).setOnClickListener { dialog.dismiss() }
+        dialog.show()
+        // 将对话框的大小按屏幕大小的百分比设置
+        val dialogWindow = dialog.window
+        val m = windowManager
+        val d = m.defaultDisplay // 获取屏幕宽、高度
+        val p = dialogWindow.attributes // 获取对话框当前的参数值
+        p.height = (d.height * 0.5).toInt()// 高度设置为屏幕的0.6，根据实际情况调整
+        p.width = (d.width * 0.7).toInt()// 宽度设置为屏幕的0.65，根据实际情况调整
+        p.alpha= 1F
+        dialogWindow.attributes = p
+
+
 
     }
 }

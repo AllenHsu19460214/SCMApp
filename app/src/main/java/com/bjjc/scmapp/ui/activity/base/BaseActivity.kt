@@ -93,7 +93,4 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
         menuInflater.inflate(R.menu.menu_main,menu)
         return super.onCreateOptionsMenu(menu)
     }
-    override fun onBackPressed() {
-       finish()
-    }
 }

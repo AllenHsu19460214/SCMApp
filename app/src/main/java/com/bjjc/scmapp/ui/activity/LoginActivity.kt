@@ -9,15 +9,14 @@ import com.bjjc.scmapp.app.App
 import com.bjjc.scmapp.extension.dp2px
 import com.bjjc.scmapp.model.vo.LoginVo
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
-import com.bjjc.scmapp.util.MD5Utils
-import com.bjjc.scmapp.util.MobileInfoUtil
-import com.bjjc.scmapp.util.ResourcePathUtils
-import com.bjjc.scmapp.util.checkStringUtils
+import com.bjjc.scmapp.util.*
 import com.bjjc.scmapp.util.httpUtils.RetrofitUtils
 import com.bjjc.scmapp.util.httpUtils.ServiceApi
 import kotlinx.android.synthetic.main.activity_login.*
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.info
+import org.jetbrains.anko.uiThread
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,6 +25,8 @@ import java.io.File
 import java.io.FileReader
 
 class LoginActivity : BaseActivity(), View.OnClickListener {
+    private val TAG=LoginActivity::class.java.simpleName
+    private var exitTime:Long = 0
     private var sign: String? = "" //Key in the SdCard
     private var imei: String = "" //IMEI of the phone.
     //input field of username
@@ -51,7 +52,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     @SuppressLint("SetTextI18n")
     override fun initData() {
         //obtain the verName and devModel.
-        tvVerNameAndDevModel.text="V"+App.verName+"-"+ App.devModel
+        tvVerNameAndDevModel.text = "V" + App.verName + "-" + App.devModel
         //Obtain the phone IMEI.
         imei = MobileInfoUtil.getIMEI(this)
         //Obtain the Key form SD card.
@@ -60,6 +61,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
 
     //Sending request of login to server.
     private fun login(username: String, password: String) {
+        val progressDialog = ProgressDialogUtils.showProgressDialog(this@LoginActivity, "正在登录中!")
         sign?.let {
             RetrofitUtils.getRetrofit(App.base_url!!).create(ServiceApi::class.java)
                 .login(
@@ -72,19 +74,32 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                     "0"
                 ).enqueue(object : Callback<LoginVo> {
                     override fun onFailure(call: Call<LoginVo>, t: Throwable) {
-
+                        doAsync {
+                            Thread.sleep(2000)
+                            uiThread {
+                                // 判断等待框是否正在显示
+                                if (progressDialog.isShowing) {
+                                    progressDialog.dismiss()// 关闭等待框
+                                    myToast(t.toString())
+                                }
+                            }
+                        }
                     }
 
                     override fun onResponse(call: Call<LoginVo>, response: Response<LoginVo>) {
+                        // 判断等待框是否正在显示
+                        if (progressDialog.isShowing) {
+                            progressDialog.dismiss()// 关闭等待框
+                        }
                         //myToast(response.body().toString())
                         val loginVo = response.body() as LoginVo
                         /*info { loginVo }
                         info { sf }*/
-                        if (loginVo.code=="08"){
+                        if (loginVo.code == "08") {
                             myToast(loginVo.msg)
                             App.sfBean = loginVo.sf
                             gotoMainActivity()
-                        }else{
+                        } else {
                             myToast(loginVo.msg)
                         }
                     }
@@ -98,7 +113,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
      */
     private fun gotoMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("sfBean",App.sfBean)
+        intent.putExtra("sfBean", App.sfBean)
         startActivity(intent)
     }
 
@@ -164,6 +179,16 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         }
         // println("读取出来的文件内容是：\r\n$result")
         return result
+    }
+
+    override fun onBackPressed() {
+        if ((System.currentTimeMillis()-exitTime)>2000) {
+            myToast("再按一次返回键，退出SCM交互系统程序!")
+            exitTime=System.currentTimeMillis()
+        }else{
+            finish()
+            System.exit(0)
+        }
     }
 }
 
