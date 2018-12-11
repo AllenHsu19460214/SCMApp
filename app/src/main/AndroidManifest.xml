@@ -48,7 +48,7 @@
         </activity>
         <activity android:name=".ui.activity.StandingbookActivity">
         </activity>
-        <activity android:name=".setting.ui.activity.SettingActivity">
+        <activity android:name=".ui.activity.SettingActivity">
         </activity>
         <activity android:name=".ui.activity.AboutActivity">
         </activity>

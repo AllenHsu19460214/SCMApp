@@ -92,15 +92,15 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                             progressDialog.dismiss()// 关闭等待框
                         }
                         //myToast(response.body().toString())
-                        val loginVo = response.body() as LoginVo
+                        App.loginVo = response.body() as LoginVo
                         /*info { loginVo }
                         info { sf }*/
-                        if (loginVo.code == "08") {
-                            myToast(loginVo.msg)
-                            App.sfBean = loginVo.sf
+                        if (App.loginVo?.code == "08") {
+                            myToast(App.loginVo!!.msg)
+                            App.sfBean = App.loginVo?.sf
                             gotoMainActivity()
                         } else {
-                            myToast(loginVo.msg)
+                            myToast(App.loginVo!!.msg)
                         }
                     }
 

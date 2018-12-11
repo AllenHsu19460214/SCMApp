@@ -13,11 +13,15 @@ import org.jetbrains.anko.find
 class RuKuModeChoiceActivity : BaseActivity(),ToolbarManager {
     override val context: Context by lazy { this }
     private val buttonArray: Array<String> = arrayOf("中心库入库", "移库入库")
+    private val ruKuModeChoiceGridViewAdapter:RuKuModeChoiceGridViewAdapter by lazy {
+        RuKuModeChoiceGridViewAdapter(this)
+    }
     override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     override val toolbarTitle by lazy { find<TextView>(R.id.toolbar_title) }
     override fun getLayoutId(): Int = R.layout.activity_ruku_mode_choice
     override fun initData() {
         initRuKuModeChoiceToolBar()//Sets toolbar title.
-        gvRuKuModeChoice.adapter = RuKuModeChoiceGridViewAdapter(this, buttonArray)
+        ruKuModeChoiceGridViewAdapter.setData(buttonArray)
+        gvRuKuModeChoice.adapter = ruKuModeChoiceGridViewAdapter
     }
 }

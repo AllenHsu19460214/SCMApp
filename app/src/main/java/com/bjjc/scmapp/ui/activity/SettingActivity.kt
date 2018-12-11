@@ -1,4 +1,4 @@
-package com.bjjc.scmapp.setting.ui.activity
+package com.bjjc.scmapp.ui.activity
 
 import android.content.Context
 import android.preference.PreferenceManager

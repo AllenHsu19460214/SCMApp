@@ -5,10 +5,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".setting.ui.activity.SettingActivity">
+        tools:context=".ui.activity.SettingActivity">
     <include layout="@layout/toolbar"/>
     <fragment
-        class="com.bjjc.scmapp.setting.ui.fragment.SettingFragment"
+        class="com.bjjc.scmapp.ui.fragment.SettingFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/setting_fragment"/>

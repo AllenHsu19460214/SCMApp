@@ -6,7 +6,7 @@ import android.content.Intent
 import android.support.v7.widget.Toolbar
 import android.widget.TextView
 import com.bjjc.scmapp.R
-import com.bjjc.scmapp.setting.ui.activity.SettingActivity
+import com.bjjc.scmapp.ui.activity.SettingActivity
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
 
 /**

@@ -1,12 +1,12 @@
-package com.bjjc.scmapp.setting.ui.fragment
+package com.bjjc.scmapp.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
-import android.util.Log
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.ui.activity.AboutActivity
+import com.bjjc.scmapp.util.ToastUtils
 
 
 /**
@@ -25,7 +25,7 @@ class SettingFragment: PreferenceFragmentCompat() {
                 startActivity(Intent(context, AboutActivity::class.java))
             }
             "clear_cache"->{
-                Log.d(TAG,"点击了清除缓存")
+                ToastUtils.showShortToast(activity!!,"点击了清除缓存")
             }
         }
         return super.onPreferenceTreeClick(preference)

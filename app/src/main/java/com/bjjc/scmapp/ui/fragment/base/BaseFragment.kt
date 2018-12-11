@@ -1,4 +1,4 @@
-package com.bjjc.scmapp.ui.activity.base
+package com.bjjc.scmapp.ui.fragment.base
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
