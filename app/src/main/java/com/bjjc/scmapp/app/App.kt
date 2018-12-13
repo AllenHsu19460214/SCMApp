@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import com.bjjc.scmapp.R
-import com.bjjc.scmapp.model.bean.SfBean
+import com.bjjc.scmapp.model.bean.UserShenFenBean
 import com.bjjc.scmapp.model.vo.LoginVo
 import java.io.InputStream
 import java.util.*
@@ -21,7 +21,7 @@ class App : Application() {
         var devModel:String?=null
         var base_url: String? = null
         var loginVo:LoginVo?=null
-        var sfBean:SfBean?=null
+        var sfBean:UserShenFenBean?=null
         private val INSTANCE: App by lazy { App() }
         fun getInstance(): App = INSTANCE
     }

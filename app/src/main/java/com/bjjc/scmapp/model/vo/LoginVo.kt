@@ -1,7 +1,8 @@
 package com.bjjc.scmapp.model.vo
 import com.bjjc.scmapp.annotation.Poko
-import com.bjjc.scmapp.model.bean.SfBean
+import com.bjjc.scmapp.model.bean.UserShenFenBean
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 /**
@@ -19,6 +20,6 @@ data class LoginVo(
     @SerializedName("msg")
     val msg: String = "", // 登录成功
     @SerializedName("sf")
-    val sf: SfBean = SfBean()
-)
+    val sf: UserShenFenBean = UserShenFenBean()
+): Serializable
 

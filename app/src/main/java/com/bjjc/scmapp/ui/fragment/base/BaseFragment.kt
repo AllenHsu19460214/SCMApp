@@ -16,13 +16,7 @@ import org.jetbrains.anko.toast
 abstract class BaseFragment:Fragment() ,AnkoLogger{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        init()
-    }
-
-    /**
-     * initialize Fragment
-     */
-    protected open fun init() {
+        initData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,20 +30,20 @@ abstract class BaseFragment:Fragment() ,AnkoLogger{
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setListener()
-        setData()
+        initListener()
+        initData()
     }
 
     /**
      * To initialize Data.
      */
-    protected open fun setData() {
+    protected open fun initData() {
     }
 
     /**
      * To initialize Listeners and Adapters.
      */
-    protected open fun setListener() {
+    protected open fun initListener() {
     }
     open fun myToast(msg:String){
         context?.runOnUiThread { toast(msg) }

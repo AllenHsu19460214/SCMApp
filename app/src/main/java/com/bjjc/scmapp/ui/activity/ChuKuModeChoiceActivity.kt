@@ -2,7 +2,7 @@ package com.bjjc.scmapp.ui.activity
 
 import android.content.Context
 import android.support.v7.widget.Toolbar
-import android.widget.TextView
+import android.view.Menu
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.adapter.ChuKuModeChoiceGridViewAdapter
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
@@ -17,11 +17,15 @@ class ChuKuModeChoiceActivity : BaseActivity(), ToolbarManager {
         ChuKuModeChoiceGridViewAdapter(this)
     }
     override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
-    override val toolbarTitle by lazy { find<TextView>(R.id.toolbar_title) }
     override fun getLayoutId(): Int = R.layout.activity_chuku_mode_choice
     override fun initData() {
         initChuKuModeChoiceToolBar()//Sets toolbar title.
         chuKuModeChoiceGridViewAdapter.setData(buttonArray)
         gvChuKuModeChoice.adapter = chuKuModeChoiceGridViewAdapter
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        setToolBarMenu(false)
+        return true
     }
 }

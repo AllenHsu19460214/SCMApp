@@ -9,7 +9,7 @@ import java.io.Serializable
  * 用户身份实体类
  */
 @Poko
-data class SfBean(
+data class UserShenFenBean(
     @SerializedName("ckwwcfd")
     val ckwwcfd: Int = 0, // 0  【not to use】
     @SerializedName("clearbackup")

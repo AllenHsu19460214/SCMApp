@@ -66,6 +66,8 @@
         </activity>
         <activity android:name=".ui.activity.CenterTransferOrderPutInActivity">
         </activity>
+        <activity android:name=".ui.activity.CenterDistributionOrderOutputDetailActivity">
+        </activity>
     </application>
 
 </manifest>

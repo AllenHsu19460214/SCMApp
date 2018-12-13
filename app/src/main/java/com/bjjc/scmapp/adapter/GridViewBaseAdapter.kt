@@ -51,7 +51,7 @@ abstract class GridViewBaseAdapter(open var context: Context):BaseAdapter() {
         return data.size
     }
 
-    internal class ViewHolder {
+    inner class ViewHolder {
         lateinit var ivItem: ImageView
     }
     abstract fun whichItemSelected(tag:Any)

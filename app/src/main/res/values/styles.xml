@@ -9,12 +9,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <!--bgColor of Common Controls,such as Button and so on..-->
         <item name="colorAccent">@color/colorAccent</item>
-        <!--title of color in navigation.-->
-        <!--<item name="android:textColorPrimary">@color/white</item>-->
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+        <!--toolbar菜单项图标的颜色-->
+        <item name="android:textColorSecondary">@android:color/black</item>
     </style>
     <!--FullScreen Activity-->
     <style name="AppTheme.FullScreen">
@@ -28,50 +24,39 @@
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
-    <style name="text_white">
-        <item name="android:textColor">#ffffff</item>
-    </style>
-    <!--font size of the toolbar-->
-    <style name="Toolbar.TitleStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <!--font style of main heading of the toolbar.-->
+    <style name="Toolbar.TitleTextStyle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <!--font style of subHeading of the toolbar.-->
+    <style name="Toolbar.SubTitleTextStyle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/white</item>
     </style>
     <!-- text of size and color of toolbar. -->
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <!-- icon of color of the overflow menu.-->
-        <item name="colorControlNormal">@android:color/white</item>
+        <item name="android:textColor">@android:color/white</item><!--effect on menu overflow text color.-->
+        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="colorButtonNormal">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/white</item><!--effect on menu overflow button color.-->
     </style>
     <!-- bgColor of popup menu of toolbar.-->
     <style name="ToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat">
-        <item name="android:colorBackground">@color/colorPrimaryDark</item>
-        <item name="android:textSize">16sp</item> <!--字体大小-->
-        <!-- icon of color of the overflow menu.-->
-        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:colorBackground">?attr/colorPrimary</item>
+
     </style>
-    <!--Dialog style-->
-    <style name="appalertdialog" parent="Base.V7.Theme.AppCompat.Dialog">
-        <item name="android:colorBackground">#4ef4d5</item><!--背景颜色-->
-        <item name="android:windowTitleStyle">@style/appalertdialogwindowTitleStyle</item>
-        <item name="android:windowAnimationStyle">@style/appalertdialoganimation</item>
-        <item name="buttonStyle">@style/appalertdialogbuttonstyle</item>
-    </style> <!--标题样式-->
-    <style name="appalertdialogwindowTitleStyle" parent="Base.DialogWindowTitle.AppCompat">
-        <item name="android:textAppearance">@style/appalertdialogwindowTitletext</item>
-    </style> <!--标题字体颜色-->
-    <style name="appalertdialogwindowTitletext" parent="Base.TextAppearance.AppCompat.Title">
-        <item name="android:textColor">#4355f2</item>
-    </style> <!--动画效果-->
-    <style name="appalertdialoganimation" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/abc_popup_enter</item>
-        <item name="android:windowExitAnimation">@anim/abc_popup_exit</item>
-    </style> <!--按钮样式-->
-    <style name="appalertdialogbuttonstyle" parent="android:Widget">
-        <item name="android:background">@drawable/abc_btn_default_mtrl_shape</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceButton</item>
-        <item name="android:minHeight">48dip</item>
-        <item name="android:minWidth">88dip</item>
-        <item name="android:focusable">true</item>
-        <item name="android:clickable">true</item>
-        <item name="android:gravity">center_vertical|center_horizontal</item>
+    <style name="toolbar_action_menu_overflow" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
+        <!-- 是否覆盖锚点，为true则盖住Toolbar -->
+        <item name="overlapAnchor">false</item>
+        <!-- 弹出层水平方向上的偏移，即距离屏幕左边的距离，负值会导致右边出现空隙 -->
+        <item name="android:dropDownHorizontalOffset">-2dp</item>
+        <!-- 弹出层垂直方向上的偏移，即在竖直方向上距离Toolbar的距离，值为负则会盖住Toolbar -->
+        <item name="android:dropDownVerticalOffset">4dp</item>
+        <!-- 弹出层背景颜色 -->
+        <item name="android:colorBackground">?attr/colorPrimary</item>
+        <!--字体大小-->
+        <item name="android:textSize">16sp</item>
     </style>
 </resources>

@@ -4,7 +4,6 @@ import android.content.Context
 import android.preference.PreferenceManager
 import android.support.v7.widget.Toolbar
 import android.view.Menu
-import android.widget.TextView
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
 import com.bjjc.scmapp.util.ToolbarManager
@@ -16,7 +15,6 @@ class SettingActivity : BaseActivity(),ToolbarManager {
         const val TAG:String= "SettingActivity"
     }
     override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
-    override val toolbarTitle by lazy { find<TextView>(R.id.toolbar_title) }
     override fun getLayoutId(): Int =R.layout.activity_setting
     override fun initData() {
         initSettingToolBar()

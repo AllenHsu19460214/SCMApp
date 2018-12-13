@@ -7,11 +7,12 @@ import android.graphics.drawable.ColorDrawable
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
+import android.view.Menu
 import android.widget.Button
 import android.widget.TextView
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.adapter.MainGridViewAdapter
-import com.bjjc.scmapp.model.bean.SfBean
+import com.bjjc.scmapp.model.bean.UserShenFenBean
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
 import com.bjjc.scmapp.util.ToolbarManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -21,7 +22,6 @@ import org.jetbrains.anko.find
 class MainActivity : BaseActivity(), ToolbarManager {
     override val context: Context by lazy { this }
     override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
-    override val toolbarTitle by lazy { find<TextView>(R.id.toolbar_title) }
     private lateinit var phoneRoleData: Array<String>
     private  val mainGridViewAdapter: MainGridViewAdapter by lazy {
         MainGridViewAdapter(this)
@@ -32,8 +32,12 @@ class MainActivity : BaseActivity(), ToolbarManager {
      */
     override fun getLayoutId(): Int = R.layout.activity_main
 
+    override fun initView() {
+
+    }
+
     override fun initData() {
-        val sfBean = intent.getSerializableExtra("sfBean") as SfBean
+        val sfBean = intent.getSerializableExtra("sfBean") as UserShenFenBean
         initMainToolBar(sfBean.role, sfBean.truename)//Sets toolbar title.
         //phoneRoleData=出库,入库,货品查询,盘库,货品信息,台帐,分单
         phoneRoleData = sfBean.phoneRoleData.split(",").toTypedArray()
@@ -117,6 +121,11 @@ class MainActivity : BaseActivity(), ToolbarManager {
         p.alpha = 1F
         dialogWindow.attributes = p
     }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        setToolBarMenu(false)
+        return true
+    }
+
 }
 
 

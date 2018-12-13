@@ -45,7 +45,7 @@
                     android:orientation="horizontal">
 
                 <TextView
-                        style="@style/text_white"
+                        android:textColor="@color/white"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -81,7 +81,7 @@
                     android:layout_marginBottom="10dp">
 
                 <TextView
-                        style="@style/text_white"
+                        android:textColor="@color/white"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"

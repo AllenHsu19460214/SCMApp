@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#e9f4f4"
+        tools:context=".ui.activity.CenterDistributionOrderOutputDetailActivity">
+    <!--title-->
+    <include layout="@layout/toolbar" android:id="@+id/toolbar"/>
+    <!--header-->
+    <LinearLayout android:id="@+id/llHeader"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:padding="3dp">
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="出库单号 : "
+                      android:textSize="17sp"
+                      android:textStyle="bold"
+                      android:textColor="@color/black"/>
+            <TextView android:id="@+id/tvOrderNumber"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      tools:text="WLD2018062814022310501"
+                      android:textSize="17sp"
+                      android:textColor="@color/black"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+        >
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="计划数量 : "
+                      android:textSize="17sp"
+                      android:textStyle="bold"
+                      android:textColor="@color/black"/>
+            <TextView android:id="@+id/tvPlanBoxCount"
+                    android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      tools:text="1325"
+                      android:textSize="17sp"
+                      android:textColor="@color/black"/>
+        </LinearLayout>
+        <View android:layout_width="match_parent"
+              android:layout_height="1dp"
+              android:background="@color/black"
+              android:layout_marginTop="3dp"/>
+        <!--scan and noCode number.-->
+        <LinearLayout
+                android:layout_marginTop="3dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+            <!--scan number-->
+            <LinearLayout android:layout_width="0dp"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:orientation="vertical">
+                <TextView android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:textStyle="bold"
+                          android:gravity="center_horizontal"
+                          android:textColor="@color/black"
+                          android:textSize="18sp"
+                          android:text="扫描数量:"/>
+                <TextView android:id="@+id/tvScanCount"
+                        android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:gravity="center_horizontal"
+                          android:text="0"
+                          android:textSize="50sp"
+                          android:textColor="@android:color/holo_red_dark"/>
+
+            </LinearLayout>
+            <!--noCode number-->
+            <LinearLayout android:layout_width="0dp"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:orientation="vertical">
+                <TextView android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:gravity="center_horizontal"
+                          android:textStyle="bold"
+                          android:textColor="@color/black"
+                          android:textSize="18sp"
+                          android:text="无码数量:"/>
+                <TextView android:id="@+id/tvNoCodeCount"
+                        android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:gravity="center_horizontal"
+                          android:text="0"
+                          android:textSize="50sp"
+                          android:textColor="@android:color/holo_green_dark"/>
+            </LinearLayout>
+        </LinearLayout>
+        <View android:layout_width="match_parent"
+              android:layout_height="1dp"
+              android:background="@color/black"
+              android:layout_marginTop="3dp"/>
+    </LinearLayout>
+    <!--body-->
+    <LinearLayout
+            android:id="@+id/llBody"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray"
+            android:orientation="vertical">
+
+        <!--tab-->
+        <RadioGroup android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:background="@android:color/holo_blue_dark"
+                    android:orientation="horizontal">
+            <RadioButton android:id="@+id/rbDataList"
+                    android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_weight="1"
+                         android:text="数据列表"
+                         android:gravity="center"
+                         android:textColor="@drawable/selector_radio_button_textcolor"
+                         android:textSize="17sp"
+                         android:textStyle="bold"
+                         android:button="@null"/>
+            <RadioButton android:id="@+id/rbDetailList"
+                    android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_weight="1"
+                         android:text="详细列表"
+                         android:gravity="center"
+                         android:textColor="@drawable/selector_radio_button_textcolor"
+                         android:textSize="17sp"
+                         android:textStyle="bold"
+                         android:button="@null"
+                         />
+            <RadioButton android:id="@+id/rbExceptionList"
+                    android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_weight="1"
+                         android:text="异常列表"
+                         android:gravity="center"
+                         android:textColor="@drawable/selector_radio_button_textcolor"
+                         android:textSize="17sp"
+                         android:textStyle="bold"
+                         android:button="@null"
+                         />
+        </RadioGroup>
+        <!--fragment-->
+        <FrameLayout android:id="@+id/flContent"
+                android:layout_width="match_parent"
+                     android:layout_height="match_parent"
+                     tools:ignore="UselessLeaf">
+            <ListView android:id="@+id/lvTest"
+                    android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+            tools:listitem="@layout/adapter_item_center_distribution_order_output_detail_listview">
+
+            </ListView>
+        </FrameLayout>
+
+    </LinearLayout>
+    <!--footer-->
+    <LinearLayout
+            android:id="@+id/llFooter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <Button android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="提交"
+                android:textSize="25sp"
+                android:layout_margin="3dp"
+                android:background="@drawable/shape_bg_rounded_rectangle_dark_blue_all"/>
+    </LinearLayout>
+</LinearLayout>

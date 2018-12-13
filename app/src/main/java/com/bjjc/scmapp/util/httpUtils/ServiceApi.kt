@@ -1,5 +1,7 @@
 package com.bjjc.scmapp.util.httpUtils
 
+import com.bjjc.scmapp.model.vo.CenterDistributionOrderOutputDetailVo
+import com.bjjc.scmapp.model.vo.CenterDistributionOrderOutputVo
 import com.bjjc.scmapp.model.vo.LoginVo
 import retrofit2.Call
 import retrofit2.http.Field
@@ -22,4 +24,22 @@ interface ServiceApi {
         @Field("sysIndex") sysIndex: String
     ): Call<LoginVo>
 
+    @POST("storeJson_1.3.0.php")
+    @FormUrlEncoded
+    fun centerDistributionOrderOutput(
+        @Field("command") command: String,
+        @Field("key") key: String?,
+        @Field("djtype") djtype: String,
+        @Field("crktype") crktype: String,
+        @Field("sysIndex") sysIndex: String
+    ): Call<CenterDistributionOrderOutputVo>
+
+    @POST("storeJson_1.3.0.php")
+    @FormUrlEncoded
+    fun centerDistributionOrderOutput(
+        @Field("command") command: String,
+        @Field("key") key: String?,
+        @Field("dh") djtype: String,
+        @Field("smtype") crktype: String
+    ): Call<CenterDistributionOrderOutputDetailVo>
 }

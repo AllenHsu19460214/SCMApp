@@ -3,11 +3,14 @@ package com.bjjc.scmapp.util
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
-import android.widget.TextView
 import com.bjjc.scmapp.R
+import com.bjjc.scmapp.ui.activity.CenterDistributionOrderOutputActivity
 import com.bjjc.scmapp.ui.activity.SettingActivity
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
+import org.jetbrains.anko.appcompat.v7.coroutines.onQueryTextFocusChange
+
 
 /**
  * Created by Allen on 2018/11/29 10:37
@@ -15,9 +18,7 @@ import com.bjjc.scmapp.ui.activity.base.BaseActivity
  */
 interface ToolbarManager {
     val toolbar: Toolbar
-    val toolbarTitle: TextView
     val context: Context
-
     /**
      * To initialize toolbar for MainActivity.
      */
@@ -25,8 +26,7 @@ interface ToolbarManager {
     fun initMainToolBar(role: String, trueName: String) {
         initToolbar()
         setTitle(role, trueName)
-        setMenu()
-        setNavigation()
+        setToolBarNavigation()
     }
 
     /**
@@ -35,8 +35,7 @@ interface ToolbarManager {
     fun initSettingToolBar() {
         initToolbar()
         setTitle("设置界面")
-        setMenu()
-        setNavigation()
+        setToolBarNavigation()
     }
 
     /**
@@ -45,18 +44,34 @@ interface ToolbarManager {
     fun initChuKuModeChoiceToolBar() {
         initToolbar()
         setTitle("出库模式选择")
-        setMenu()
-        setNavigation()
+        setToolBarNavigation()
     }
+
     /**
      * To initialize toolbar for RuKuModeChoiceActivity.
      */
     fun initRuKuModeChoiceToolBar() {
         initToolbar()
         setTitle("入库模式选择")
-        setMenu()
-        setNavigation()
+        setToolBarNavigation()
     }
+    /**
+     * To initialize toolbar for CenterDistributionOrderOutputActivity.
+     */
+    fun initCenterDistributionOrderOutputToolBar() {
+        initToolbar()
+        setTitle("配送单出库")
+        setToolBarNavigation()
+    }
+    /**
+     * To initialize toolbar for CenterDistributionOrderOutputDetailActivity.
+     */
+    fun initCenterDistributionOrderOutputDetailToolBar() {
+        initToolbar()
+        setTitle("出库","扫描信息")
+        setToolBarNavigation()
+    }
+
     /**
      * initialize toolbar.
      */
@@ -70,12 +85,11 @@ interface ToolbarManager {
     /**
      * set navigation.
      */
-    fun setNavigation() {
-
+    fun setToolBarNavigation() {
         toolbar.setNavigationOnClickListener {
-            //Toast.makeText(toolbar.context, "返回", Toast.LENGTH_SHORT).show()
-            //var b = ActivityUtils.isForeground(context as BaseActivity, MainActivity::class.java.name)
-            //(context as BaseActivity).finish()
+            /* Toast.makeText(toolbar.context, "返回", Toast.LENGTH_SHORT).show()
+             var b = ActivityUtils.isForeground(context as BaseActivity, MainActivity::class.java.name)
+             (context as BaseActivity).finish()*/
             (context as BaseActivity).onBackPressed()
         }
     }
@@ -83,8 +97,38 @@ interface ToolbarManager {
     /**
      * Sets menu.
      */
-    fun setMenu() {
+    fun setToolBarMenu(isShowSearch: Boolean):SearchView {
         toolbar.inflateMenu(R.menu.menu_main)
+        val menu = toolbar.menu
+        val menuItem = menu.findItem(R.id.ab_search)
+        menuItem.isVisible = isShowSearch
+        val searchView = menuItem.actionView as SearchView
+        searchView.isSubmitButtonEnabled = true
+        searchView.queryHint = "输入或扫描单据号码"
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                ToastUtils.showShortToast(toolbar.context, query)
+                return true
+            }
+
+            override fun onQueryTextChange(nextText: String): Boolean {
+                //ToastUtils.showShortToast(toolbar.context, nextText)
+                return true
+            }
+        })
+        searchView.setOnSearchClickListener {
+            if (CenterDistributionOrderOutputActivity.scanNumber!=null){
+                searchView.setQuery(CenterDistributionOrderOutputActivity.scanNumber,false)
+            }
+        }
+        searchView.onQueryTextFocusChange { v, hasFocus ->
+            if (!hasFocus){
+                if (CenterDistributionOrderOutputActivity.scanNumber!=null){
+                    CenterDistributionOrderOutputActivity.scanNumber=null
+                }
+            }
+        }
+
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.setting -> {
@@ -95,13 +139,15 @@ interface ToolbarManager {
             }
             true
         }
+        return searchView
     }
 
     /**
      * Sets title.
      */
     fun setTitle(role: String, trueName: String) {
-        toolbar.title = "$role : $trueName"
+        toolbar.title = role
+        toolbar.subtitle= trueName
         //toolbarTitle.text = "$role : $trueName"
     }
 
