@@ -27,7 +27,7 @@ class MainGridAdapter(override var context: Context) : GridBaseAdapter(context) 
                 context.startActivity(Intent(context, InventoryActivity::class.java))
             }
             "台帐" -> {
-                context.startActivity(Intent(context, StandingbookActivity::class.java))
+                context.startActivity(Intent(context, StandingBookActivity::class.java))
             }
         }
     }

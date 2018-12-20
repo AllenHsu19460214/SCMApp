@@ -15,14 +15,14 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-
-        <!-- 开发模式，debug:调试（开发）模式，test:测试模式，pro:生产模式 -->
+        <!-- developmentMode，debug:debugMode，test:testMode，pro:productionMode -->
         <meta-data
                 android:name="DEV_MODEL"
                 android:value="debug"/>
-
+        <!--MainActivity-->
         <activity android:name=".ui.activity.MainActivity">
         </activity>
+        <!--LoginActivity-->
         <activity
                 android:name=".ui.activity.LoginActivity"
                 android:theme="@style/AppTheme.intrusiveMood">
@@ -34,23 +34,13 @@
                 <action android:name="android.intent.action.VIEW"/>
             </intent-filter>
         </activity>
+        <!--SplashActivity-->
         <activity
                 android:name=".ui.activity.SplashActivity"
                 android:theme="@style/AppTheme.FullScreen">
         </activity>
+        <!--CenterOut-->
         <activity android:name=".ui.activity.CenterOutModeActivity">
-        </activity>
-        <activity android:name=".ui.activity.RuKuActivity">
-        </activity>
-        <activity android:name=".ui.activity.SearchActivity">
-        </activity>
-        <activity android:name=".ui.activity.InventoryActivity">
-        </activity>
-        <activity android:name=".ui.activity.StandingbookActivity">
-        </activity>
-        <activity android:name=".ui.activity.SettingActivity">
-        </activity>
-        <activity android:name=".ui.activity.AboutActivity">
         </activity>
         <activity android:name=".ui.activity.CenterOutSendActivity">
         </activity>
@@ -60,14 +50,26 @@
         </activity>
         <activity android:name=".ui.activity.CenterOutReverseActivity">
         </activity>
+        <activity android:name=".ui.activity.CenterOutSendDetailActivity"
+                  android:windowSoftInputMode="adjustPan|stateHidden">
+        </activity>
+        <!--CenterIn-->
         <activity android:name=".ui.activity.CenterInModeActivity">
         </activity>
         <activity android:name=".ui.activity.CenterInActivity">
         </activity>
         <activity android:name=".ui.activity.CenterInTransferActivity">
         </activity>
-        <activity android:name=".ui.activity.CenterOutSendDetailActivity"
-                  android:windowSoftInputMode="adjustPan|stateHidden">
+        <!--Center-->
+        <activity android:name=".ui.activity.SearchActivity">
+        </activity>
+        <activity android:name=".ui.activity.InventoryActivity">
+        </activity>
+        <activity android:name=".ui.activity.StandingBookActivity">
+        </activity>
+        <activity android:name=".ui.activity.SettingActivity">
+        </activity>
+        <activity android:name=".ui.activity.AboutActivity">
         </activity>
     </application>
 
