@@ -8,6 +8,6 @@ class CenterInTransferActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_center_transfer_order_put_in)
+        setContentView(R.layout.layout_aty_center_in_transfer)
     }
 }

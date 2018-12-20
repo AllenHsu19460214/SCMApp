@@ -54,7 +54,7 @@ class DataListAdapter(private val context: FragmentActivity) : BaseAdapter() {
         val viewHolder: DataListAdapter.ViewHolder
         if (reuseView == null) {
             reuseView = LayoutInflater.from(context)
-                .inflate(R.layout.adapter_item_center_distribution_order_output_data_listview, null)
+                .inflate(R.layout.layout_adpitem_center_out_send_data_list, null)
             viewHolder = ViewHolder(reuseView, position)
             reuseView!!.tag = viewHolder
         } else {

@@ -24,7 +24,7 @@ abstract class GridBaseAdapter(open var context: Context):BaseAdapter() {
         val viewHolder: ViewHolder
         if (reuseView == null) {
             viewHolder = ViewHolder()
-            reuseView = LayoutInflater.from(context).inflate(R.layout.adapter_item_main_gridview, null)
+            reuseView = LayoutInflater.from(context).inflate(R.layout.layout_adpitem_main_grid, null)
             reuseView!!.tag = viewHolder
         } else {
             viewHolder = reuseView.tag as ViewHolder

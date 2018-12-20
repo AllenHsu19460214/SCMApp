@@ -21,7 +21,7 @@
             android:gravity="center"
             android:scrollbars="none"
             android:listSelector="@null"
-            tools:listitem="@layout/adapter_item_main_gridview">
+            tools:listitem="@layout/layout_adpitem_main_grid">
 
     </GridView>
 </LinearLayout>

@@ -28,7 +28,7 @@ import com.bjjc.scmapp.util.ToastUtils
 import com.bjjc.scmapp.util.ToolbarManager
 import com.bjjc.scmapp.util.httpUtils.RetrofitUtils
 import com.bjjc.scmapp.util.httpUtils.ServiceApi
-import kotlinx.android.synthetic.main.activity_center_distribution_order_output_detail.*
+import kotlinx.android.synthetic.main.layout_aty_center_out_send_detail.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
@@ -39,30 +39,28 @@ import retrofit2.Response
 import java.io.Serializable
 
 @SuppressLint("CommitTransaction")
-class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager,
-    DataListFragment.IOnUpdateCountTotalListener {
-
+class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, DataListFragment.IOnUpdateCountTotalListener {
     override val context: Context by lazy { this }
     override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     private lateinit var data: CenterOutSendBean
     private lateinit var centerDistributionOrderOutputDetailVo: CenterOutSendDetailVo
     private lateinit var mxList: List<CenterOutSendDetailBean>
-    private var scanToTal:Long=0
+    private var scanToTal: Long = 0
     private var planBoxTotal: Long = 0
-    private val mHandler = MainHandler()
+    private val handheldScanHandler = HandheldScanHandler()
     private var searchView: SearchView? = null
     private val dataListFragment: DataListFragment by lazy { DataListFragment() }
     private val detailListFragment: DetailListFragment by lazy { DetailListFragment() }
     private val exceptionListFragment: ExceptionListFragment by lazy { ExceptionListFragment() }
     private var currentFragment: Fragment? = null
     private var iOnUpdateScanCountListener: IOnUpdateScanCountListener? = null
-    private  var exceptionCodeList:ArrayList<String> =ArrayList()
+    private var exceptionCodeList: ArrayList<String> = ArrayList()
 
     companion object {
         lateinit var mxListChanged: List<CenterOutSendDetailBean>
     }
 
-    override fun getLayoutId(): Int = R.layout.activity_center_distribution_order_output_detail
+    override fun getLayoutId(): Int = R.layout.layout_aty_center_out_send_detail
 
     override fun initView() {
         tvNoCodeTotal.text = DataListAdapter.noCodeCount
@@ -105,9 +103,9 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager,
         }
         btnOutputSubmit.setOnClickListener {
             exceptionCodeList.clear()
-            if (exceptionCodeList.size>0){
-                rbExceptionList.textColor=resources.getColor(R.color.red)
-            }else{
+            if (exceptionCodeList.size > 0) {
+                rbExceptionList.textColor = resources.getColor(R.color.red)
+            } else {
                 rbExceptionList.setTextColor(resources.getColorStateList(R.color.selector_radio_btn_textcolor))
             }
         }
@@ -128,9 +126,9 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager,
         initCenterDistributionOrderOutputDetailToolBar()
         data = intent.getSerializableExtra("mingXi") as CenterOutSendBean
         getOrderDetail(data.单号, "CK")
-        if (exceptionCodeList.size>0){
-            rbExceptionList.textColor=resources.getColor(R.color.red)
-        }else{
+        if (exceptionCodeList.size > 0) {
+            rbExceptionList.textColor = resources.getColor(R.color.red)
+        } else {
             rbExceptionList.setTextColor(resources.getColorStateList(R.color.selector_radio_btn_textcolor))
         }
     }
@@ -177,22 +175,22 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager,
                         //Deals data
                         mxListChanged = mxList
                         //===========================测试数据start===========================================================================
-                        for((indexTest,valueTest) in mxListChanged.withIndex()){
-                            when(valueTest.原始订单号){
-                                "2906261286-2-4"->{
-                                    mxListChanged[indexTest].出库箱数+=25
+                        for ((indexTest, valueTest) in mxListChanged.withIndex()) {
+                            when (valueTest.原始订单号) {
+                                "2906261286-2-4" -> {
+                                    mxListChanged[indexTest].出库箱数 += 25
                                     //mxListChanged[indexTest].允许输入箱数+=100
                                 }
-                                "2906261800-1-1"->{
-                                    mxListChanged[indexTest].出库箱数+=10
+                                "2906261800-1-1" -> {
+                                    mxListChanged[indexTest].出库箱数 += 10
                                     //mxListChanged[indexTest].允许输入箱数+=101
                                 }
-                                "2906261800-1-2"->{
-                                    mxListChanged[indexTest].出库箱数+=5
+                                "2906261800-1-2" -> {
+                                    mxListChanged[indexTest].出库箱数 += 5
                                     //mxListChanged[indexTest].允许输入箱数+=102
                                 }
-                                "2906261800-2-1"->{
-                                    mxListChanged[indexTest].出库箱数+=15
+                                "2906261800-2-1" -> {
+                                    mxListChanged[indexTest].出库箱数 += 15
                                     //mxListChanged[indexTest].允许输入箱数+=103
                                 }
                             }
@@ -200,9 +198,9 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager,
                         //===========================测试数据end==========================================================================
                         //Sets whether noCodeCount input is allowed
                         //1-扫码，0-输数
-                        if (centerDistributionOrderOutputDetailVo.仓是否输入==0){
-                            for ( (indexTest,valueTest) in mxListChanged.withIndex()) {
-                                mxListChanged[indexTest].是否允许扫描=0
+                        if (centerDistributionOrderOutputDetailVo.仓是否输入 == 0) {
+                            for ((indexTest, valueTest) in mxListChanged.withIndex()) {
+                                mxListChanged[indexTest].是否允许扫描 = 0
                             }
                         }
                         //Sets planning box count
@@ -234,7 +232,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager,
     var i: Int = 0
 
     @SuppressLint("HandlerLeak")
-    private inner class MainHandler : Handler() {
+    private inner class HandheldScanHandler : Handler() {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 Scanner.BARCODE_READ -> {
@@ -243,8 +241,8 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager,
                     //mediaPlayer.start()
                     ToastUtils.showShortToast(this@CenterOutSendDetailActivity, msg.obj.toString())
 
-                    if (scanToTal>=planBoxTotal){
-                        ToastUtils.showShortToast(this@CenterOutSendDetailActivity,"已达到计划总量 $planBoxTotal 箱")
+                    if (scanToTal >= planBoxTotal) {
+                        ToastUtils.showShortToast(this@CenterOutSendDetailActivity, "已达到计划总量 $planBoxTotal 箱")
                         return
                     }
                     loop@ for ((index, value) in mxListChanged.withIndex()) {
@@ -253,27 +251,30 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager,
                             if (msg.obj.toString() == value.备件编号) {
                                 mxListChanged[index].出库箱数++
                                 break@loop
-                            }else{
-                                if(!exceptionCodeList.contains(msg.obj.toString())){
+                            } else {
+                                if (!exceptionCodeList.contains(msg.obj.toString())) {
                                     exceptionCodeList.add(msg.obj.toString())
-                                    ToastUtils.showLongToast(this@CenterOutSendDetailActivity,exceptionCodeList.toString())
+                                    ToastUtils.showLongToast(
+                                        this@CenterOutSendDetailActivity,
+                                        exceptionCodeList.toString()
+                                    )
                                 }
                             }
                         }
 
                     }
-                    if (exceptionCodeList.size>0){
-                        rbExceptionList.textColor=resources.getColor(R.color.red)
-                    }else{
+                    if (exceptionCodeList.size > 0) {
+                        rbExceptionList.textColor = resources.getColor(R.color.red)
+                    } else {
                         rbExceptionList.setTextColor(resources.getColorStateList(R.color.selector_radio_btn_textcolor))
                     }
-                    scanToTal=0
-                    for(mx in mxListChanged){
-                        scanToTal+=mx.出库箱数
+                    scanToTal = 0
+                    for (mx in mxListChanged) {
+                        scanToTal += mx.出库箱数
                     }
-                    tvScanTotal.text=scanToTal.toString()
-                    if (scanToTal>=planBoxTotal){
-                        ToastUtils.showShortToast(this@CenterOutSendDetailActivity,"已达到计划总量 $planBoxTotal 箱")
+                    tvScanTotal.text = scanToTal.toString()
+                    if (scanToTal >= planBoxTotal) {
+                        ToastUtils.showShortToast(this@CenterOutSendDetailActivity, "已达到计划总量 $planBoxTotal 箱")
                     }
                     iOnUpdateScanCountListener?.OnUpdateScanCount()
                 }
@@ -286,7 +287,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager,
 
     override fun onStart() {
         //赋值handle句柄
-        Scanner.m_handler = mHandler
+        Scanner.m_handler = handheldScanHandler
         //初始化扫描头
         Scanner.InitSCA()
         super.onStart()

@@ -12,7 +12,7 @@ import com.bjjc.scmapp.ui.activity.base.BaseActivity
 import com.bjjc.scmapp.util.*
 import com.bjjc.scmapp.util.httpUtils.RetrofitUtils
 import com.bjjc.scmapp.util.httpUtils.ServiceApi
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.layout_aty_login.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.info
@@ -34,7 +34,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         find<EditText>(R.id.etLoginUsername)
     }
 
-    override fun getLayoutId(): Int = R.layout.activity_login
+    override fun getLayoutId(): Int = R.layout.layout_aty_login
 
     override fun initView() {
         //判断设备是否由虚拟按键，如果有则增加paddingBottom=50dp

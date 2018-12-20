@@ -16,7 +16,7 @@ class DetailListFragment:BaseFragment() {
     private var detailListView: View? = null
     private val detailListAdapter: DetailListAdapter by lazy { DetailListAdapter(activity) }
     override fun initView(): View? {
-        detailListView=View.inflate(context, R.layout.fragment_detail_list,null)
+        detailListView=View.inflate(context, R.layout.layout_fragment_center_out_send_detail_list,null)
         return detailListView
     }
 

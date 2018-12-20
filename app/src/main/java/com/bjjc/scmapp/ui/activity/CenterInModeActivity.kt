@@ -6,7 +6,7 @@ import com.bjjc.scmapp.R
 import com.bjjc.scmapp.adapter.CenterInModeGridAdapter
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
 import com.bjjc.scmapp.util.ToolbarManager
-import kotlinx.android.synthetic.main.activity_ruku_mode_choice.*
+import kotlinx.android.synthetic.main.layout_aty_center_in_mode.*
 import org.jetbrains.anko.find
 
 class CenterInModeActivity : BaseActivity(),ToolbarManager {
@@ -16,7 +16,7 @@ class CenterInModeActivity : BaseActivity(),ToolbarManager {
         CenterInModeGridAdapter(this)
     }
     override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
-    override fun getLayoutId(): Int = R.layout.activity_ruku_mode_choice
+    override fun getLayoutId(): Int = R.layout.layout_aty_center_in_mode
     override fun initData() {
         initRuKuModeChoiceToolBar()//Sets toolbar title.
         ruKuModeChoiceGridViewAdapter.setData(buttonArray)

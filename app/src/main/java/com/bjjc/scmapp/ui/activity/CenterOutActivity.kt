@@ -8,6 +8,6 @@ class CenterOutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_center_output)
+        setContentView(R.layout.layout_aty_center_out)
     }
 }

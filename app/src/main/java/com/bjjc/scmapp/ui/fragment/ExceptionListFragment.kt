@@ -9,6 +9,6 @@ import com.bjjc.scmapp.ui.fragment.base.BaseFragment
  */
 class ExceptionListFragment:BaseFragment() {
     override fun initView(): View? {
-        return View.inflate(context, R.layout.fragment_exception_list,null)
+        return View.inflate(context, R.layout.layout_fragment_center_out_send_exception_list,null)
     }
 }

@@ -10,7 +10,7 @@
     <ListView android:id="@+id/lvCenterDistributionOrderOutput"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              tools:listitem="@layout/adapter_item_center_distribution_order_output_listview">
+              tools:listitem="@layout/layout_adpitem_center_out_send_list">
 
     </ListView>
 

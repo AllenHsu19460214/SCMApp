@@ -8,6 +8,6 @@ class StandingBookActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_standingbook)
+        setContentView(R.layout.layout_aty_standingbook)
     }
 }

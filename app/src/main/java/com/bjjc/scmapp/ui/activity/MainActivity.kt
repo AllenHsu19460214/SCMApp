@@ -15,7 +15,7 @@ import com.bjjc.scmapp.adapter.MainGridAdapter
 import com.bjjc.scmapp.model.bean.UserIdentityBean
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
 import com.bjjc.scmapp.util.ToolbarManager
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_aty_main.*
 import org.jetbrains.anko.find
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -30,7 +30,7 @@ class MainActivity : BaseActivity(), ToolbarManager {
     /**
      * Loads layout of current activity.
      */
-    override fun getLayoutId(): Int = R.layout.activity_main
+    override fun getLayoutId(): Int = R.layout.layout_aty_main
 
     override fun initView() {
 
@@ -98,7 +98,7 @@ class MainActivity : BaseActivity(), ToolbarManager {
      */
     private fun promptLogOut() {
         val inflater = LayoutInflater.from(this)
-        val dialogView = inflater.inflate(R.layout.dialog_custom_yes_no, null)
+        val dialogView = inflater.inflate(R.layout.layout_dialog_custom_yes_no, null)
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .create()

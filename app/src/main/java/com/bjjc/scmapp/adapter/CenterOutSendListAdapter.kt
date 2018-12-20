@@ -29,7 +29,7 @@ class CenterOutSendListAdapter(var context: Context) : BaseAdapter() {
         var reuseView = convertView
         val viewHolder: CenterOutSendListAdapter.ViewHolder
         if (reuseView == null) {
-            reuseView = LayoutInflater.from(context).inflate(R.layout.adapter_item_center_distribution_order_output_listview, null)
+            reuseView = LayoutInflater.from(context).inflate(R.layout.layout_adpitem_center_out_send_list, null)
             viewHolder = ViewHolder(reuseView)
             reuseView!!.tag = viewHolder
         } else {

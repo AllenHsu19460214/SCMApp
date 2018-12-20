@@ -22,7 +22,7 @@ import com.bjjc.scmapp.util.ToastUtils
 import com.bjjc.scmapp.util.ToolbarManager
 import com.bjjc.scmapp.util.httpUtils.RetrofitUtils
 import com.bjjc.scmapp.util.httpUtils.ServiceApi
-import kotlinx.android.synthetic.main.activity_center_distribution_order_output.*
+import kotlinx.android.synthetic.main.layout_aty_center_out_send.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.uiThread
@@ -45,7 +45,7 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager {
     private val centerDistributionOrderOutputListViewAdapter: CenterOutSendListAdapter by lazy {
         CenterOutSendListAdapter(this)
     }
-    override fun getLayoutId(): Int = R.layout.activity_center_distribution_order_output
+    override fun getLayoutId(): Int = R.layout.layout_aty_center_out_send
     override fun initData() {
         initCenterDistributionOrderOutputToolBar()
         postOrderMingXi()

@@ -15,7 +15,7 @@ class SettingActivity : BaseActivity(),ToolbarManager {
         const val TAG:String= "SettingActivity"
     }
     override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
-    override fun getLayoutId(): Int =R.layout.activity_setting
+    override fun getLayoutId(): Int =R.layout.layout_aty_setting
     override fun initData() {
         initSettingToolBar()
         //Gets whether push notifications are selected.

@@ -26,7 +26,7 @@ class DetailListAdapter(var context: FragmentActivity?):BaseAdapter() {
         var reuseView = convertView
         val viewHolder: DetailListAdapter.ViewHolder
         if (reuseView == null) {
-            reuseView = LayoutInflater.from(context).inflate(R.layout.adapter_item_center_distribution_order_output_detail_listview, null)
+            reuseView = LayoutInflater.from(context).inflate(R.layout.layout_adpitem_center_out_send_detail_list, null)
             viewHolder = ViewHolder(reuseView)
             reuseView!!.tag = viewHolder
         } else {

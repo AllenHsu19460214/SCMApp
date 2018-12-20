@@ -24,7 +24,7 @@ class DataListFragment : BaseFragment(), DataListAdapter.IOnUpdateCountTotalList
         var i:Int=0
     }
     override fun initView(): View? {
-        dataListView = View.inflate(context, R.layout.fragment_data_list, null)
+        dataListView = View.inflate(context, R.layout.layout_fragment_center_out_send_data_list, null)
         return dataListView
     }
 

@@ -7,7 +7,7 @@ import com.bjjc.scmapp.R
 import com.bjjc.scmapp.adapter.CenterOutModeGridAdapter
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
 import com.bjjc.scmapp.util.ToolbarManager
-import kotlinx.android.synthetic.main.activity_chuku_mode_choice.*
+import kotlinx.android.synthetic.main.layout_aty_center_out_mode.*
 import org.jetbrains.anko.find
 
 class CenterOutModeActivity : BaseActivity(), ToolbarManager {
@@ -17,7 +17,7 @@ class CenterOutModeActivity : BaseActivity(), ToolbarManager {
         CenterOutModeGridAdapter(this)
     }
     override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
-    override fun getLayoutId(): Int = R.layout.activity_chuku_mode_choice
+    override fun getLayoutId(): Int = R.layout.layout_aty_center_out_mode
     override fun initData() {
         initChuKuModeChoiceToolBar()//Sets toolbar title.
         chuKuModeChoiceGridViewAdapter.setData(buttonArray)

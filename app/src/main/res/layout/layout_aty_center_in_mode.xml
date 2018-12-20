@@ -6,10 +6,10 @@
         android:layout_height="match_parent"
         android:background="@drawable/background"
         android:orientation="vertical"
-        tools:context=".ui.activity.CenterOutModeActivity">
+        tools:context=".ui.activity.CenterInModeActivity">
     <include layout="@layout/toolbar"/>
     <GridView
-            android:id="@+id/gvChuKuModeChoice"
+            android:id="@+id/gvRuKuModeChoice"
             android:layout_marginTop="15dp"
             android:verticalSpacing="2dp"
             android:numColumns="2"
@@ -20,6 +20,6 @@
             android:gravity="center"
             android:scrollbars="none"
             android:listSelector="@null"
-            tools:listitem="@layout/adapter_item_main_gridview">
+            tools:listitem="@layout/layout_adpitem_main_grid">
     </GridView>
 </LinearLayout>

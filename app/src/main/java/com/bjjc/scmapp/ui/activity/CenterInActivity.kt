@@ -8,6 +8,6 @@ class CenterInActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_center_put_in)
+        setContentView(R.layout.layout_aty_center_in)
     }
 }

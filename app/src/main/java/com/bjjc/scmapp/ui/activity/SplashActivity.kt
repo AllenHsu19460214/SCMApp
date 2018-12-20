@@ -5,6 +5,6 @@ import com.bjjc.scmapp.ui.activity.base.BaseActivity
 
 class SplashActivity : BaseActivity() {
     override fun getLayoutId(): Int {
-        return R.layout.activity_splash
+        return R.layout.layout_aty_splash
     }
 }
