@@ -6,7 +6,7 @@ import android.content.Intent
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import com.bjjc.scmapp.R
-import com.bjjc.scmapp.ui.activity.CenterDistributionOrderOutputActivity
+import com.bjjc.scmapp.ui.activity.CenterOutSendActivity
 import com.bjjc.scmapp.ui.activity.SettingActivity
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
 import org.jetbrains.anko.appcompat.v7.coroutines.onQueryTextFocusChange
@@ -39,7 +39,7 @@ interface ToolbarManager {
     }
 
     /**
-     * To initialize toolbar for ChuKuModeChoiceActivity.
+     * To initialize toolbar for CenterOutModeActivity.
      */
     fun initChuKuModeChoiceToolBar() {
         initToolbar()
@@ -48,7 +48,7 @@ interface ToolbarManager {
     }
 
     /**
-     * To initialize toolbar for RuKuModeChoiceActivity.
+     * To initialize toolbar for CenterInModeActivity.
      */
     fun initRuKuModeChoiceToolBar() {
         initToolbar()
@@ -56,7 +56,7 @@ interface ToolbarManager {
         setToolBarNavigation()
     }
     /**
-     * To initialize toolbar for CenterDistributionOrderOutputActivity.
+     * To initialize toolbar for CenterOutSendActivity.
      */
     fun initCenterDistributionOrderOutputToolBar() {
         initToolbar()
@@ -64,7 +64,7 @@ interface ToolbarManager {
         setToolBarNavigation()
     }
     /**
-     * To initialize toolbar for CenterDistributionOrderOutputDetailActivity.
+     * To initialize toolbar for CenterOutSendDetailActivity.
      */
     fun initCenterDistributionOrderOutputDetailToolBar() {
         initToolbar()
@@ -117,14 +117,14 @@ interface ToolbarManager {
             }
         })
         searchView.setOnSearchClickListener {
-            if (CenterDistributionOrderOutputActivity.scanNumber!=null){
-                searchView.setQuery(CenterDistributionOrderOutputActivity.scanNumber,false)
+            if (CenterOutSendActivity.scanNumber!=null){
+                searchView.setQuery(CenterOutSendActivity.scanNumber,false)
             }
         }
         searchView.onQueryTextFocusChange { v, hasFocus ->
             if (!hasFocus){
-                if (CenterDistributionOrderOutputActivity.scanNumber!=null){
-                    CenterDistributionOrderOutputActivity.scanNumber=null
+                if (CenterOutSendActivity.scanNumber!=null){
+                    CenterOutSendActivity.scanNumber=null
                 }
             }
         }

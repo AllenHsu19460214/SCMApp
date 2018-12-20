@@ -29,7 +29,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     private var exitTime:Long = 0
     private var sign: String? = "" //Key in the SdCard
     private var imei: String = "" //IMEI of the phone.
-    //input field of username
+    //input field of user_name
     private val etLoginUsername by lazy {
         find<EditText>(R.id.etLoginUsername)
     }
@@ -122,10 +122,10 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnLoginSubmit -> {
-                //Obtaining username and password.
+                //Obtaining user_name and password.
                 val username = etLoginUsername.text.toString()
                 val password = etLoginPassword.text.toString()
-                //Checking format of username.
+                //Checking format of user_name.
                 if (checkStringUtils.checkUserName(username)) {
                     info { username }
                 } else {

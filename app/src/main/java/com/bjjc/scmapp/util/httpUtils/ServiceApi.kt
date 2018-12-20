@@ -1,7 +1,7 @@
 package com.bjjc.scmapp.util.httpUtils
 
-import com.bjjc.scmapp.model.vo.CenterDistributionOrderOutputDetailVo
-import com.bjjc.scmapp.model.vo.CenterDistributionOrderOutputVo
+import com.bjjc.scmapp.model.vo.CenterOutSendDetailVo
+import com.bjjc.scmapp.model.vo.CenterOutSendVo
 import com.bjjc.scmapp.model.vo.LoginVo
 import retrofit2.Call
 import retrofit2.http.Field
@@ -16,7 +16,7 @@ interface ServiceApi {
     @FormUrlEncoded
     fun login(
         @Field("command") command: String,
-        @Field("username") username: String,
+        @Field("user_name") username: String,
         @Field("password") password: String,
         @Field("sbid") sbid: String,
         @Field("sign") sign: String,
@@ -32,7 +32,7 @@ interface ServiceApi {
         @Field("djtype") djtype: String,
         @Field("crktype") crktype: String,
         @Field("sysIndex") sysIndex: String
-    ): Call<CenterDistributionOrderOutputVo>
+    ): Call<CenterOutSendVo>
 
     @POST("storeJson_1.3.0.php")
     @FormUrlEncoded
@@ -41,5 +41,5 @@ interface ServiceApi {
         @Field("key") key: String?,
         @Field("dh") djtype: String,
         @Field("smtype") crktype: String
-    ): Call<CenterDistributionOrderOutputDetailVo>
+    ): Call<CenterOutSendDetailVo>
 }

@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/background"
         android:orientation="vertical"
-        tools:context=".ui.activity.ChuKuModeChoiceActivity">
+        tools:context=".ui.activity.CenterOutModeActivity">
     <include layout="@layout/toolbar"/>
     <GridView
             android:id="@+id/gvChuKuModeChoice"

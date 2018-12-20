@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".ui.activity.CenterDistributionOrderOutputActivity">
+        tools:context=".ui.activity.CenterOutSendActivity">
     <include layout="@layout/toolbar"/>
     <ListView android:id="@+id/lvCenterDistributionOrderOutput"
               android:layout_width="match_parent"

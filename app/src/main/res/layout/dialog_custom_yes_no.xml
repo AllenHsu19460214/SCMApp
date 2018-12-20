@@ -5,7 +5,7 @@
         android:layout_width="230dp" android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:background="@drawable/shape_bg_rounded_rectangle_white_all"
+        android:background="@drawable/shape_rectangle_all_white"
         android:orientation="vertical">
     <TextView
             android:id="@+id/tvTitle"
@@ -16,7 +16,7 @@
               android:paddingBottom="5dp"
               android:textSize="20sp"
               android:textColor="@color/black"
-              android:background="@drawable/shape_bg_rounded_rectangle_blue_up"
+              android:background="@drawable/shape_rectangle_12_blue"
               android:text="@string/tip"/>
     <TextView
             android:id="@+id/tvMessage"

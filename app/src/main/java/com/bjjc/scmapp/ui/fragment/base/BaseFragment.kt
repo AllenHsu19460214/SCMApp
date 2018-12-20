@@ -16,8 +16,10 @@ import org.jetbrains.anko.toast
 abstract class BaseFragment:Fragment() ,AnkoLogger{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initData()
+        init()
     }
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return initView()
@@ -33,7 +35,9 @@ abstract class BaseFragment:Fragment() ,AnkoLogger{
         initListener()
         initData()
     }
+    protected open fun init(){
 
+    }
     /**
      * To initialize Data.
      */

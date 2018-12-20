@@ -38,7 +38,7 @@
                 android:name=".ui.activity.SplashActivity"
                 android:theme="@style/AppTheme.FullScreen">
         </activity>
-        <activity android:name=".ui.activity.ChuKuModeChoiceActivity">
+        <activity android:name=".ui.activity.CenterOutModeActivity">
         </activity>
         <activity android:name=".ui.activity.RuKuActivity">
         </activity>
@@ -52,21 +52,22 @@
         </activity>
         <activity android:name=".ui.activity.AboutActivity">
         </activity>
-        <activity android:name=".ui.activity.CenterDistributionOrderOutputActivity">
+        <activity android:name=".ui.activity.CenterOutSendActivity">
         </activity>
-        <activity android:name=".ui.activity.CenterOutputActivity">
+        <activity android:name=".ui.activity.CenterOutActivity">
         </activity>
-        <activity android:name=".ui.activity.CenterTransferOrderOutputActivity">
+        <activity android:name=".ui.activity.CenterOutTransferActivity">
         </activity>
-        <activity android:name=".ui.activity.CenterReverseOrderOutputActivity">
+        <activity android:name=".ui.activity.CenterOutReverseActivity">
         </activity>
-        <activity android:name=".ui.activity.RuKuModeChoiceActivity">
+        <activity android:name=".ui.activity.CenterInModeActivity">
         </activity>
-        <activity android:name=".ui.activity.CenterPutInActivity">
+        <activity android:name=".ui.activity.CenterInActivity">
         </activity>
-        <activity android:name=".ui.activity.CenterTransferOrderPutInActivity">
+        <activity android:name=".ui.activity.CenterInTransferActivity">
         </activity>
-        <activity android:name=".ui.activity.CenterDistributionOrderOutputDetailActivity">
+        <activity android:name=".ui.activity.CenterOutSendDetailActivity"
+                  android:windowSoftInputMode="adjustPan|stateHidden">
         </activity>
     </application>
 

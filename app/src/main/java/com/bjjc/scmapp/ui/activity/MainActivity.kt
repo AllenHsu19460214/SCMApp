@@ -11,8 +11,8 @@ import android.view.Menu
 import android.widget.Button
 import android.widget.TextView
 import com.bjjc.scmapp.R
-import com.bjjc.scmapp.adapter.MainGridViewAdapter
-import com.bjjc.scmapp.model.bean.UserShenFenBean
+import com.bjjc.scmapp.adapter.MainGridAdapter
+import com.bjjc.scmapp.model.bean.UserIdentityBean
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
 import com.bjjc.scmapp.util.ToolbarManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -23,8 +23,8 @@ class MainActivity : BaseActivity(), ToolbarManager {
     override val context: Context by lazy { this }
     override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     private lateinit var phoneRoleData: Array<String>
-    private  val mainGridViewAdapter: MainGridViewAdapter by lazy {
-        MainGridViewAdapter(this)
+    private  val mainGridViewAdapter: MainGridAdapter by lazy {
+        MainGridAdapter(this)
     }
 
     /**
@@ -37,7 +37,7 @@ class MainActivity : BaseActivity(), ToolbarManager {
     }
 
     override fun initData() {
-        val sfBean = intent.getSerializableExtra("sfBean") as UserShenFenBean
+        val sfBean = intent.getSerializableExtra("sfBean") as UserIdentityBean
         initMainToolBar(sfBean.role, sfBean.truename)//Sets toolbar title.
         //phoneRoleData=出库,入库,货品查询,盘库,货品信息,台帐,分单
         phoneRoleData = sfBean.phoneRoleData.split(",").toTypedArray()

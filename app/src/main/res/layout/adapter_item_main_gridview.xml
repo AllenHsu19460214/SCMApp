@@ -8,7 +8,7 @@
                android:layout_height="wrap_content"
                android:padding="7dp"
                tools:ignore="ContentDescription"
-               android:src="@drawable/selector_chuku"
+               android:src="@drawable/selector_center_out_mode"
                android:background="@drawable/bg_border"
                 />
 </LinearLayout>
