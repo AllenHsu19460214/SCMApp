@@ -45,7 +45,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, DataListFrag
     private lateinit var centerDistributionOrderOutputDetailVo: CenterOutSendDetailVo
     private lateinit var checkScanCodeVo: CheckScanCodeVo
     private lateinit var orderList: List<CenterOutSendDetailBean>
-    private var scanToTal: Long = 0
+    private var scanToTal: Long = -1
     private var planBoxTotal: Long = 0
     private val handheldScanHandler = HandheldScanHandler()
     private var searchView: SearchView? = null
@@ -56,14 +56,17 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, DataListFrag
     private var iOnUpdateScanCountListener: IOnUpdateScanCountListener? = null
     private var exceptionCodeInfoList: ArrayList<ExceptionCodeInfoBean> = ArrayList()
     private var exceptionCodeList: ArrayList<String> = ArrayList()
+    private val currentScanCodeList: ArrayList<String> = ArrayList()
     private var readScanCodeList: ArrayList<String> = arrayListOf()
     private val temp1: ArrayList<String> = arrayListOf()
     private val checkSucceededScanCodeList: ArrayList<String> = arrayListOf()
     private var dialogFlag: Boolean = false
+    private var threadExit: Boolean = false
+    private var testV: String = "120"
+    private var testList: ArrayList<String> = arrayListOf("1", "2", "3", "4")
 
     companion object {
         lateinit var orderListChanged: List<CenterOutSendDetailBean>
-        val currentScanCodeList: ArrayList<String> = ArrayList()
     }
 
     override fun getLayoutId(): Int = R.layout.layout_aty_center_out_send_detail
@@ -126,31 +129,43 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, DataListFrag
     }
 
     override fun initData() {
+        //start Async thread.
         doAsync {
-            while (true) {
-                if (scanToTal>=planBoxTotal){return@doAsync}
-                if (currentScanCodeList.isNotEmpty()) {
-                    if (App.offLineFlag){
-                        checkScanCodeFromServerOffLine(currentScanCodeList.removeAt(0))
-                    }else{
+            whileLoop@ while (!threadExit) {
+                //info { "1running from Thread:${Thread.currentThread()}" }
+                if (scanToTal >= planBoxTotal) {
+                    //info { "2running from Thread:${Thread.currentThread()}" }
+                    break@whileLoop
+                }
+                //info { "3running from Thread:${Thread.currentThread()}" }
+                if (currentScanCodeList.isNotEmpty() && currentScanCodeList.size > 0) {
+                    if (App.offLineFlag) {
+                        doAsync {
+                            Thread.sleep(2000)
+                            checkScanCodeFromServerOffLine(currentScanCodeList.removeAt(0))
+                        }
+                    } else {
                         checkScanCodeFromServer(currentScanCodeList.removeAt(0))
                     }
                 }
+
 
             }
         }
         initCenterOutSendDetailToolBar()
         data = intent.getSerializableExtra("logisticsDocumentsDetail") as CenterOutSendBean
-        if(App.offLineFlag){
+        if (App.offLineFlag) {
             getGoodsOrderDetailOffLine(data.单号, "CK")
-        }else{
+        } else {
             getGoodsOrderDetail(data.单号, "CK")
         }
         setRbExceptionTextColor()
+
+
     }
 
     private fun checkScanCodeFromServerOffLine(scanCode: String) {
-        var checkCodeResult:String=""
+        var checkCodeResult: String = ""
         val gson = Gson()
         val code020Json = readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/code-020.json")
         val code530Json = readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/code-530.json")
@@ -161,29 +176,86 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, DataListFrag
         val code071List = gson.fromJson<List<String>>(code071Json, object : TypeToken<List<String>>() {}.type)
 
         when {
-            code020List.contains(scanCode) -> checkCodeResult=readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode08-020.json")
-            code530List.contains(scanCode) -> checkCodeResult=readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode08-530.json")
-            code071List.contains(scanCode) -> checkCodeResult=readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode071.json")
+            code020List.contains(scanCode) -> checkCodeResult =
+                    readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode08-020.json")
+            code530List.contains(scanCode) -> checkCodeResult =
+                    readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode08-530.json")
+            code071List.contains(scanCode) -> checkCodeResult =
+                    readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode071.json")
         }
-        var checkScanCodeVo = gson.fromJson<CheckScanCodeVo>(checkCodeResult, CheckScanCodeVo::class.java)
+        runOnUiThread {
+            checkScanCodeVo = gson.fromJson<CheckScanCodeVo>(checkCodeResult, CheckScanCodeVo::class.java)
+            if (dealScanCodeByResultCode(scanCode)) return@runOnUiThread
+            setRbExceptionTextColor()
+            updateScanCodeTotal()
+            if (scanToTal >= planBoxTotal) {
+                ToastUtils.showShortToast(this@CenterOutSendDetailActivity, "已达到计划总量 $planBoxTotal 箱")
+            }
+        }
 
     }
 
     private fun getGoodsOrderDetailOffLine(单号: String, smtype: String) {
-        val centerOutSendDetailVoJson =when(单号){
-            "WLD2018111216311209001"->{readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/goodsOrderDetailWLD2018111216311209001.json")}
-            "WLD2018120716125910501"->{readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/goodsOrderDetailWLD2018120716125910501.json")}
-            "WLD2018121215364010501"->{readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/goodsOrderDetailWLD2018120716125910501.json")}
-            "WLD2018121315472310501"->{readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/goodsOrderDetailWLD2018120716125910501.json")}
-            "WLD2018121409401210502"->{readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/goodsOrderDetailWLD2018120716125910501.json")}
-            "WLD2018121410115610501"->{readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/goodsOrderDetailWLD2018120716125910501.json")}
-            "WLD2018121410562810501"->{readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/goodsOrderDetailWLD2018120716125910501.json")}
-            "WLD2018121414423010501"->{readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/goodsOrderDetailWLD2018120716125910501.json")}
-            else->{readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/goodsOrderDetailWLD2018111216311209001.json")}
+        val centerOutSendDetailVoJson = when (单号) {
+            "WLD2018111216311209001" -> {
+                readFileUtils.getFromAssets(
+                    this@CenterOutSendDetailActivity,
+                    "offline/goodsOrderDetailWLD2018111216311209001.json"
+                )
+            }
+            "WLD2018120716125910501" -> {
+                readFileUtils.getFromAssets(
+                    this@CenterOutSendDetailActivity,
+                    "offline/goodsOrderDetailWLD2018120716125910501.json"
+                )
+            }
+            "WLD2018121215364010501" -> {
+                readFileUtils.getFromAssets(
+                    this@CenterOutSendDetailActivity,
+                    "offline/goodsOrderDetailWLD2018120716125910501.json"
+                )
+            }
+            "WLD2018121315472310501" -> {
+                readFileUtils.getFromAssets(
+                    this@CenterOutSendDetailActivity,
+                    "offline/goodsOrderDetailWLD2018120716125910501.json"
+                )
+            }
+            "WLD2018121409401210502" -> {
+                readFileUtils.getFromAssets(
+                    this@CenterOutSendDetailActivity,
+                    "offline/goodsOrderDetailWLD2018120716125910501.json"
+                )
+            }
+            "WLD2018121410115610501" -> {
+                readFileUtils.getFromAssets(
+                    this@CenterOutSendDetailActivity,
+                    "offline/goodsOrderDetailWLD2018120716125910501.json"
+                )
+            }
+            "WLD2018121410562810501" -> {
+                readFileUtils.getFromAssets(
+                    this@CenterOutSendDetailActivity,
+                    "offline/goodsOrderDetailWLD2018120716125910501.json"
+                )
+            }
+            "WLD2018121414423010501" -> {
+                readFileUtils.getFromAssets(
+                    this@CenterOutSendDetailActivity,
+                    "offline/goodsOrderDetailWLD2018120716125910501.json"
+                )
+            }
+            else -> {
+                readFileUtils.getFromAssets(
+                    this@CenterOutSendDetailActivity,
+                    "offline/goodsOrderDetailWLD2018111216311209001.json"
+                )
+            }
         }
         info { centerOutSendDetailVoJson }
         val gson = Gson()
-        centerDistributionOrderOutputDetailVo=gson.fromJson<CenterOutSendDetailVo>(centerOutSendDetailVoJson, CenterOutSendDetailVo::class.java)
+        centerDistributionOrderOutputDetailVo =
+                gson.fromJson<CenterOutSendDetailVo>(centerOutSendDetailVoJson, CenterOutSendDetailVo::class.java)
         showOrderDetailList()
     }
 
@@ -418,7 +490,11 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, DataListFrag
                     val currentScanCode: String = msg.obj.toString()
                     ToastUtils.showShortToast(this@CenterOutSendDetailActivity, currentScanCode)
                     if (scanToTal >= planBoxTotal) {
-                        FeedbackUtils.vibrate(this@CenterOutSendDetailActivity, longArrayOf(100,100,100,100,100,100,100,100),false)
+                        FeedbackUtils.vibrate(
+                            this@CenterOutSendDetailActivity,
+                            longArrayOf(100, 100, 100, 100, 100, 100, 100, 100),
+                            false
+                        )
                         ToastUtils.showShortToast(this@CenterOutSendDetailActivity, "已达到计划总量 $planBoxTotal 箱")
                         return
                     }
@@ -481,5 +557,10 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, DataListFrag
 
     interface IOnUpdateScanCountListener {
         fun OnUpdateScanCount()
+    }
+
+    override fun onDestroy() {
+        threadExit = true
+        super.onDestroy()
     }
 }
