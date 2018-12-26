@@ -30,7 +30,7 @@ data class UserIdentityBean(
     val status: String = "", // 已审通过   【not to use】
     @SerializedName("truename")
     val truename: String = "", // 成都日鸿广州仓   【not to use】
-    @SerializedName("user_name")
+    @SerializedName("username")
     val username: String = "", // GZ-RH     【not to use】
     @SerializedName("x")
     val x: String = "",     //【用户x坐标信息】

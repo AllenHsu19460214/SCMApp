@@ -1,0 +1,21 @@
+{
+  "code": "08",
+  "msg": "登录成功",
+  "key": "ir/6V2YA3ZRP/10eI8RJZCtvmwy+R5O7YiJBEgIkYbA=",
+  "sf": {
+    "username": "GZ-RH",
+    "role": "中心库库管员",
+    "truename": "成都日鸿广州仓",
+    "sjid": null,
+    "gsmc": "广州库(成都日鸿)",
+    "phone_role_data": "出库,入库,货品查询,盘库,台帐",
+    "ckwwcfd": 0,
+    "rkwwcfd": 0,
+    "gsaddress": null,
+    "x": "",
+    "y": null,
+    "clearbackup": 0,
+    "status": "已审通过"
+  },
+  "SerialNo": ""
+}

@@ -58,7 +58,7 @@ interface ToolbarManager {
     /**
      * To initialize toolbar for CenterOutSendActivity.
      */
-    fun initCenterDistributionOrderOutputToolBar() {
+    fun initCenterOutSendToolBar() {
         initToolbar()
         setTitle("配送单出库")
         setToolBarNavigation()
@@ -66,7 +66,7 @@ interface ToolbarManager {
     /**
      * To initialize toolbar for CenterOutSendDetailActivity.
      */
-    fun initCenterDistributionOrderOutputDetailToolBar() {
+    fun initCenterOutSendDetailToolBar() {
         initToolbar()
         setTitle("出库","扫描信息")
         setToolBarNavigation()

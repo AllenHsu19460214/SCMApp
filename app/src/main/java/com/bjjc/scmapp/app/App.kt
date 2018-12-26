@@ -17,6 +17,7 @@ class App : Application() {
     private var property: Properties? = null
 
     companion object {
+        var offLineFlag:Boolean=false
         var verName:String? = null
         var devModel:String?=null
         var base_url: String? = null

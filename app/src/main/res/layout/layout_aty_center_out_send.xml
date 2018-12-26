@@ -7,7 +7,7 @@
         android:orientation="vertical"
         tools:context=".ui.activity.CenterOutSendActivity">
     <include layout="@layout/toolbar"/>
-    <ListView android:id="@+id/lvCenterDistributionOrderOutput"
+    <ListView android:id="@+id/lvCenterOutSend"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               tools:listitem="@layout/layout_adpitem_center_out_send_list">

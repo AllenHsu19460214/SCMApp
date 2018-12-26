@@ -12,6 +12,7 @@ import com.bjjc.scmapp.ui.activity.base.BaseActivity
 import com.bjjc.scmapp.util.*
 import com.bjjc.scmapp.util.httpUtils.RetrofitUtils
 import com.bjjc.scmapp.util.httpUtils.ServiceApi
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.layout_aty_login.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
@@ -34,6 +35,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         find<EditText>(R.id.etLoginUsername)
     }
 
+
     override fun getLayoutId(): Int = R.layout.layout_aty_login
 
     override fun initView() {
@@ -47,6 +49,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
 
     override fun initListener() {
         btnLoginSubmit.setOnClickListener(this)
+        cbOffLine.setOnClickListener(this)
     }
 
     @SuppressLint("SetTextI18n")
@@ -139,9 +142,31 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                     myToast("请确保密码符合以下规则:\n(长度在6~20之间，只能包含字母、数字)")
                     return
                 }
-                //Sending request of login to server.
-                login(username, MD5Utils.md5Encode(password))
+                if (App.offLineFlag){
+                    loginOffLine()
+                    //val lv:LoginVo=gson.fromJson(loginVoJson, object : TypeToken<LoginVo>() {}.type)
+                }else{
+                    //Sending request of login to server.
+                    login(username, MD5Utils.md5Encode(password))
+                }
+
             }
+            R.id.cbOffLine->{
+                App.offLineFlag=cbOffLine.isChecked
+            }
+        }
+    }
+
+    private fun loginOffLine() {
+        val loginVoJson = readFileUtils.getFromAssets(this@LoginActivity, "offline/login.json")
+        info { loginVoJson }
+        val gson = Gson()
+        App.loginVo = gson.fromJson<LoginVo>(loginVoJson, LoginVo::class.java)
+        info { App.loginVo }
+        if (App.loginVo?.code == "08") {
+            myToast(App.loginVo!!.msg)
+            App.sfBean = App.loginVo?.sf
+            gotoMainActivity()
         }
     }
 

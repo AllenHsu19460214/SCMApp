@@ -6,7 +6,7 @@ import java.io.Serializable
 
 /**
  * Created by Allen on 2018/12/11 14:30
- * Center Out Send Logistics bill.
+ * Center Out Send Logistics Documents.
  */
 @Poko
 data class CenterOutSendBean(
