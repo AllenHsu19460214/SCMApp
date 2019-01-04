@@ -27,9 +27,6 @@ class App : Application() {
         fun getInstance(): App = INSTANCE
     }
 
-    /**
-     * 获取Application
-     */
     override fun onCreate() {
         super.onCreate()
         verName = getVerName()
@@ -40,8 +37,7 @@ class App : Application() {
 
 
     /**
-     * 加载开发环境的配置文件
-     *
+     * Load the configuration file of the development environment.
      * */
     private fun loadConfig() {
         property = Properties()
@@ -50,30 +46,30 @@ class App : Application() {
     }
 
     /**
-     * 获取开发模式
-     *
+     * Obtain the development model.
      * */
     private fun getDevModelValue(key: String): String {
-        val msg = devModel?:"DEBUG"//默认是开发模式
-        //将Application里面配置的（pro，test，debug）拼接成 UPDATE_PHOTO_URL _TEST
+        //The default is development mode
+        val msg = devModel?:"DEBUG"
+        //Splice these configuration (pro, test, debug) in the Application to UPDATE_PHOTO_URL_TEST
         val configKey: String = key + "_" + msg
-        //获取配置文件对应的值
+        //Obtain the value in the configuration file.
         return property!!.getProperty(configKey)
     }
 
     /**
-     * 获取App版本名称
+     * obtain the version name.
      */
     private fun getVerName():String {
         return packageManager.getPackageInfo(packageName, 0).versionName
     }
     /**
-     * 获取App开发模式
+     * Obtain the development model.
      */
     private fun getDevModel():String{
         val appInfo: ApplicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
-        //获取meta-data 属性
-        //获取meta-data 下面DEV_MODEL 的值
+        //Obtain the field of meta-data.
+        //Obtain the value of DEV_MODEL in the meta-data.
         return  (appInfo.metaData.get("DEV_MODEL") as String).toUpperCase()
     }
 

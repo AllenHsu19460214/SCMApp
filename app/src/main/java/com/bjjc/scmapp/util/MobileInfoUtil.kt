@@ -17,7 +17,8 @@ object MobileInfoUtil {
      * @param context
      * @return
      */
-    fun getIMEI(context: Context): String {
+    @SuppressLint("HardwareIds")
+    fun getIMEI(context: Context): String? {
         try {
             //实例化TelephonyManager对象
             val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
@@ -27,18 +28,12 @@ object MobileInfoUtil {
                     Manifest.permission.READ_PHONE_STATE
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                return ""
+                return null
             }
-            @SuppressLint("HardwareIds")
-            var imei: String? = telephonyManager.deviceId
-            //在次做个验证，也不是什么时候都能获取到的啊
-            if (imei == null) {
-                imei = ""
-            }
-            return imei
+            return telephonyManager.deviceId
         } catch (e: Exception) {
             e.printStackTrace()
-            return ""
+            return null
         }
 
     }

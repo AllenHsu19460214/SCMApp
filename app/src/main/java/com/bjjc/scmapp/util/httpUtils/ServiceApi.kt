@@ -18,9 +18,9 @@ interface ServiceApi {
     fun login(
         @Field("command") command: String,
         @Field("username") username: String,
-        @Field("password") password: String,
-        @Field("sbid") sbid: String,
-        @Field("sign") sign: String,
+        @Field("password") password: String?,
+        @Field("sbid") sbid: String?,
+        @Field("sign") sign: String?,
         @Field("type") type: String,
         @Field("sysIndex") sysIndex: String
     ): Call<LoginVo>

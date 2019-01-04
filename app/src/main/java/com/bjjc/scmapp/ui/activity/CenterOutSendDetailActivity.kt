@@ -36,6 +36,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.Serializable
+import java.util.concurrent.CopyOnWriteArrayList
 
 @SuppressLint("CommitTransaction")
 class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, DataListFragment.IOnUpdateCountTotalListener {
@@ -56,14 +57,11 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, DataListFrag
     private var iOnUpdateScanCountListener: IOnUpdateScanCountListener? = null
     private var exceptionCodeInfoList: ArrayList<ExceptionCodeInfoBean> = ArrayList()
     private var exceptionCodeList: ArrayList<String> = ArrayList()
-    private val currentScanCodeList: ArrayList<String> = ArrayList()
-    private var readScanCodeList: ArrayList<String> = arrayListOf()
+    private val currentScanCodeList: CopyOnWriteArrayList<String> = CopyOnWriteArrayList()
     private val temp1: ArrayList<String> = arrayListOf()
     private val checkSucceededScanCodeList: ArrayList<String> = arrayListOf()
     private var dialogFlag: Boolean = false
     private var threadExit: Boolean = false
-    private var testV: String = "120"
-    private var testList: ArrayList<String> = arrayListOf("1", "2", "3", "4")
 
     companion object {
         lateinit var orderListChanged: List<CenterOutSendDetailBean>
@@ -141,19 +139,17 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, DataListFrag
                 if (currentScanCodeList.isNotEmpty() && currentScanCodeList.size > 0) {
                     if (App.offLineFlag) {
                         doAsync {
-                            Thread.sleep(2000)
+                            Thread.sleep(3000)
                             checkScanCodeFromServerOffLine(currentScanCodeList.removeAt(0))
                         }
                     } else {
                         checkScanCodeFromServer(currentScanCodeList.removeAt(0))
                     }
                 }
-
-
             }
         }
         initCenterOutSendDetailToolBar()
-        data = intent.getSerializableExtra("logisticsDocumentsDetail") as CenterOutSendBean
+        data = intent.getSerializableExtra("WaybillDetail") as CenterOutSendBean
         if (App.offLineFlag) {
             getGoodsOrderDetailOffLine(data.单号, "CK")
         } else {

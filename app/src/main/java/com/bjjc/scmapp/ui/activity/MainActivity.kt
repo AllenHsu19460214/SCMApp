@@ -18,9 +18,7 @@ class MainActivity : BaseActivity(), ToolbarManager {
     override val context: Context by lazy { this }
     override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     private lateinit var phoneRoleData: Array<String>
-    private  val mainGridViewAdapter: MainGridAdapter by lazy {
-        MainGridAdapter(this)
-    }
+    private val mainGridViewAdapter: MainGridAdapter by lazy { MainGridAdapter(this) }
 
     /**
      * Loads layout of current activity.
@@ -32,10 +30,11 @@ class MainActivity : BaseActivity(), ToolbarManager {
     }
 
     override fun initData() {
-        val sfBean = intent.getSerializableExtra("sfBean") as UserIdentityBean
-        initMainToolBar(sfBean.role, sfBean.truename)//Sets toolbar title.
+        val userIdentityBean = intent.getSerializableExtra("UserIdentityBean") as UserIdentityBean
+        //Sets toolbar title.
+        initMainToolBar(userIdentityBean.role, userIdentityBean.truename)//Sets toolbar title.
         //phoneRoleData=出库,入库,货品查询,盘库,货品信息,台帐,分单
-        phoneRoleData = sfBean.phoneRoleData.split(",").toTypedArray()
+        phoneRoleData = userIdentityBean.phoneRoleData.split(",").toTypedArray()
         mainGridViewAdapter.setData(phoneRoleData)
         gvMain.adapter = mainGridViewAdapter
     }
@@ -93,27 +92,26 @@ class MainActivity : BaseActivity(), ToolbarManager {
      */
     private fun promptLogOut() {
         //customDialogYesOrNo()
-       DialogUtils.instance()
-           .customDialogYesOrNo(this@MainActivity)
-           .setTitle("提示")
-           .setMessage("您确定要退出登录吗?")
-           .setOnPositiveClickListener(object :DialogUtils.OnPositiveClickListener{
-               override fun onPositiveBtnClicked() {
-                   finish()
-               }
-           })
-           .setOnNegativeClickListener(object:DialogUtils.OnNegativeClickListener{
-               override fun onNegativeBtnClicked() {
-               }
-           })
-           .show()
+        DialogUtils.instance()
+            .customDialogYesOrNo(this@MainActivity)
+            .setTitle("提示")
+            .setMessage("您确定要退出登录吗?")
+            .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
+                override fun onPositiveBtnClicked() {
+                    finish()
+                }
+            })
+            .setOnNegativeClickListener(object : DialogUtils.OnNegativeClickListener {
+                override fun onNegativeBtnClicked() {
+                }
+            })
+            .show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         setToolBarMenu(false)
         return true
     }
-
 
 }
 

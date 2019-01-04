@@ -19,7 +19,7 @@ object ToastUtils {
      * @param content 要显示的内容
      */
     @SuppressLint("ShowToast")
-    fun showShortToast(context: Context, content: String) {
+    fun showShortToast(context: Context, content: String?) {
         mainHandler.post {
             //已在主线程中，可以更新UI
             if (toast == null) {

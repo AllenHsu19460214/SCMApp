@@ -6,6 +6,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="#e9f4f4"
+        tools:ignore="HardcodedText"
         tools:context=".ui.activity.CenterOutSendDetailActivity">
     <!--title-->
     <include layout="@layout/toolbar" android:id="@+id/toolbar"/>
@@ -23,7 +24,7 @@
                       android:text="出库单号 : "
                       android:textSize="17sp"
                       android:textStyle="bold"
-                      android:textColor="@color/black"/>
+                      android:textColor="@color/black" />
             <TextView android:id="@+id/tvOrderNumber"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
