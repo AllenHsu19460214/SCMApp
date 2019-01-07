@@ -3,13 +3,16 @@ package com.bjjc.scmapp.util
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
+import android.view.MenuItem
+import android.view.View
 import com.bjjc.scmapp.R
-import com.bjjc.scmapp.ui.activity.CenterOutSendActivity
 import com.bjjc.scmapp.ui.activity.SettingActivity
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
-import org.jetbrains.anko.appcompat.v7.coroutines.onQueryTextFocusChange
+
+
 
 
 /**
@@ -19,6 +22,18 @@ import org.jetbrains.anko.appcompat.v7.coroutines.onQueryTextFocusChange
 interface ToolbarManager {
     val toolbar: Toolbar
     val context: Context
+
+    companion object {
+        lateinit var menuItems: ArrayList<MenuItem>
+        const val SETTING: String = "设置"
+        const val SEARCH: String = "搜索"
+        const val SEARCH_BY_BILL_STATUS: String = "按以下单据状态查询:"
+        const val BILL_STATUS_APPROVE: String = "已审确认"
+        const val BILL_STATUS_PASS: String = "已审通过"
+        const val BILL_STATUS_UNDONE: String = "未出完"
+        const val BILL_STATUS_ALL: String = "显示全部"
+    }
+
     /**
      * To initialize toolbar for MainActivity.
      */
@@ -55,6 +70,7 @@ interface ToolbarManager {
         setTitle("入库模式选择")
         setToolBarNavigation()
     }
+
     /**
      * To initialize toolbar for CenterOutSendActivity.
      */
@@ -63,12 +79,13 @@ interface ToolbarManager {
         setTitle("配送单出库")
         setToolBarNavigation()
     }
+
     /**
      * To initialize toolbar for CenterOutSendDetailActivity.
      */
     fun initCenterOutSendDetailToolBar() {
         initToolbar()
-        setTitle("出库","扫描信息")
+        setTitle("出库", "扫描信息")
         setToolBarNavigation()
     }
 
@@ -87,9 +104,6 @@ interface ToolbarManager {
      */
     fun setToolBarNavigation() {
         toolbar.setNavigationOnClickListener {
-            /* Toast.makeText(toolbar.context, "返回", Toast.LENGTH_SHORT).show()
-             var b = ActivityUtils.isForeground(context as BaseActivity, MainActivity::class.java.name)
-             (context as BaseActivity).finish()*/
             (context as BaseActivity).onBackPressed()
         }
     }
@@ -97,48 +111,55 @@ interface ToolbarManager {
     /**
      * Sets menu.
      */
-    fun setToolBarMenu(isShowSearch: Boolean):SearchView {
+    fun setToolBarMenu(menuItemShow: ArrayList<String>): Toolbar {
         toolbar.inflateMenu(R.menu.menu_main)
         val menu = toolbar.menu
-        val menuItem = menu.findItem(R.id.ab_search)
-        menuItem.isVisible = isShowSearch
-        val searchView = menuItem.actionView as SearchView
-        searchView.isSubmitButtonEnabled = true
-        searchView.queryHint = "输入或扫描单据号码"
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                ToastUtils.showShortToast(toolbar.context, query)
-                return true
-            }
-
-            override fun onQueryTextChange(nextText: String): Boolean {
-                //ToastUtils.showShortToast(toolbar.context, nextText)
-                return true
-            }
-        })
-        searchView.setOnSearchClickListener {
-            if (CenterOutSendActivity.scanNumber!=null){
-                searchView.setQuery(CenterOutSendActivity.scanNumber,false)
-            }
+        menuItems = ArrayList()
+        menuItems.add(menu.findItem(R.id.setting))
+        menuItems.add(menu.findItem(R.id.searchView))
+        menuItems.add(menu.findItem(R.id.searchByBillStatus))
+        menuItems.add(menu.findItem(R.id.billStatusAll))
+        menuItems.add(menu.findItem(R.id.billStatusApprove))
+        menuItems.add(menu.findItem(R.id.billStatusPass))
+        menuItems.add(menu.findItem(R.id.billStatusUndone))
+        menuItems.forEach {
+            it.isVisible = menuItemShow.contains(it.title)
         }
-        searchView.onQueryTextFocusChange { v, hasFocus ->
-            if (!hasFocus){
-                if (CenterOutSendActivity.scanNumber!=null){
-                    CenterOutSendActivity.scanNumber=null
-                }
-            }
-        }
-
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.setting -> {
                     //Toast.makeText(toolbar.context,"点击了设置按钮",Toast.LENGTH_SHORT).show()
                     //goto setting activity.
-                    toolbar.context.startActivity(Intent(toolbar.context, SettingActivity::class.java))
+                    toolbar.context?.startActivity(Intent(toolbar.context, SettingActivity::class.java))
                 }
             }
             true
         }
+        return toolbar
+    }
+
+    fun setSearchView(): SearchView? {
+        var searchView:SearchView?=null
+        menuItems.forEach {
+            if (it.title==ToolbarManager.SEARCH) {
+                searchView = it.actionView as SearchView
+            }
+        }
+        searchView?.isSubmitButtonEnabled = true
+        setUnderLineTransparent(searchView!!)
+        searchView?.queryHint = "输入或扫描单据号码"
+        /*searchView?.setOnSearchClickListener {
+            if (CenterOutSendActivity.scanNumber != null) {
+                searchView?.setQuery(CenterOutSendActivity.scanNumber, false)
+            }
+        }
+        searchView?.onQueryTextFocusChange { v, hasFocus ->
+            if (!hasFocus) {
+                if (CenterOutSendActivity.scanNumber != null) {
+                    CenterOutSendActivity.scanNumber = null
+                }
+            }
+        }*/
         return searchView
     }
 
@@ -147,13 +168,30 @@ interface ToolbarManager {
      */
     fun setTitle(role: String, trueName: String) {
         toolbar.title = role
-        toolbar.subtitle= trueName
+        toolbar.subtitle = trueName
         //toolbarTitle.text = "$role : $trueName"
     }
 
     fun setTitle(title: String) {
         toolbar.title = title
         //toolbarTitle.text = "$role : $trueName"
+    }
+
+    /**设置SearchView下划线透明 */
+    private fun setUnderLineTransparent(searchView: SearchView) {
+        try {
+            val argClass = searchView.javaClass
+            // mSearchPlate是SearchView父布局的名字
+            val ownField = argClass.getDeclaredField("mSearchPlate")
+            ownField.isAccessible = true
+            val mView = ownField.get(searchView) as View
+            mView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+        } catch (e: NoSuchFieldException) {
+            e.printStackTrace()
+        } catch (e: IllegalAccessException) {
+            e.printStackTrace()
+        }
+
     }
 
 

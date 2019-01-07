@@ -1,5 +1,6 @@
 package com.bjjc.scmapp.presenter.impl
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.util.Log
 import com.bjjc.scmapp.app.App
@@ -21,17 +22,18 @@ import retrofit2.Response
  * Created by Allen on 2019/01/04 15:35
  */
 class CenterOutSendPresenterImpl(var context: Context,var centerOutSendView: CenterOutSendView) :CenterOutSendPresenter{
-
-    override fun loadWaybillData() {
+    private var progressDialog:ProgressDialog? = null
+    override fun loadWaybillData(isRefresh: Boolean) {
         if (App.offLineFlag){
             loadDataOffLine()
         }else{
-            loadDataFromServer()
+            loadDataFromServer(isRefresh)
         }
     }
-    private fun loadDataFromServer(){
-        val progressDialog =
-            ProgressDialogUtils.showProgressDialog(context, "数据正在加载中!")
+    private fun loadDataFromServer(isRefresh: Boolean){
+        if (!isRefresh){
+            progressDialog = ProgressDialogUtils.showProgressDialog(context, "数据正在加载中!")
+        }
         RetrofitUtils.getRetrofit(App.base_url!!).create(ServiceApi::class.java)
             .centerOutSend(
                 "7",
@@ -44,11 +46,14 @@ class CenterOutSendPresenterImpl(var context: Context,var centerOutSendView: Cen
                     doAsync {
                         Thread.sleep(2000)
                         uiThread {
-                            // 判断等待框是否正在显示
-                            if (progressDialog.isShowing) {
-                                progressDialog.dismiss()// 关闭等待框
-                                centerOutSendView.onError(t.message)
+                            // Determines whether the wait box is being displayed
+                            progressDialog?.let {progressDialog->
+                                if (progressDialog.isShowing) {
+                                    // Closes the waiting dialog.
+                                    progressDialog.dismiss()
+                                }
                             }
+                            centerOutSendView.onError(t.message)
                         }
                     }
                 }
@@ -57,14 +62,14 @@ class CenterOutSendPresenterImpl(var context: Context,var centerOutSendView: Cen
                     call: Call<CenterOutSendVo>,
                     response: Response<CenterOutSendVo>
                 ) {
-                    // 判断等待框是否正在显示
-                    if (progressDialog.isShowing) {
-                        progressDialog.dismiss()// 关闭等待框
+                    // Determines whether the wait box is being displayed
+                    progressDialog?.let {progressDialog->
+                        if (progressDialog.isShowing) {
+                            // Closes the waiting dialog.
+                            progressDialog.dismiss()
+                        }
                     }
-                    //myToast(response.body().toString())
                     val centerOutSendVo = response.body() as CenterOutSendVo
-                    /*info { centerDistributionOrderOutputVo}
-                    info{ mingXi}*/
                     if (centerOutSendVo.code == "10") {
                         centerOutSendView.loadWaybillDataSuccess(centerOutSendVo.mx)
                     } else {

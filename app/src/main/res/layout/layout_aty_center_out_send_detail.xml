@@ -113,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@android:color/darker_gray"
+            android:background="@color/colorPrimaryDark"
             android:orientation="vertical">
 
         <!--tab-->
@@ -171,6 +171,7 @@
             android:id="@+id/llFooter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
             android:orientation="vertical">
         <Button android:id="@+id/btnOutputSubmit"
                 android:layout_width="match_parent"

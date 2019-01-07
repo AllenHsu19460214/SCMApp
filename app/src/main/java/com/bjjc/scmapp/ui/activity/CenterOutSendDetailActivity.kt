@@ -41,7 +41,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 @SuppressLint("CommitTransaction")
 class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, DataListFragment.IOnUpdateCountTotalListener {
     override val context: Context by lazy { this }
-    override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
+    override val toolbar: Toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     private lateinit var data: CenterOutSendBean
     private lateinit var centerDistributionOrderOutputDetailVo: CenterOutSendDetailVo
     private lateinit var checkScanCodeVo: CheckScanCodeVo
@@ -62,7 +62,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, DataListFrag
     private val checkSucceededScanCodeList: ArrayList<String> = arrayListOf()
     private var dialogFlag: Boolean = false
     private var threadExit: Boolean = false
-
+    private lateinit var toolbarMenu:Toolbar
     companion object {
         lateinit var orderListChanged: List<CenterOutSendDetailBean>
     }
@@ -471,9 +471,8 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, DataListFrag
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        searchView = setToolBarMenu(false)
-        val menuItem = menu?.findItem(R.id.setting)
-        menuItem?.isVisible = false
+        toolbarMenu=setToolBarMenu(arrayListOf())
+        searchView = setSearchView()
         return true
     }
 

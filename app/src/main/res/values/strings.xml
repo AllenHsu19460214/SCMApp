@@ -51,6 +51,11 @@
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>
     <string name="search">搜索</string>
+    <string name="searchByBillStatus">按以下单据状态查询:</string>
+    <string name="billStatusApprove">已审确认</string>
+    <string name="billStatusPass">已审通过</string>
+    <string name="billStatusUndone">未出完</string>
+    <string name="billStatusAll">显示全部</string>
 
 
 </resources>

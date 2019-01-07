@@ -15,7 +15,7 @@ class CenterInModeActivity : BaseActivity(),ToolbarManager {
     private val ruKuModeChoiceGridViewAdapter:CenterInModeGridAdapter by lazy {
         CenterInModeGridAdapter(this)
     }
-    override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
+    override val toolbar: Toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     override fun getLayoutId(): Int = R.layout.layout_aty_center_in_mode
     override fun initData() {
         initRuKuModeChoiceToolBar()//Sets toolbar title.

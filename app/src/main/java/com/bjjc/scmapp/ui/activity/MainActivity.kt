@@ -16,7 +16,7 @@ import org.jetbrains.anko.find
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class MainActivity : BaseActivity(), ToolbarManager {
     override val context: Context by lazy { this }
-    override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
+    override val toolbar: Toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     private lateinit var phoneRoleData: Array<String>
     private val mainGridViewAdapter: MainGridAdapter by lazy { MainGridAdapter(this) }
 
@@ -109,7 +109,7 @@ class MainActivity : BaseActivity(), ToolbarManager {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        setToolBarMenu(false)
+        setToolBarMenu(arrayListOf(ToolbarManager.SETTING))
         return true
     }
 

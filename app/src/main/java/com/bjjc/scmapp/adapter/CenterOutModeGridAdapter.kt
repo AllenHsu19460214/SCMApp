@@ -3,16 +3,15 @@ package com.bjjc.scmapp.adapter
 import android.content.Context
 import android.content.Intent
 import com.bjjc.scmapp.R
-import com.bjjc.scmapp.ui.activity.CenterOutSendActivity
 import com.bjjc.scmapp.ui.activity.CenterOutActivity
 import com.bjjc.scmapp.ui.activity.CenterOutReverseActivity
+import com.bjjc.scmapp.ui.activity.CenterOutSendActivity
 import com.bjjc.scmapp.ui.activity.CenterOutTransferActivity
 
 /**
  * Created by Allen on 2018/12/04 14:57
  */
 class CenterOutModeGridAdapter(override var context: Context) : GridBaseAdapter(context) {
-
     override fun whichItemSelected(tag: Any) {
         when (tag) {
             "配送出库" -> {

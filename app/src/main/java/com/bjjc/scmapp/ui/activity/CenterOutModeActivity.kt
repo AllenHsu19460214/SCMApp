@@ -14,7 +14,7 @@ class CenterOutModeActivity : BaseActivity(), ToolbarManager {
     override val context: Context by lazy { this }
     private val buttonArray: Array<String> = arrayOf("配送出库", "中心库出库", "移库出库", "反向订单出库")
     private val chuKuModeChoiceGridViewAdapter:CenterOutModeGridAdapter by lazy {CenterOutModeGridAdapter(this) }
-    override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
+    override val toolbar: Toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     override fun getLayoutId(): Int = R.layout.layout_aty_center_out_mode
     override fun initData() {
         initChuKuModeChoiceToolBar()//Sets toolbar title.
@@ -23,7 +23,7 @@ class CenterOutModeActivity : BaseActivity(), ToolbarManager {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        setToolBarMenu(false)
+        setToolBarMenu(arrayListOf("设置"))
         return true
     }
 }

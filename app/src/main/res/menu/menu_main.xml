@@ -5,10 +5,30 @@
           android:icon="@drawable/img_setting"
           app:showAsAction="never"/>
     <item
-            android:id="@+id/ab_search"
+            android:id="@+id/searchView"
             android:orderInCategory="60"
             android:title="@string/search"
             android:icon="@android:drawable/ic_menu_search"
             app:actionViewClass="android.support.v7.widget.SearchView"
             app:showAsAction="ifRoom|collapseActionView"/>
+    <item android:id="@+id/searchByBillStatus"
+          android:title="@string/searchByBillStatus"
+          android:icon="@drawable/img_setting"
+          app:showAsAction="never"/>
+    <item android:id="@+id/billStatusAll"
+          android:title="@string/billStatusAll"
+          android:icon="@drawable/img_setting"
+          app:showAsAction="never"/>
+    <item android:id="@+id/billStatusApprove"
+          android:title="@string/billStatusApprove"
+          android:icon="@drawable/img_setting"
+          app:showAsAction="never"/>
+    <item android:id="@+id/billStatusPass"
+          android:title="@string/billStatusPass"
+          android:icon="@drawable/img_setting"
+          app:showAsAction="never"/>
+    <item android:id="@+id/billStatusUndone"
+          android:title="@string/billStatusUndone"
+          android:icon="@drawable/img_setting"
+          app:showAsAction="never"/>
 </menu>

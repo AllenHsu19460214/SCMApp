@@ -7,5 +7,5 @@ import com.bjjc.scmapp.model.bean.CenterOutSendBean
  */
 interface CenterOutSendView {
     fun onError(message: String?)
-    fun loadWaybillDataSuccess(data: List<CenterOutSendBean>)
+    fun loadWaybillDataSuccess(data: ArrayList<CenterOutSendBean>)
 }

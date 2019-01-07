@@ -14,7 +14,7 @@ class SettingActivity : BaseActivity(),ToolbarManager {
     object Constant {
         const val TAG:String= "SettingActivity"
     }
-    override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
+    override val toolbar: Toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     override fun getLayoutId(): Int =R.layout.layout_aty_setting
     override fun initData() {
         initSettingToolBar()

@@ -5,13 +5,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:background="@color/colorPrimaryDark"
         tools:context=".ui.activity.CenterOutSendActivity">
     <include layout="@layout/toolbar"/>
-    <ListView android:id="@+id/lvCenterOutSend"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              tools:listitem="@layout/layout_adpitem_center_out_send_list">
+    <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <ListView
+                android:id="@+id/lvCenterOutSend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/layout_adpitem_center_out_send_list">
+        </ListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-    </ListView>
 
 </LinearLayout>

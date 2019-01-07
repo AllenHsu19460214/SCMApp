@@ -17,5 +17,5 @@ data class CenterOutSendVo(
     @SerializedName("msg")
     val msg: String = "", // 返回成功
     @SerializedName("mx")
-    val mx: List<CenterOutSendBean> = listOf()
+    val mx: ArrayList<CenterOutSendBean> = arrayListOf()
 ): Serializable
