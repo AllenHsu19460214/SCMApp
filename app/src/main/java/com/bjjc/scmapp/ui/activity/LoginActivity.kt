@@ -44,7 +44,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
     @SuppressLint("SetTextI18n")
     override fun initData() {
         //Set the version name and development model for current App.
-        tvVerNameAndDevModel.text = "V" + App.verName + "-" + App.devModel
+        tvVerNameAndDevModel.text = "V" + App.verName + "-" + App.devModel+ "-" + if (App.isPDA) "PDA" else "PHONE"
         loginPresenter.getDeviceInfo()
     }
 

@@ -9,10 +9,10 @@ import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import com.bjjc.scmapp.R
+import com.bjjc.scmapp.ui.activity.CenterOutSendActivity
 import com.bjjc.scmapp.ui.activity.SettingActivity
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
-
-
+import org.jetbrains.anko.appcompat.v7.coroutines.onQueryTextFocusChange
 
 
 /**
@@ -148,7 +148,7 @@ interface ToolbarManager {
         searchView?.isSubmitButtonEnabled = true
         setUnderLineTransparent(searchView!!)
         searchView?.queryHint = "输入或扫描单据号码"
-        /*searchView?.setOnSearchClickListener {
+        searchView?.setOnSearchClickListener {
             if (CenterOutSendActivity.scanNumber != null) {
                 searchView?.setQuery(CenterOutSendActivity.scanNumber, false)
             }
@@ -159,7 +159,7 @@ interface ToolbarManager {
                     CenterOutSendActivity.scanNumber = null
                 }
             }
-        }*/
+        }
         return searchView
     }
 

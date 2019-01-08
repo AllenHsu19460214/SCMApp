@@ -3,6 +3,7 @@ package com.bjjc.scmapp.app
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.model.bean.UserIdentityBean
 import com.bjjc.scmapp.model.vo.LoginVo
@@ -17,6 +18,8 @@ class App : Application() {
     private var property: Properties? = null
 
     companion object {
+        val deviceModel:String?=null
+        var isPDA:Boolean=false
         var offLineFlag:Boolean=false
         var verName:String? = null
         var devModel:String?=null
@@ -29,6 +32,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        isPDA=getDeviceModel()
         verName = getVerName()
         devModel = getDevModel()
         loadConfig()
@@ -71,6 +75,16 @@ class App : Application() {
         //Obtain the field of meta-data.
         //Obtain the value of DEV_MODEL in the meta-data.
         return  (appInfo.metaData.get("DEV_MODEL") as String).toUpperCase()
+    }
+    /**
+     *
+     */
+    private fun getDeviceModel():Boolean{
+        devModel= Build.MODEL
+        devModel?.let {
+            return  getString(R.string.deviceModel).contains(it)
+        }
+        return false
     }
 
 }

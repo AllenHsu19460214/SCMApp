@@ -56,6 +56,7 @@
     <string name="billStatusPass">已审通过</string>
     <string name="billStatusUndone">未出完</string>
     <string name="billStatusAll">显示全部</string>
+    <string name="deviceModel">Android Handheld Terminal</string>
 
 
 </resources>
