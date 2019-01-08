@@ -31,7 +31,10 @@ class LoginPresenterImpl(val context:Context,var loginView:LoginView) :LoginPres
      */
     override fun getDeviceInfo() {
         //Obtain the phone IMEI.
-        deviceBean.imei= MobileInfoUtil.getIMEI(context)
+        //deviceBean.imei= MobileInfoUtil.getIMEI(context)
+        //This is imei of handheld.
+        deviceBean.imei= "355128005784806"
+        //deviceBean.imei= "862460034821507"
         //Obtain the Key form SD card.
         deviceBean.sign= getSign.readTxtFile(ResourcePathUtils.getSDRootPath(), "${context.packageName}/Key/sign.key")
     }
