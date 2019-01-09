@@ -23,7 +23,7 @@ class DetailListFragment:BaseFragment() {
     override fun initData() {
         val lvDetailList=detailListView!!.find<ListView>(R.id.lvDetailList)
         arguments?.let {
-            data = it.getSerializable("data") as List<CenterOutSendDetailBean>
+            data = it.getSerializable("orderDetailList") as List<CenterOutSendDetailBean>
         }
         detailListAdapter.setData(data)
         if (lvDetailList.adapter==null){

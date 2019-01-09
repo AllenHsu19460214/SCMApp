@@ -18,21 +18,20 @@ class App : Application() {
     private var property: Properties? = null
 
     companion object {
-        val deviceModel:String?=null
-        var isPDA:Boolean=false
-        var offLineFlag:Boolean=false
-        var verName:String? = null
-        var devModel:String?=null
+        var deviceModel: String = ""
+        var isPDA: Boolean = false
+        var offLineFlag: Boolean = false
+        var verName: String? = null
+        var devModel: String? = null
         var base_url: String? = null
-        var loginVo:LoginVo?=null
-        var sfBean:UserIdentityBean?=null
-        private val INSTANCE: App by lazy { App() }
-        fun getInstance(): App = INSTANCE
+        var loginVo: LoginVo? = null
+        var sfBean: UserIdentityBean? = null
     }
 
     override fun onCreate() {
         super.onCreate()
-        isPDA=getDeviceModel()
+        deviceModel = getDeviceModel()
+        isPDA = isPDA()
         verName = getVerName()
         devModel = getDevModel()
         loadConfig()
@@ -54,7 +53,7 @@ class App : Application() {
      * */
     private fun getDevModelValue(key: String): String {
         //The default is development mode
-        val msg = devModel?:"DEBUG"
+        val msg = devModel ?: "DEBUG"
         //Splice these configuration (pro, test, debug) in the Application to UPDATE_PHOTO_URL_TEST
         val configKey: String = key + "_" + msg
         //Obtain the value in the configuration file.
@@ -64,25 +63,34 @@ class App : Application() {
     /**
      * obtain the version name.
      */
-    private fun getVerName():String {
+    private fun getVerName(): String {
         return packageManager.getPackageInfo(packageName, 0).versionName
     }
+
     /**
      * Obtain the development model.
      */
-    private fun getDevModel():String{
+    private fun getDevModel(): String {
         val appInfo: ApplicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
         //Obtain the field of meta-data.
         //Obtain the value of DEV_MODEL in the meta-data.
-        return  (appInfo.metaData.get("DEV_MODEL") as String).toUpperCase()
+        return (appInfo.metaData.get("DEV_MODEL") as String).toUpperCase()
     }
+
     /**
      *
      */
-    private fun getDeviceModel():Boolean{
-        devModel= Build.MODEL
-        devModel?.let {
-            return  getString(R.string.deviceModel).contains(it)
+    private fun getDeviceModel(): String {
+        if (getString(R.string.deviceModel).contains(Build.MODEL)) {
+            return "PDA"
+        }
+        return "PHONE"
+
+    }
+
+    private fun isPDA(): Boolean {
+        if ("PDA" == getDeviceModel()) {
+            return true
         }
         return false
     }

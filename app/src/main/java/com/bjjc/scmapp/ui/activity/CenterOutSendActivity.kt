@@ -55,7 +55,7 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
 
     override fun initView() {
         if (!App.isPDA){
-            btnScan.visibility=View.VISIBLE
+            btnScan_CenterOutSendActivity.visibility=View.VISIBLE
         }
     }
     override fun initListener() {
@@ -66,12 +66,12 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
             searchView?.setQuery(null, false)
             centerOutSendPresenter.loadWaybillData(true)
         }
-        btnScan.setOnClickListener(this)
+        btnScan_CenterOutSendActivity.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.btnScan -> {
+            R.id.btnScan_CenterOutSendActivity -> {
                 //跳转到扫描页面，扫描条形码或二维码
                 val openCameraIntent = Intent(context, CaptureActivity::class.java)
                 openCameraIntent.putExtra("autoEnlarged", true)
@@ -237,7 +237,7 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
                 this@CenterOutSendActivity,
                 CenterOutSendDetailActivity::class.java
             )
-            intent.putExtra("WaybillDetail", data[position])
+            intent.putExtra("WaybillData", data[position])
             startActivity(intent)
         }
     }

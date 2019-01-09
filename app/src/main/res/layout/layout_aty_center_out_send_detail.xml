@@ -24,8 +24,8 @@
                       android:text="出库单号 : "
                       android:textSize="17sp"
                       android:textStyle="bold"
-                      android:textColor="@color/black" />
-            <TextView android:id="@+id/tvOrderNumber"
+                      android:textColor="@color/black"/>
+            <TextView android:id="@+id/tvWaybillNumber"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       tools:text="WLD2018062814022310501"
@@ -168,17 +168,29 @@
     </LinearLayout>
     <!--footer-->
     <LinearLayout
+            tools:ignore="ButtonStyle"
             android:id="@+id/llFooter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
-            android:orientation="vertical">
-        <Button android:id="@+id/btnOutputSubmit"
-                android:layout_width="match_parent"
+            android:orientation="horizontal">
+        <Button android:visibility="gone"
+                android:id="@+id/btnScan_CenterOutSendDetailActivity"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:text="扫描条码"
+                android:textSize="25sp"
+                android:layout_margin="3dp"
+                android:background="@drawable/shape_rectangle_all_dark_blue"
+                tools:visibility="visible"/>
+        <Button android:id="@+id/btnOutputSubmit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="提交"
                 android:textSize="25sp"
                 android:layout_margin="3dp"
-                android:background="@drawable/shape_rectangle_all_dark_blue"/>
+                android:background="@drawable/shape_rectangle_all_dark_green"/>
     </LinearLayout>
 </LinearLayout>

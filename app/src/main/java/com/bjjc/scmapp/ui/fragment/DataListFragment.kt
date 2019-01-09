@@ -13,16 +13,12 @@ import org.jetbrains.anko.find
  * Created by Allen on 2018/12/13 11:18
  */
 @Suppress("UNCHECKED_CAST")
-class DataListFragment : BaseFragment(), DataListAdapter.IOnUpdateCountTotalListener {
-
-    private var data: List<CenterOutSendDetailBean>? = null
+class DataListFragment : BaseFragment(){
+    private lateinit var data: ArrayList<CenterOutSendDetailBean>
     private lateinit var dataListView: View
-    private lateinit var dataListAdapter: DataListAdapter
-    private var iOnUpdateCountTotalListener: IOnUpdateCountTotalListener? = null
+    //private val activity:CenterOutSendDetailActivity by lazy { activity}
     private lateinit var lvDataList: ListView
-    override fun init() {
-        dataListAdapter = activity?.let { DataListAdapter(it)}!!
-    }
+    val dataListAdapter: DataListAdapter by lazy {  DataListAdapter(context,activity as CenterOutSendDetailActivity)}
 
     override fun initView(): View? {
         dataListView = View.inflate(context, R.layout.layout_fragment_center_out_send_data_list, null)
@@ -30,34 +26,10 @@ class DataListFragment : BaseFragment(), DataListAdapter.IOnUpdateCountTotalList
         return dataListView
     }
 
-    override fun initListener() {
-        (activity as CenterOutSendDetailActivity).setIOnUpdateScanCountListener(
-            object : CenterOutSendDetailActivity.IOnUpdateScanCountListener {
-                override fun OnUpdateScanCount() {
-                    dataListAdapter.notifyDataSetChanged()
-                }
-
-            }
-        )
-    }
-
     override fun initData() {
-
-        data = arguments?.getSerializable("LogisticsDocumentsDetail") as List<CenterOutSendDetailBean>
-        dataListAdapter.setData(data)
-        dataListAdapter.setOnUpdateCountTotalListener(this)
+        data = arguments?.getSerializable("orderData") as ArrayList<CenterOutSendDetailBean>
+        dataListAdapter.updateData(data)
         lvDataList.adapter = dataListAdapter
     }
 
-    fun setOnUpdateCountTotalListener(iOnUpdateCountTotalListener: IOnUpdateCountTotalListener) {
-        this.iOnUpdateCountTotalListener = iOnUpdateCountTotalListener
-    }
-
-    override fun onUpdateCountTotal(mData: ArrayList<HashMap<String, String>>?) {
-        iOnUpdateCountTotalListener?.onUpdateCountTotal(mData)
-    }
-
-    interface IOnUpdateCountTotalListener {
-        fun onUpdateCountTotal(mData: ArrayList<HashMap<String, String>>?)
-    }
 }
