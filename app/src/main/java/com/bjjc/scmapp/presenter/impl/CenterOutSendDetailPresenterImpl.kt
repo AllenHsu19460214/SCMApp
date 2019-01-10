@@ -69,6 +69,9 @@ class CenterOutSendDetailPresenterImpl(var context:Context,var centerOutSendDeta
             })
     }
 
+    /**
+     * Offline Data
+     */
     private fun loadDetailDataOffLine(data: CenterOutSendBean) {
         val centerOutSendDetailVoJson = when (data.单号) {
             "WLD2018111216311209001" -> {
@@ -86,31 +89,31 @@ class CenterOutSendDetailPresenterImpl(var context:Context,var centerOutSendDeta
             "WLD2018121215364010501" -> {
                 readFileUtils.getFromAssets(
                     context,
-                    "offline/goodsOrderDetailWLD2018120716125910501.json"
+                    "offline/goodsOrderDetailWLD2018121215364010501.json"
                 )
             }
             "WLD2018121315472310501" -> {
                 readFileUtils.getFromAssets(
                     context,
-                    "offline/goodsOrderDetailWLD2018120716125910501.json"
+                    "offline/goodsOrderDetailWLD2018121315472310501.json"
                 )
             }
             "WLD2018121409401210502" -> {
                 readFileUtils.getFromAssets(
                     context,
-                    "offline/goodsOrderDetailWLD2018120716125910501.json"
+                    "offline/goodsOrderDetailWLD2018121409401210502.json"
                 )
             }
             "WLD2018121410115610501" -> {
                 readFileUtils.getFromAssets(
                     context,
-                    "offline/goodsOrderDetailWLD2018120716125910501.json"
+                    "offline/goodsOrderDetailWLD2018121410115610501.json"
                 )
             }
             "WLD2018121410562810501" -> {
                 readFileUtils.getFromAssets(
                     context,
-                    "offline/goodsOrderDetailWLD2018120716125910501.json"
+                    "offline/goodsOrderDetailWLD2018121410562810501.json"
                 )
             }
             "WLD2018121414423010501" -> {

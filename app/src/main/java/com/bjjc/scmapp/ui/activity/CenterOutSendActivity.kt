@@ -16,6 +16,7 @@ import android.view.View
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.adapter.CenterOutSendListAdapter
 import com.bjjc.scmapp.app.App
+import com.bjjc.scmapp.common.IntentKey
 import com.bjjc.scmapp.model.bean.CenterOutSendBean
 import com.bjjc.scmapp.presenter.impl.CenterOutSendPresenterImpl
 import com.bjjc.scmapp.presenter.interf.CenterOutSendPresenter
@@ -46,7 +47,7 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
     private val handheldScanHandler = HandheldScanHandler()
     private var searchView: SearchView? = null
     private val centerOutSendListViewAdapter: CenterOutSendListAdapter by lazy { CenterOutSendListAdapter(this) }
-    private lateinit var data: ArrayList<CenterOutSendBean>
+    private val currentData: ArrayList<CenterOutSendBean> by lazy { ArrayList<CenterOutSendBean>() }
     private lateinit var toolbarMenu: Toolbar
     /**
      * Loads layout of current activity.
@@ -124,35 +125,47 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
         toolbarMenu.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.billStatusAll -> {
-                    centerOutSendListViewAdapter.updateData(data)
+                    centerOutSendListViewAdapter.updateData(currentData)
                 }
                 R.id.billStatusApprove -> {
                     val billStatusApproveData: ArrayList<CenterOutSendBean> = ArrayList()
-                    for (value in data) {
+                    for (value in currentData) {
                         if (value.单据状态 == ToolbarManager.BILL_STATUS_APPROVE) {
                             billStatusApproveData.add(value)
                         }
                     }
-                    centerOutSendListViewAdapter.updateData(billStatusApproveData)
+                    currentData.clear()
+                    currentData.addAll(billStatusApproveData)
                 }
                 R.id.billStatusPass -> {
                     val billStatusPassData: ArrayList<CenterOutSendBean> = ArrayList()
-                    for (value in data) {
+                    for (value in currentData) {
                         if (value.单据状态 == ToolbarManager.BILL_STATUS_PASS) {
                             billStatusPassData.add(value)
                         }
                     }
-                    centerOutSendListViewAdapter.updateData(billStatusPassData)
+                    currentData.clear()
+                    currentData.addAll(billStatusPassData)
                 }
                 R.id.billStatusUndone -> {
                     val billStatusUndoneData: ArrayList<CenterOutSendBean> = ArrayList()
-                    for (value in data) {
+                    for (value in currentData) {
                         if (value.单据状态 == ToolbarManager.BILL_STATUS_UNDONE) {
                             billStatusUndoneData.add(value)
                         }
                     }
-                    centerOutSendListViewAdapter.updateData(billStatusUndoneData)
+                    currentData.clear()
+                    currentData.addAll(billStatusUndoneData)
                 }
+            }
+            centerOutSendListViewAdapter.updateData(currentData)
+            lvCenterOutSend.setOnItemClickListener { parent, view, position, id ->
+                val intent = Intent(
+                    this@CenterOutSendActivity,
+                    CenterOutSendDetailActivity::class.java
+                )
+                intent.putExtra(IntentKey.CENTER_OUT_SEND_AND_CENTER_OUT_SEND_DETAIL_CURRENTDATA, currentData[position])
+                startActivity(intent)
             }
             true
         }
@@ -160,13 +173,15 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
             override fun onQueryTextSubmit(query: String): Boolean {
                 val searchCode = query.trim()
                 val searchCodeData: ArrayList<CenterOutSendBean> = ArrayList()
-                for (value in data) {
+                for (value in currentData) {
                     if (value.单号 == searchCode) {
                         searchCodeData.add(value)
                     }
                 }
-                if (searchCodeData.size > 0) {
-                    centerOutSendListViewAdapter.updateData(searchCodeData)
+                currentData.clear()
+                currentData.addAll(searchCodeData)
+                if (currentData.size > 0) {
+                    centerOutSendListViewAdapter.updateData(currentData)
                 } else {
                     DialogUtils.instance()
                         .customDialogYes(this@CenterOutSendActivity)
@@ -228,16 +243,16 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
         //Hides the refreshing control.
         refreshLayout.isRefreshing = false
         myToast("获取数据成功!")
-        this.data = ArrayList()
-        this.data = data
-        centerOutSendListViewAdapter.updateData(data)
+        currentData.clear()
+        currentData.addAll(data)
+        centerOutSendListViewAdapter.updateData(currentData)
         lvCenterOutSend.adapter = centerOutSendListViewAdapter
         lvCenterOutSend.setOnItemClickListener { parent, view, position, id ->
             val intent = Intent(
                 this@CenterOutSendActivity,
                 CenterOutSendDetailActivity::class.java
             )
-            intent.putExtra("WaybillData", data[position])
+            intent.putExtra(IntentKey.CENTER_OUT_SEND_AND_CENTER_OUT_SEND_DETAIL_CURRENTDATA, currentData[position])
             startActivity(intent)
         }
     }

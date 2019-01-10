@@ -122,6 +122,7 @@ interface ToolbarManager {
         menuItems.add(menu.findItem(R.id.billStatusApprove))
         menuItems.add(menu.findItem(R.id.billStatusPass))
         menuItems.add(menu.findItem(R.id.billStatusUndone))
+        menuItems.add(menu.findItem(R.id.wipeCache))
         menuItems.forEach {
             it.isVisible = menuItemShow.contains(it.title)
         }

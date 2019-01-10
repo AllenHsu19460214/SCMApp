@@ -32,4 +32,8 @@
           android:title="@string/billStatusUndone"
           android:icon="@drawable/img_setting"
           app:showAsAction="never"/>
+    <item android:id="@+id/wipeCache"
+          android:title="@string/wipeCache"
+          android:icon="@drawable/img_setting"
+          app:showAsAction="never"/>
 </menu>

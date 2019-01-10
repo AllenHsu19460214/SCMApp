@@ -63,7 +63,7 @@ class CenterOutSendListAdapter(var context: Context) : BaseAdapter() {
         val tvOrderNumber: TextView by lazy { view.find<TextView>(R.id.tvOrderNumber) }
 
     }
-    fun formatInOrganizationText(str:String):String{
+    private fun formatInOrganizationText(str:String):String{
         val strs = str.split(",")
         val strBuilder:StringBuilder= java.lang.StringBuilder()
         for(value in strs){

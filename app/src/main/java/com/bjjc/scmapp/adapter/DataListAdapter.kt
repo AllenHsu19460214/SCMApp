@@ -18,12 +18,12 @@ import org.jetbrains.anko.find
  * Created by Allen on 2018/12/13 11:24
  */
 class DataListAdapter(val context: Context?, private val centerOutSendDetailView: CenterOutSendDetailView) : BaseAdapter() {
-    private val data: ArrayList<CenterOutSendDetailBean> by lazy { ArrayList<CenterOutSendDetailBean>() }
+    private val data: MutableList<CenterOutSendDetailBean> by lazy { ArrayList<CenterOutSendDetailBean>() }
     companion object {
         var noCodeCount: String = "0"
     }
 
-    fun updateData(data: ArrayList<CenterOutSendDetailBean>) {
+    fun updateData(data: MutableList<CenterOutSendDetailBean>) {
         this.data.clear()
         this.data.addAll(data)
         notifyDataSetChanged()

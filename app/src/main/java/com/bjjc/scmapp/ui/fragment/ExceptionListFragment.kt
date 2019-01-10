@@ -28,7 +28,7 @@ class ExceptionListFragment : BaseFragment() {
 
     override fun initData() {
         arguments?.let {
-            data = it.getSerializable("exceptionCode") as List<ExceptionCodeInfoBean>
+            data = it.getSerializable("exceptionCodeInfoList") as List<ExceptionCodeInfoBean>
         }
         exceptionListAdapter.setData(data)
         lvExceptionList.adapter = exceptionListAdapter
