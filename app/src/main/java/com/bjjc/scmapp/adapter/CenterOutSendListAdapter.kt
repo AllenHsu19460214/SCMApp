@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.bjjc.scmapp.R
-import com.bjjc.scmapp.adapter.interfac.IOnItemClickListener
 import com.bjjc.scmapp.model.bean.CenterOutSendBean
 import org.jetbrains.anko.find
 
@@ -17,14 +16,10 @@ import org.jetbrains.anko.find
  */
 class CenterOutSendListAdapter(var context: Context) : BaseAdapter() {
     private  var data: ArrayList<CenterOutSendBean> = ArrayList()
-    private var iOnItemClickListener : IOnItemClickListener? = null
     fun updateData(data: List<CenterOutSendBean>) {
         this.data.clear()
         this.data.addAll(data)
         notifyDataSetChanged()
-    }
-    fun setOnItemClicked( iOnItemClickListener :IOnItemClickListener?){
-        this.iOnItemClickListener = iOnItemClickListener
     }
     @SuppressLint("InflateParams")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
