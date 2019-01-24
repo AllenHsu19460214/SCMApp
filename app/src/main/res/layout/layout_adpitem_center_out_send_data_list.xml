@@ -104,7 +104,7 @@
                               android:textSize="16sp"
                               android:textStyle="bold"
                               android:text="无码数量 : "/>
-                    <EditText android:enabled="false"
+                    <EditText
                               android:singleLine="true"
                               android:background="@color/darker_gray"
                               android:layout_width="40dp"

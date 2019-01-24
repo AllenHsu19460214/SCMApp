@@ -178,7 +178,7 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
                 val searchCode = query.trim()
                 val searchCodeData: ArrayList<CenterOutSendBean> = ArrayList()
                 for (value in originalData) {
-                    if (value.单号 == searchCode) {
+                    if (value.单号.contains(searchCode)) {
                         searchCodeData.add(value)
                     }
                 }
