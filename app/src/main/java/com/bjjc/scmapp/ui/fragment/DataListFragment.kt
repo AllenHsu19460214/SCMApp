@@ -8,6 +8,7 @@ import com.bjjc.scmapp.common.IntentKey
 import com.bjjc.scmapp.model.bean.CenterOutSendDetailBean
 import com.bjjc.scmapp.ui.activity.CenterOutSendDetailActivity
 import com.bjjc.scmapp.ui.fragment.base.BaseFragment
+import com.bjjc.scmapp.util.SPUtils
 import org.jetbrains.anko.find
 
 /**
@@ -28,9 +29,13 @@ class DataListFragment : BaseFragment() {
     }
 
     override fun initData() {
-        data =
-                arguments?.getSerializable(IntentKey.CENTER_OUT_SEND_AND_DATA_LIST_FRAGMENT_ORDERDATACHANGED) as ArrayList<CenterOutSendDetailBean>
-        dataListAdapter.updateData(data)
+        val orderNumber:String= arguments?.getSerializable(IntentKey.CENTER_OUT_SEND_AND_DATA_LIST_FRAGMENT_ORDERNUMBER) as String
+        data = if(null !=SPUtils.getBean(context!!,"dataChanged$orderNumber")){
+            SPUtils.getBean(context!!,"dataChanged$orderNumber") as ArrayList<CenterOutSendDetailBean>
+        }else{
+            arguments?.getSerializable(IntentKey.CENTER_OUT_SEND_AND_DATA_LIST_FRAGMENT_ORDERDATACHANGED) as ArrayList<CenterOutSendDetailBean>
+        }
+        dataListAdapter.updateData(data,orderNumber)
         lvDataList.adapter = dataListAdapter
     }
 
