@@ -204,7 +204,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
             }
             if(null != SPUtils.getBean(context, "orderDataChanged${data.单号}")){
                 orderDataChanged.clear()
-                orderDataChanged.addAll(SPUtils.getBean(context, "orderDataChanged${data.单号}") as MutableList<CenterOutSendDetailBean>)
+                orderDataChanged.addAll(SPUtils.getBean(context, "orderDataChanged${data.单号}")as MutableList<CenterOutSendDetailBean> )
             }
             planBoxTotal = computePlanningBoxNum()
             //Sets planning box count
@@ -405,6 +405,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
 
             })
     }
+
 
     private fun processScanCodeByResultCode(scanCode: String): Boolean {
         when (checkScanCodeVo.code) {
