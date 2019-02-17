@@ -1,6 +1,7 @@
 package com.bjjc.scmapp.ui.activity
 
 import android.annotation.SuppressLint
+import android.view.Menu
 import android.view.View
 import android.widget.EditText
 import com.bjjc.scmapp.R
@@ -14,14 +15,15 @@ import kotlinx.android.synthetic.main.layout_aty_login.*
 import org.jetbrains.anko.find
 import org.jetbrains.anko.info
 
-class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
 
-    private val TAG=LoginActivity::class.java.simpleName
-    private val loginPresenter:LoginPresenter by lazy { LoginPresenterImpl(this,this) }
-    private var exitTime:Long = 0
+class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
+    //==============================================FieldStart=====================================================================
+    private val TAG = LoginActivity::class.java.simpleName
+    private val loginPresenter: LoginPresenter by lazy { LoginPresenterImpl(this, this) }
+    private var exitTime: Long = 0
     //input field of user_name
     private val etLoginUsername by lazy { find<EditText>(R.id.etLoginUsername) }
-
+    //==============================================FieldEnd=====================================================================
     /**
      * Loads layout of current activity.
      */
@@ -44,7 +46,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
     @SuppressLint("SetTextI18n")
     override fun initData() {
         //Set the version name and development model for current App.
-        tvVerNameAndDevModel.text = "V" + App.verName + "-" + App.devModel+ "-" + if (App.isPDA) "PDA" else "PHONE"
+        tvVerNameAndDevModel.text = "V" + App.verName + "-" + App.devModel + "-" + if (App.isPDA) "PDA" else "PHONE"
         loginPresenter.getDeviceInfo()
     }
 
@@ -57,21 +59,41 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
                 //Obtaining user_name and password.
                 val username = etLoginUsername.text.toString()
                 val password = etLoginPassword.text.toString()
-                loginPresenter.login(username,password)
+                loginPresenter.login(username, password)
             }
-            R.id.cbOffLine->{
-                App.offLineFlag=cbOffLine.isChecked
+            R.id.cbOffLine -> {
+                App.offLineFlag = cbOffLine.isChecked
             }
         }
     }
+
     override fun onError(message: String?) {
         message?.let { myToast(message) }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        /*
+         val inflater = menuInflater
+         inflater.inflate(R.menu.menu_login, menu)
+         */
+        return true
+    }
+    /*
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        //MENU键
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            //监控/拦截菜单键
+            return false
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+    */
+
     override fun onBackPressed() {
-        if ((System.currentTimeMillis()-exitTime)>2000) {
+        if ((System.currentTimeMillis() - exitTime) > 2000) {
             myToast("再按一次返回键，退出SCM业务交互系统程序!")
-            exitTime=System.currentTimeMillis()
-        }else{
+            exitTime = System.currentTimeMillis()
+        } else {
             finish()
             System.exit(0)
         }

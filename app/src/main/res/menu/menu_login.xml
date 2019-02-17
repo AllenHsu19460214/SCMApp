@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/setting"
+          android:title="@string/about"
+          android:icon="@drawable/img_setting"
+          app:showAsAction="never"/>
+    <item android:id="@+id/wipeCache"
+          android:title="@string/wipeCache"
+          android:icon="@drawable/img_setting"
+          app:showAsAction="never"/>
+</menu>
