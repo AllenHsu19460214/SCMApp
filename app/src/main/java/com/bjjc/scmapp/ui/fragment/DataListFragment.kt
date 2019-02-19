@@ -8,7 +8,6 @@ import com.bjjc.scmapp.common.IntentKey
 import com.bjjc.scmapp.model.bean.CenterOutSendDetailBean
 import com.bjjc.scmapp.ui.activity.CenterOutSendDetailActivity
 import com.bjjc.scmapp.ui.fragment.base.BaseFragment
-import com.bjjc.scmapp.util.SPUtils
 import org.jetbrains.anko.find
 
 /**
@@ -16,8 +15,9 @@ import org.jetbrains.anko.find
  */
 @Suppress("UNCHECKED_CAST")
 class DataListFragment : BaseFragment() {
-    private lateinit var data: ArrayList<CenterOutSendDetailBean>
+    private lateinit var data: MutableList<CenterOutSendDetailBean>
     private lateinit var dataListView: View
+    private lateinit var orderNumber:String
     //private val activity:CenterOutSendDetailActivity by lazy { activity}
     private lateinit var lvDataList: ListView
     val dataListAdapter: DataListAdapter by lazy { DataListAdapter(context, activity as CenterOutSendDetailActivity) }
@@ -29,14 +29,16 @@ class DataListFragment : BaseFragment() {
     }
 
     override fun initData() {
-        val orderNumber:String= arguments?.getSerializable(IntentKey.CENTER_OUT_SEND_AND_DATA_LIST_FRAGMENT_ORDERNUMBER) as String
-        data = if(null !=SPUtils.getBean(context!!,"dataChanged$orderNumber")){
-            SPUtils.getBean(context!!,"dataChanged$orderNumber") as ArrayList<CenterOutSendDetailBean>
-        }else{
-            arguments?.getSerializable(IntentKey.CENTER_OUT_SEND_AND_DATA_LIST_FRAGMENT_ORDERDATACHANGED) as ArrayList<CenterOutSendDetailBean>
-        }
-        dataListAdapter.updateData(data,orderNumber)
+        orderNumber = arguments?.getString(IntentKey.CENTER_OUT_SEND_AND_DATA_LIST_FRAGMENT_ORDERNUMBER)!!
+        data = arguments?.getSerializable(IntentKey.CENTER_OUT_SEND_AND_DATA_LIST_FRAGMENT_ORDERDATACHANGED) as MutableList<CenterOutSendDetailBean>
+        dataListAdapter.updateData(data, orderNumber)
         lvDataList.adapter = dataListAdapter
     }
-
+    fun updateData(data:MutableList<CenterOutSendDetailBean>){
+        /*this.data.clear()
+        this.data.addAll(data)*/
+        this.data=data
+        dataListAdapter.updateData(this.data, orderNumber)
+        dataListAdapter.notifyDataSetChanged()
+    }
 }

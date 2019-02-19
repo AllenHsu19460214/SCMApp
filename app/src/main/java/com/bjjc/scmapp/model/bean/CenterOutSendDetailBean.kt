@@ -19,9 +19,9 @@ data class CenterOutSendDetailBean (
     @SerializedName("入库输入箱数")
     val 入库输入箱数: Int = 0, // 0
     @SerializedName("出库箱数")
-    var 出库箱数: Int = 0, // 0
+    var 出库箱数: Int = 0, // 0  namely：扫码箱数
     @SerializedName("出库输入箱数")
-    var 出库输入箱数: Int = 0, // 0
+    var 出库输入箱数: Int = 0, // 0  namely：无码箱数
     @SerializedName("原始订单号")
     val 原始订单号: String = "", // B-2906247144-1
     @SerializedName("备件编号")
@@ -35,5 +35,7 @@ data class CenterOutSendDetailBean (
     @SerializedName("物料编码")
     val 物料编码: String = "", // 0000013
     @SerializedName("计划箱数")
-    val 计划箱数: Int = 0 // 1
+    val 计划箱数: Int = 0, // 1
+    var 数量: Int = 0, // namely：扫码箱数
+    var 输入箱数: Int = 0 // namely：无码箱数
 ): Serializable

@@ -1,5 +1,6 @@
 package com.bjjc.scmapp.view
 
+import com.bjjc.scmapp.model.bean.CommonResultBean
 import com.bjjc.scmapp.model.vo.CenterOutSendDetailVo
 
 /**
@@ -7,6 +8,7 @@ import com.bjjc.scmapp.model.vo.CenterOutSendDetailVo
  */
 interface CenterOutSendDetailView {
     fun onError(message: String?)
-    fun loadWaybillDetailDataSuccess(data: CenterOutSendDetailVo)
-    fun setNoCodeText(noCodeTotal: Long)
+    fun onLoadWaybillDetailDataSuccess(data: CenterOutSendDetailVo)
+    fun onSetNoCodeText(noCodeTotal: Long)
+    fun onCommitOrSaveOrderInfoSuccess(data:CommonResultBean)
 }

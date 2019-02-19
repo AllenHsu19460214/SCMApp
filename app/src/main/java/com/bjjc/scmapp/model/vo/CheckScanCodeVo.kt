@@ -16,5 +16,5 @@ data class CheckScanCodeVo(
     @SerializedName("msg")
     val msg: String = "", // 获取物料编码成功
     @SerializedName("wlbm")
-    val wlbm: String = "" // 0000002
+    val wlbm: String = "" // 物料编码 0000002
 ):Serializable

@@ -7,4 +7,5 @@ import com.bjjc.scmapp.model.bean.CenterOutSendBean
  */
 interface CenterOutSendDetailPresenter {
     fun loadWaybillDetailData(isRefresh:Boolean,data: CenterOutSendBean)
+    fun commitOrSaveOrderInfo2Server(b:Boolean,data: CenterOutSendBean, info:String,trace:String)
 }

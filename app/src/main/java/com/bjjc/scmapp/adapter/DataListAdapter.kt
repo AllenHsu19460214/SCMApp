@@ -3,6 +3,7 @@ package com.bjjc.scmapp.adapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -16,6 +17,7 @@ import com.bjjc.scmapp.R
 import com.bjjc.scmapp.model.bean.CenterOutSendDetailBean
 import com.bjjc.scmapp.util.KeyBoardShowListener
 import com.bjjc.scmapp.util.SPUtils
+import com.bjjc.scmapp.util.ToastUtils
 import com.bjjc.scmapp.view.CenterOutSendDetailView
 import org.jetbrains.anko.find
 
@@ -26,11 +28,13 @@ import org.jetbrains.anko.find
 class DataListAdapter(val context: Context?, private val centerOutSendDetailView: CenterOutSendDetailView) :
     BaseAdapter(), View.OnTouchListener, View.OnFocusChangeListener {
     private var selectedEditTextPosition: Int = -1
-    private val data: MutableList<CenterOutSendDetailBean> by lazy { ArrayList<CenterOutSendDetailBean>() }
+    private lateinit var data: MutableList<CenterOutSendDetailBean>
     private val dataChanged: MutableList<CenterOutSendDetailBean> by lazy { ArrayList<CenterOutSendDetailBean>() }
     private val noCodeDataMap: MutableMap<String, String> by lazy { HashMap<String, String>() }
+    private val noCodeBackGroundFlag: MutableList<Boolean> by lazy { ArrayList<Boolean>() }
     private var position: Int = -1
-    private var orderNumber:String=""
+    private var orderNumber: String = ""
+    private var errorFlag:Boolean=false
     companion object {
         var noCodeCount: String = "0"
     }
@@ -40,13 +44,11 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
         orderNumber: String
     ) {
         this.orderNumber = orderNumber
-        this.data.clear()
-        this.data.addAll(data)
-        dataChanged.clear()
-        dataChanged.addAll(data)
-        for (index in 0 until data.size) {
-            if (data[index].允许输入箱数 != 0) {
-                dataChanged[index].出库输入箱数 = data[index].允许输入箱数
+        this.data=data
+        for (index in 0 until this.data.size) {
+            noCodeBackGroundFlag.add(false)
+            if (this.data[index].允许输入箱数 != 0) {
+                this.data[index].出库输入箱数 = this.data[index].允许输入箱数
             }
         }
         notifyDataSetChanged()
@@ -69,24 +71,18 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
         viewHolder.etNoCodeNum.setOnTouchListener(this)
         viewHolder.etNoCodeNum.onFocusChangeListener = this
         viewHolder.etNoCodeNum.tag = position
-        /*   if (selectedEditTextPosition != -1 && position == selectedEditTextPosition) {
-               // 保证每个时刻只有一个EditText能获取到焦点
-               viewHolder.etNoCodeNum.requestFocus()
-           } else {
-               viewHolder.etNoCodeNum.clearFocus()
-           }*/
-        //监听软键盘的状态
+        // Listening the state of the soft keyboard.
         KeyBoardShowListener(context!!).setKeyboardListener(object :
             KeyBoardShowListener.OnKeyboardVisibilityListener {
             override fun onVisibilityChanged(visible: Boolean) {
                 if (visible) {
-                    //软键盘已弹出
-                    //Toast.makeText(context,"软键盘已弹出",Toast.LENGTH_SHORT).show()
+                    //The soft keyboard has popped up
+                    //Toast.makeText(context,"The soft keyboard has popped up",Toast.LENGTH_SHORT).show()
                 } else {
-                    //软键盘未弹出
-                    //Toast.makeText(context,"软键盘未弹出",Toast.LENGTH_SHORT).show()
+                    //The soft keyboard does not pop up
+                    //Toast.makeText(context,"The soft keyboard does not pop up",Toast.LENGTH_SHORT).show()
                     viewHolder.etNoCodeNum.clearFocus()
-                    SPUtils.putBean(context, "dataChanged$orderNumber",dataChanged)
+                    SPUtils.putBean(context, "orderDataChanged$orderNumber", data)
                 }
             }
         }, context as Activity)
@@ -94,32 +90,33 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
         viewHolder.tvSpareNumber.text = data[position].备件编号
         viewHolder.tvPlanBoxNum.text = data[position].计划箱数.toString()
         viewHolder.tvScanCodeNum.text = data[position].出库箱数.toString()
-        if (dataChanged[position].是否允许扫描 == 0) {//0 means:input;1 means:scan.
+        if (data[position].是否允许扫描 == 0) {
+            //0 means:allowed input;1 means:scan QR code.
             viewHolder.llNoCodeNum.visibility = View.VISIBLE
-            if (dataChanged[position].允许输入箱数 == 0) {
+            if (data[position].允许输入箱数 == 0) {
                 viewHolder.etNoCodeNum.isFocusableInTouchMode = true
                 viewHolder.etNoCodeNum.isFocusable = true
-                viewHolder.etNoCodeNum.setText((dataChanged[position].允许输入箱数 + dataChanged[position].出库输入箱数).toString())
+                viewHolder.etNoCodeNum.setText((data[position].允许输入箱数 + data[position].出库输入箱数).toString())
             } else {
                 viewHolder.etNoCodeNum.isFocusable = false
                 viewHolder.etNoCodeNum.isFocusableInTouchMode = false
-                viewHolder.etNoCodeNum.setText(dataChanged[position].出库输入箱数.toString())
+                viewHolder.etNoCodeNum.setText(data[position].出库输入箱数.toString())
             }
         } else {
             viewHolder.llNoCodeNum.visibility = View.GONE
         }
 
         var noCodeTotal: Long = 0
-        for (value in dataChanged) {
+        for (value in data) {
             noCodeTotal += value.出库输入箱数.toLong()
         }
-        centerOutSendDetailView.setNoCodeText(noCodeTotal)
+        centerOutSendDetailView.onSetNoCodeText(noCodeTotal)
 
         return reuseView
     }
 
     override fun getItem(position: Int): Any? {
-        return dataChanged[position]
+        return data[position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -127,21 +124,23 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
     }
 
     override fun getCount(): Int {
-        return dataChanged.size
+        return data.size
     }
 
     private val mTextWatcher = object : MyTextWatcher() {
+
         /*  override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
               if (selectedEditTextPosition != -1 && s?.length!! > 0) {
-                  dataChanged[selectedEditTextPosition].出库输入箱数 = s.toString().toInt()
+                  data[selectedEditTextPosition].出库输入箱数 = s.toString().toInt()
               }
           }*/
         override fun afterTextChanged(s: Editable?) {
             if (selectedEditTextPosition != -1 && s?.length!! > 0) {
-                dataChanged[selectedEditTextPosition].出库输入箱数 = s.toString().toInt()
+                data[selectedEditTextPosition].出库输入箱数 = s.toString().toInt()
             }
         }
     }
+    private lateinit var str:Editable
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -155,13 +154,23 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
     override fun onFocusChange(v: View?, hasFocus: Boolean) {
         val editText = v as EditText
         if (hasFocus) {
+            str=editText.text
             editText.addTextChangedListener(mTextWatcher)
         } else {
             editText.removeTextChangedListener(mTextWatcher)
+            if (editText.text.toString() != ""&&data.size>0) {
+                if (data[position].出库箱数 + editText.text.toString().toInt() > data[position].计划箱数) {
+                    editText.removeTextChangedListener(mTextWatcher)
+                    editText.setBackgroundColor(Color.parseColor("#FF0000"))
+                    ToastUtils.showLongToast(context!!, "扫码数量+无码数量不能大于该订单的计划箱数")
+                    editText.setText("0".toCharArray(),0,1)
+                } else {
+                    editText.addTextChangedListener(mTextWatcher)
+                    editText.setBackgroundColor(Color.parseColor("#AAAAAA"))
+                }
+            }
         }
-
     }
-
 
     inner class ViewHolder(private val reuseView: View) {
         val tvOrderNumber: TextView by lazy { reuseView.find<TextView>(R.id.tvOrderNumber) }

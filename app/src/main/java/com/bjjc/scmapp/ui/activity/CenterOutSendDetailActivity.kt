@@ -21,6 +21,7 @@ import com.bjjc.scmapp.app.App
 import com.bjjc.scmapp.common.IntentKey
 import com.bjjc.scmapp.model.bean.CenterOutSendBean
 import com.bjjc.scmapp.model.bean.CenterOutSendDetailBean
+import com.bjjc.scmapp.model.bean.CommonResultBean
 import com.bjjc.scmapp.model.bean.ExceptionCodeInfoBean
 import com.bjjc.scmapp.model.vo.CenterOutSendDetailVo
 import com.bjjc.scmapp.model.vo.CheckScanCodeVo
@@ -56,6 +57,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     private lateinit var checkScanCodeVo: CheckScanCodeVo
     private val orderDatas: MutableList<CenterOutSendDetailBean> by lazy { ArrayList<CenterOutSendDetailBean>() }
     private var scanToTal: Long = -1
+    private var onCodeToTal: Long = -1
     private var planBoxTotal: Long = 0
     private val handheldScanHandler = HandheldScanHandler()
     private var searchView: SearchView? = null
@@ -63,10 +65,10 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     private val exceptionListFragment: ExceptionListFragment = ExceptionListFragment()
     private var currentFragment: Fragment? = null
     private var exceptionCodeInfoList: MutableList<ExceptionCodeInfoBean> = ArrayList()
-    private var checkDuplicateExceptionCodeList: MutableList<String> = ArrayList()
+    private var checkScannedExceptionCodeList: MutableList<String> = ArrayList()
     private val currentScanCodeList: CopyOnWriteArrayList<String> = CopyOnWriteArrayList()
     private val temp1: MutableList<String> = arrayListOf()
-    private val checkDuplicateSucceededScanCodeList: MutableList<String> = ArrayList()
+    private val checkScannedSucceededScanCodeList: MutableList<String> = ArrayList()
     private var dialogFlag: Boolean = false
     private var threadExit: Boolean = false
     private lateinit var toolbarMenu: Toolbar
@@ -77,7 +79,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
         )
     }
     private val orderDataChanged: MutableList<CenterOutSendDetailBean> by lazy { ArrayList<CenterOutSendDetailBean>() }
-    private var isWipeCache: Boolean = false
+    private var isWipedCache: Boolean = false
     //==============================================FieldEnd=====================================================================
     override fun getLayoutId(): Int = R.layout.layout_aty_center_out_send_detail
 
@@ -86,6 +88,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
             btnScan_CenterOutSendDetailActivity.visibility = View.VISIBLE
         }
         tvNoCodeTotal.text = DataListAdapter.noCodeCount
+        onCodeToTal = DataListAdapter.noCodeCount.toLong()
     }
 
     //Shows fragment by toggle display.
@@ -127,8 +130,69 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
             /*exceptionCodeInfoList.clear()
             setRbtnExceptionTextColor()
             exceptionListFragment.updateList()*/
+            // Showing dialog of finished or unfinished to be used to commit or save info of OutOrder.
+            for (value in orderDataChanged) {
+                value.数量 = value.出库箱数
+                value.输入箱数 = value.出库输入箱数
+            }
+            if (isFinished()) {
+                DialogUtils.instance()
+                    .customDialogYesOrNo(this@CenterOutSendDetailActivity)
+                    .setTitle("提示")
+                    .setMessage("订单已完成，是否提交!")
+                    .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
+                        override fun onPositiveBtnClicked() {
+                            commitOrSaveOutInfo(isFinished())
+                        }
+                    })
+                    .setOnNegativeClickListener(object : DialogUtils.OnNegativeClickListener {
+                        override fun onNegativeBtnClicked() {
+                        }
+                    })
+                    .show()
+            } else {
+                DialogUtils.instance()
+                    .customDialogYesOrNo(this@CenterOutSendDetailActivity)
+                    .setTitle("提示")
+                    .setMessage("订单未完成，是否保存!")
+                    .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
+                        override fun onPositiveBtnClicked() {
+                            commitOrSaveOutInfo(isFinished())
+                        }
+                    })
+                    .setOnNegativeClickListener(object : DialogUtils.OnNegativeClickListener {
+                        override fun onNegativeBtnClicked() {
+                        }
+                    })
+                    .show()
+            }
         }
         btnScan_CenterOutSendDetailActivity.setOnClickListener(this)
+    }
+
+    private fun isFinished(): Boolean {
+        if (planBoxTotal == calculateReality()) {
+            return true
+        }
+        return false
+    }
+
+    private fun commitOrSaveOutInfo(b: Boolean) {
+        val info = getSaveOrderInfoJson(orderDataChanged)
+        val trace = getTraceJson()
+        //centerOutSendDetailPresenter.commitOrSaveOrderInfo2Server(b,data,info,trace)
+    }
+
+    private fun getSaveOrderInfoJson(orderDataChanged: MutableList<CenterOutSendDetailBean>): String {
+        val gson = Gson()
+        val json = gson.toJson(orderDataChanged)
+        return json
+    }
+
+    private fun getTraceJson(): String {
+        val gson = Gson()
+        val trace = gson.toJson(checkScannedSucceededScanCodeList)
+        return trace
     }
 
     override fun onClick(v: View?) {
@@ -185,27 +249,43 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
         initCenterOutSendDetailToolBar()
 
         data =
-                intent.getSerializableExtra(IntentKey.CENTER_OUT_SEND_AND_CENTER_OUT_SEND_DETAIL_CURRENTDATA) as CenterOutSendBean
+            intent.getSerializableExtra(IntentKey.CENTER_OUT_SEND_AND_CENTER_OUT_SEND_DETAIL_CURRENTDATA) as CenterOutSendBean
         /**
          * after sp save.
          */
 
         if (null != SPUtils.getBean(context, "orderDataChanged${data.单号}")
-        ||null != SPUtils.getBean(context,"checkDuplicateSucceededScanCodeList${data.单号}")
-        ||null!=SPUtils.getBean(context,"checkDuplicateExceptionCodeList${data.单号}"))
-        {
-            if(null != SPUtils.getBean(context,"checkDuplicateSucceededScanCodeList${data.单号}")){
-                checkDuplicateSucceededScanCodeList.clear()
-                checkDuplicateSucceededScanCodeList.addAll(SPUtils.getBean(context,"checkDuplicateSucceededScanCodeList${data.单号}")as MutableList<String>)
+            || null != SPUtils.getBean(context, "checkScannedSucceededScanCodeList${data.单号}")
+            || null != SPUtils.getBean(context, "checkScannedExceptionCodeList${data.单号}")
+        ) {
+            if (null != SPUtils.getBean(context, "checkScannedSucceededScanCodeList${data.单号}")) {
+                checkScannedSucceededScanCodeList.clear()
+                checkScannedSucceededScanCodeList.addAll(
+                    SPUtils.getBean(
+                        context,
+                        "checkScannedSucceededScanCodeList${data.单号}"
+                    ) as MutableList<String>
+                )
             }
-            if(null!=SPUtils.getBean(context,"checkDuplicateExceptionCodeList${data.单号}")){
-                checkDuplicateExceptionCodeList.clear()
-                checkDuplicateExceptionCodeList.addAll(SPUtils.getBean(context,"checkDuplicateExceptionCodeList${data.单号}")as MutableList<String>)
+            if (null != SPUtils.getBean(context, "checkScannedExceptionCodeList${data.单号}")) {
+                checkScannedExceptionCodeList.clear()
+                checkScannedExceptionCodeList.addAll(
+                    SPUtils.getBean(
+                        context,
+                        "checkScannedExceptionCodeList${data.单号}"
+                    ) as MutableList<String>
+                )
             }
-            if(null != SPUtils.getBean(context, "orderDataChanged${data.单号}")){
+            if (null != SPUtils.getBean(context, "orderDataChanged${data.单号}")) {
                 orderDataChanged.clear()
-                orderDataChanged.addAll(SPUtils.getBean(context, "orderDataChanged${data.单号}")as MutableList<CenterOutSendDetailBean> )
+                orderDataChanged.addAll(
+                    SPUtils.getBean(
+                        context,
+                        "orderDataChanged${data.单号}"
+                    ) as MutableList<CenterOutSendDetailBean>
+                )
             }
+            tvWaybillNumber.text = data.单号
             planBoxTotal = computePlanningBoxNum()
             //Sets planning box count
             tvPlanBoxTotal.text = planBoxTotal.toString()
@@ -222,7 +302,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
         message?.let { myToast(it) }
     }
 
-    override fun loadWaybillDetailDataSuccess(data: CenterOutSendDetailVo) {
+    override fun onLoadWaybillDetailDataSuccess(data: CenterOutSendDetailVo) {
         if (data.code == "10") {
             orderDatas.clear()
             orderDatas.addAll(data.mx)
@@ -236,13 +316,14 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
             //Sets planning box count
             tvPlanBoxTotal.text = planBoxTotal.toString()
             updateScanCodeTotal()
-            if (isWipeCache) {
-                dataListFragment.dataListAdapter.updateData(orderDataChanged, data.单号)
+            if (isWipedCache) {
+                //dataListFragment.dataListAdapter.updateData(orderDataChanged, data.单号)
+                dataListFragment.updateData(orderDataChanged)
                 dataListFragment.dataListAdapter.notifyDataSetChanged()
                 exceptionCodeInfoList.clear()
                 setRbtnExceptionTextColor()
                 exceptionListFragment.updateList()
-                isWipeCache = false
+                isWipedCache = false
             } else {
                 //Transmit data from CenterOutSendDetailActivity to DataListFragment.
                 transmitData2DataListFragment()
@@ -262,7 +343,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
             IntentKey.CENTER_OUT_SEND_AND_DATA_LIST_FRAGMENT_ORDERDATACHANGED,
             orderDataChanged as Serializable
         )
-        bundle.putSerializable(
+        bundle.putString(
             IntentKey.CENTER_OUT_SEND_AND_DATA_LIST_FRAGMENT_ORDERNUMBER,
             data.单号
         )
@@ -270,8 +351,16 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
 
         if (null != SPUtils.getBean(context, "exceptionCodeInfoList${data.单号}")) {
             exceptionCodeInfoList.clear()
-            exceptionCodeInfoList.addAll(SPUtils.getBean(context, "exceptionCodeInfoList${data.单号}") as MutableList<ExceptionCodeInfoBean>)
-            bundle.putSerializable("exceptionCodeInfoList", exceptionCodeInfoList as Serializable)
+            exceptionCodeInfoList.addAll(
+                SPUtils.getBean(
+                    context,
+                    "exceptionCodeInfoList${data.单号}"
+                ) as MutableList<ExceptionCodeInfoBean>
+            )
+            bundle.putSerializable(
+                "exceptionCodeInfoList",
+                exceptionCodeInfoList as Serializable
+            )
             exceptionListFragment.arguments = bundle
         }
         setRbtnExceptionTextColor()
@@ -280,13 +369,24 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
         rbDataList.isChecked = true
     }
 
-    override fun setNoCodeText(noCodeTotal: Long) {
+    override fun onSetNoCodeText(noCodeTotal: Long) {
         tvNoCodeTotal.text = noCodeTotal.toString()
+        onCodeToTal = noCodeTotal
+    }
+
+    override fun onCommitOrSaveOrderInfoSuccess(data: CommonResultBean) {
+        if (data.code == "08") {
+            //Wiping the cache which correspond to order.
+            wipeCacheByWayBillNumber()
+            myToast("保存数据成功!")
+        } else {
+            myToast(data.msg)
+        }
     }
 
     /**
      * Sets whether noCodeCount input is allowed
-     * 1-扫码，0-输数
+     * 1-scan QR code，0-input number
      */
     private fun setNoCodeIsAllowed(data: CenterOutSendDetailVo) {
         if (data.仓是否输入 == 0) {
@@ -336,6 +436,14 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
         return planBoxTotal
     }
 
+    private fun calculateReality(): Long {
+        var realityBoxTotal: Long = 0
+        for (mx: CenterOutSendDetailBean in orderDataChanged) {
+            realityBoxTotal += mx.数量 + mx.输入箱数
+        }
+        return realityBoxTotal
+    }
+
     private fun checkScanCodeFromServerOffLine(scanCode: String) {
         var checkCodeResult = ""
         val gson = Gson()
@@ -349,11 +457,11 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
 
         when {
             code020List.contains(scanCode) -> checkCodeResult =
-                    readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode08-020.json")
+                readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode08-020.json")
             code530List.contains(scanCode) -> checkCodeResult =
-                    readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode08-530.json")
+                readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode08-530.json")
             code071List.contains(scanCode) -> checkCodeResult =
-                    readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode071.json")
+                readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode071.json")
         }
         runOnUiThread {
             checkScanCodeVo = gson.fromJson<CheckScanCodeVo>(checkCodeResult, CheckScanCodeVo::class.java)
@@ -410,21 +518,33 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     private fun processScanCodeByResultCode(scanCode: String): Boolean {
         when (checkScanCodeVo.code) {
             "08" -> {
-                if (checkDuplicateSucceededScanCodeList.contains(scanCode)) {
+                if (checkScannedSucceededScanCodeList.contains(scanCode)) {
                     return true
                 }
-                checkDuplicateSucceededScanCodeList.add(scanCode)
                 loop@ for ((index, value) in orderDataChanged.withIndex()) {
-                    if (value.出库箱数 < value.计划箱数) {
-                        if (checkScanCodeVo.wlbm == value.物料编码) {
+                    if (checkScanCodeVo.wlbm == value.物料编码) {
+                        if (value.出库箱数 + value.出库输入箱数 < value.计划箱数) {
                             orderDataChanged[index].出库箱数++
+                            checkScannedSucceededScanCodeList.add(scanCode)
+                            Thread.sleep(500)
                             dataListFragment.dataListAdapter.notifyDataSetChanged()
                             break@loop
+                        } else {
+                            FeedbackUtils.vibrate(
+                                this@CenterOutSendDetailActivity,
+                                longArrayOf(100, 100, 100, 100, 100, 100, 100, 100),
+                                false
+                            )
+                            myToast("该订单:${value.原始订单号}已到达计划箱数!")
                         }
                     }
                 }
                 SPUtils.putBean(context, "orderDataChanged${data.单号}", orderDataChanged)
-                SPUtils.putBean(context, "checkDuplicateSucceededScanCodeList${data.单号}", checkDuplicateSucceededScanCodeList)
+                SPUtils.putBean(
+                    context,
+                    "checkScannedSucceededScanCodeList${data.单号}",
+                    checkScannedSucceededScanCodeList
+                )
             }
             "071" -> {
                 //Occurs exception code.
@@ -434,19 +554,18 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                 if (exceptionCodeInfoList.contains(exceptionCodeInfoBean)) {
                     return true
                 }
-                checkDuplicateExceptionCodeList.add(scanCode)
+                checkScannedExceptionCodeList.add(scanCode)
                 exceptionCodeInfoList.add(exceptionCodeInfoBean)
                 SPUtils.putBean(context, "exceptionCodeInfoList${data.单号}", exceptionCodeInfoList)
-                SPUtils.putBean(context, "checkDuplicateExceptionCodeList${data.单号}", checkDuplicateExceptionCodeList)
+                SPUtils.putBean(context, "checkScannedExceptionCodeList${data.单号}", checkScannedExceptionCodeList)
                 val bundle = Bundle()
                 bundle.putSerializable("exceptionCodeInfoList", exceptionCodeInfoList as Serializable)
                 exceptionListFragment.arguments = bundle
                 exceptionListFragment.updateList()
-                ToastUtils.showLongToast(
+              /*  ToastUtils.showLongToast(
                     this@CenterOutSendDetailActivity,
                     exceptionCodeInfoList.toString()
-                )
-
+                )*/
                 if (!dialogFlag) {
                     //This dialogFlag prevents repeated display.
                     dialogFlag = true
@@ -455,7 +574,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                         .setTitle("提示")
                         .setMessage(
                             "异常箱码: \n$scanCode\n" +
-                                    "异常信息: \n${checkScanCodeVo.msg}"
+                                    "异常原因: \n${checkScanCodeVo.msg}"
                         )
                         .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
                             override fun onPositiveBtnClicked() {
@@ -498,20 +617,27 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
         toolbarMenu.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.wipeCache -> {
-                    isWipeCache = true
-                    checkDuplicateSucceededScanCodeList.clear()
-                    checkDuplicateExceptionCodeList.clear()
-                    SPUtils.remove(context, "orderDataChanged${data.单号}")
-                    SPUtils.remove(context, "exceptionCodeInfoList${data.单号}")
-                    SPUtils.remove(context, "checkDuplicateSucceededScanCodeList${data.单号}")
-                    SPUtils.remove(context, "checkDuplicateExceptionCodeList${data.单号}")
-                    SPUtils.remove(context,"dataChanged${data.单号}")
-                    centerOutSendDetailPresenter.loadWaybillDetailData(false, data)
+                    wipeCacheByWayBillNumber()
                 }
             }
             true
 
         }
+    }
+
+    private fun wipeCacheByWayBillNumber() {
+        isWipedCache = true
+        checkScannedSucceededScanCodeList.clear()
+        checkScannedExceptionCodeList.clear()
+        //Wiping the cache which records number of boxes with QR code and no code.
+        SPUtils.remove(context, "orderDataChanged${data.单号}")
+        //Wiping the cache which records number of improper boxes.
+        SPUtils.remove(context, "exceptionCodeInfoList${data.单号}")
+        //Wiping the cache which records list of QR code of boxes successfully verified.
+        SPUtils.remove(context, "checkScannedSucceededScanCodeList${data.单号}")
+        //Wiping the cache which records list of QR code of improper boxes
+        SPUtils.remove(context, "checkScannedExceptionCodeList${data.单号}")
+        centerOutSendDetailPresenter.loadWaybillDetailData(false, data)
     }
 
     @SuppressLint("HandlerLeak")
@@ -531,7 +657,8 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     }
 
     private fun addScanCodeNum(currentScanCode: String?) {
-        if (scanToTal >= planBoxTotal) {
+
+        if (scanToTal + onCodeToTal >= planBoxTotal) {
             FeedbackUtils.vibrate(
                 this@CenterOutSendDetailActivity,
                 longArrayOf(100, 100, 100, 100, 100, 100, 100, 100),
@@ -540,7 +667,9 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
             ToastUtils.showShortToast(this@CenterOutSendDetailActivity, "已达到计划总量 $planBoxTotal 箱")
             return
         }
-        if (!checkDuplicateSucceededScanCodeList.contains(currentScanCode) && !checkDuplicateExceptionCodeList.contains(currentScanCode)
+        if (!checkScannedSucceededScanCodeList.contains(currentScanCode) && !checkScannedExceptionCodeList.contains(
+                currentScanCode
+            )
         ) {
             FeedbackUtils.vibrate(this@CenterOutSendDetailActivity, 200)
             currentScanCodeList.add(currentScanCode)

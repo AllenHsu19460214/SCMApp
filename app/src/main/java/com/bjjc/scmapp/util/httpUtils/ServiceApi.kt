@@ -1,5 +1,6 @@
 package com.bjjc.scmapp.util.httpUtils
 
+import com.bjjc.scmapp.model.bean.CommonResultBean
 import com.bjjc.scmapp.model.vo.CenterOutSendDetailVo
 import com.bjjc.scmapp.model.vo.CenterOutSendVo
 import com.bjjc.scmapp.model.vo.CheckScanCodeVo
@@ -37,11 +38,11 @@ interface ServiceApi {
 
     @POST("storeJson_1.3.0.php")
     @FormUrlEncoded
-    fun centerOutSend(
+    fun centerOutSendDetail(
         @Field("command") command: String,
         @Field("key") key: String?,
-        @Field("dh") djtype: String,
-        @Field("smtype") crktype: String
+        @Field("dh") dh: String,
+        @Field("smtype") smtype: String
     ): Call<CenterOutSendDetailVo>
 
     @POST("storeJson_1.3.0.php")
@@ -54,4 +55,18 @@ interface ServiceApi {
         @Field("rkdw") rkdw: String,
         @Field("dh") dh: String
     ): Call<CheckScanCodeVo>
+
+    @POST("storeJson_1.3.0.php")
+    @FormUrlEncoded
+    fun centerOutSendDetailSaveOrderInfo(
+        @Field("command") command: String,
+        @Field("key") key: String?,
+        @Field("dh") dh: String,
+        @Field("zt") zt: String,
+        @Field("mx") mx: String,
+        @Field("trace") trace: String,
+        @Field("point") point: String,
+        @Field("flag") flag: String,
+        @Field("isfxdd") isfxdd: String
+    ): Call<CommonResultBean>
 }
