@@ -95,7 +95,7 @@ class LoginPresenterImpl(val context:Context,var loginView:LoginView) :LoginPres
                         App.loginVo = response.body() as LoginVo
                         //info { loginVo }
                         if (App.loginVo?.code == "08") {
-                            ToastUtils.showShortToast(context, App.loginVo?.msg)
+                            ToastUtils.showToastS(context, App.loginVo?.msg)
                             App.sfBean = App.loginVo?.sf
                             gotoMainActivity()
                         } else {

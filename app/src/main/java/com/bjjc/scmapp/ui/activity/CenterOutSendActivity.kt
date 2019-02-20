@@ -92,7 +92,7 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
             {
                 //info{data?.extras?.getString("result")}
                 val barCodeValue: String? = data?.extras?.getString("result")
-                ToastUtils.showShortToast(this@CenterOutSendActivity, barCodeValue)
+                ToastUtils.showToastS(this@CenterOutSendActivity, barCodeValue)
                 //vibrate Feedback。
                 FeedbackUtils.vibrate(this@CenterOutSendActivity, 200)
                 scanNumber=barCodeValue
@@ -159,7 +159,11 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
                     }
                     currentData.clear()
                     currentData.addAll(billStatusUndoneData)
+
                 }
+            }
+            if(currentData.size==0){
+                myToast("无查询结果")
             }
             //Updates the data in the adapter to avoid using previous data when user clicks an item of list.
             centerOutSendListViewAdapter.updateData(currentData)
@@ -201,7 +205,7 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
             }
 
             override fun onQueryTextChange(nextText: String): Boolean {
-                //ToastUtils.showShortToast(toolbar.context, nextText)
+                //ToastUtils.showToastS(toolbar.context, nextText)
                 return true
             }
         })
@@ -215,7 +219,7 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
                 Scanner.BARCODE_READ -> {
                     //Display the bar code read
                     val currentScanCode: String = msg.obj.toString()
-                    ToastUtils.showShortToast(this@CenterOutSendActivity, currentScanCode)
+                    ToastUtils.showToastS(this@CenterOutSendActivity, currentScanCode)
                     //vibrate Feedback。
                     FeedbackUtils.vibrate(this@CenterOutSendActivity, 200)
                     scanNumber = currentScanCode

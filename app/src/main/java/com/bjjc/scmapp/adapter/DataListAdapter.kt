@@ -162,7 +162,7 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
                 if (data[position].出库箱数 + editText.text.toString().toInt() > data[position].计划箱数) {
                     editText.removeTextChangedListener(mTextWatcher)
                     editText.setBackgroundColor(Color.parseColor("#FF0000"))
-                    ToastUtils.showLongToast(context!!, "扫码数量+无码数量不能大于该订单的计划箱数")
+                    ToastUtils.showToastL(context!!, "扫码数量+无码数量不能大于该订单的计划箱数")
                     editText.setText("0".toCharArray(),0,1)
                 } else {
                     editText.addTextChangedListener(mTextWatcher)

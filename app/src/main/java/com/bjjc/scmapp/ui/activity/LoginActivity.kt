@@ -25,7 +25,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
     private val etLoginUsername by lazy { find<EditText>(R.id.etLoginUsername) }
     //==============================================FieldEnd=====================================================================
     /**
-     * Loads layout of current activity.
+     * Loading the layout of current "activity".
      */
     override fun getLayoutId(): Int = R.layout.layout_aty_login
 

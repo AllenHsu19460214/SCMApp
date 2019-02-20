@@ -25,7 +25,7 @@ class SettingFragment: PreferenceFragmentCompat() {
                 startActivity(Intent(context, AboutActivity::class.java))
             }
             "clear_cache"->{
-                ToastUtils.showShortToast(activity!!,"点击了清除缓存")
+                ToastUtils.showToastS(activity!!,"点击了清除缓存")
             }
         }
         return super.onPreferenceTreeClick(preference)

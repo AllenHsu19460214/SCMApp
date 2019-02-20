@@ -28,7 +28,7 @@ class DialogUtils private constructor() {
             return DialogUtils()
         }
     }
-    fun builder(context: Context, layoutId: Int) {
+    private fun builder(context: Context, layoutId: Int) {
         dialog = AlertDialog.Builder(context)
             .setView(dialogInitView(context, layoutId))
             .setCancelable(false)

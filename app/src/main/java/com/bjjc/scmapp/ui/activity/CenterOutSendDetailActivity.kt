@@ -216,7 +216,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
             {
                 //info{data?.extras?.getString("result")}
                 val barCodeValue: String? = data?.extras?.getString("result")
-                ToastUtils.showShortToast(this@CenterOutSendDetailActivity, barCodeValue)
+                ToastUtils.showToastS(this@CenterOutSendDetailActivity, barCodeValue)
                 //vibrate Feedback。
                 FeedbackUtils.vibrate(this@CenterOutSendDetailActivity, 200)
                 addScanCodeNum(barCodeValue)
@@ -469,7 +469,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
             setRbtnExceptionTextColor()
             updateScanCodeTotal()
             if (scanToTal >= planBoxTotal) {
-                ToastUtils.showShortToast(this@CenterOutSendDetailActivity, "已达到计划总量 $planBoxTotal 箱")
+                ToastUtils.showToastS(this@CenterOutSendDetailActivity, "已达到计划总量 $planBoxTotal 箱")
             }
         }
 
@@ -507,7 +507,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                     setRbtnExceptionTextColor()
                     updateScanCodeTotal()
                     if (scanToTal >= planBoxTotal) {
-                        ToastUtils.showShortToast(this@CenterOutSendDetailActivity, "已达到计划总量 $planBoxTotal 箱")
+                        ToastUtils.showToastS(this@CenterOutSendDetailActivity, "已达到计划总量 $planBoxTotal 箱")
                     }
                 }
 
@@ -562,7 +562,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                 bundle.putSerializable("exceptionCodeInfoList", exceptionCodeInfoList as Serializable)
                 exceptionListFragment.arguments = bundle
                 exceptionListFragment.updateList()
-              /*  ToastUtils.showLongToast(
+              /*  ToastUtils.showToastL(
                     this@CenterOutSendDetailActivity,
                     exceptionCodeInfoList.toString()
                 )*/
@@ -647,7 +647,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                 Scanner.BARCODE_READ -> {
                     //Display the bar code read
                     val currentScanCode: String = msg.obj.toString()
-                    ToastUtils.showShortToast(this@CenterOutSendDetailActivity, currentScanCode)
+                    ToastUtils.showToastS(this@CenterOutSendDetailActivity, currentScanCode)
                     addScanCodeNum(currentScanCode)
                 }
                 Scanner.BARCODE_NOREAD -> {
@@ -664,7 +664,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                 longArrayOf(100, 100, 100, 100, 100, 100, 100, 100),
                 false
             )
-            ToastUtils.showShortToast(this@CenterOutSendDetailActivity, "已达到计划总量 $planBoxTotal 箱")
+            ToastUtils.showToastS(this@CenterOutSendDetailActivity, "已达到计划总量 $planBoxTotal 箱")
             return
         }
         if (!checkScannedSucceededScanCodeList.contains(currentScanCode) && !checkScannedExceptionCodeList.contains(
