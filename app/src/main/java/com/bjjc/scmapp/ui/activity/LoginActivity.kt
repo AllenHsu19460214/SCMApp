@@ -30,7 +30,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
     override fun getLayoutId(): Int = R.layout.layout_aty_login
 
     override fun initView() {
-        //判断设备是否由虚拟按键，如果有则增加paddingBottom=50dp
+        //Determine whether the device has a virtual key,if so,add 50dp to original value of "paddingBottom".
         if (checkDeviceHasNavigationBar(this)) {
             ll_login_activity.setPadding(0, 0, 0, 50.dp2px(this))
         }
@@ -80,9 +80,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
     }
     /*
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        //MENU键
+        //Key of the menu.
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-            //监控/拦截菜单键
+            // monitor or intercept key of the menu.
             return false
         }
         return super.onKeyDown(keyCode, event)

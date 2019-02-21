@@ -34,8 +34,6 @@
           android:background="@color/black"/>
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:paddingStart="6dp"
-                  android:paddingEnd="6dp"
                   android:orientation="horizontal">
         <Button android:id="@+id/btnYes"
                 android:layout_width="0dp"
@@ -44,7 +42,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:layout_weight="1"
                 android:textStyle="bold"
-                android:background="@android:color/transparent"
+                android:background="@color/transparent"
                 android:text="@string/confirm" tools:ignore="ButtonStyle"/>
 
     </LinearLayout>

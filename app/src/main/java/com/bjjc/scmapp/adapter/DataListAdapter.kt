@@ -20,6 +20,7 @@ import com.bjjc.scmapp.util.SPUtils
 import com.bjjc.scmapp.util.ToastUtils
 import com.bjjc.scmapp.view.CenterOutSendDetailView
 import org.jetbrains.anko.find
+import org.jetbrains.anko.sdk27.coroutines.onFocusChange
 
 
 /**
@@ -97,6 +98,26 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
                 viewHolder.etNoCodeNum.isFocusableInTouchMode = true
                 viewHolder.etNoCodeNum.isFocusable = true
                 viewHolder.etNoCodeNum.setText((data[position].允许输入箱数 + data[position].出库输入箱数).toString())
+                viewHolder.etNoCodeNum.onFocusChange { v, hasFocus ->
+                    val editText = v as EditText
+                    if (hasFocus) {
+                        str=editText.text
+                        editText.addTextChangedListener(mTextWatcher)
+                    } else {
+                        editText.removeTextChangedListener(mTextWatcher)
+                        if (editText.text.toString() != ""&&data.size>0) {
+                            if (data[position].出库箱数 + editText.text.toString().toInt() > data[position].计划箱数) {
+                                editText.removeTextChangedListener(mTextWatcher)
+                                editText.setBackgroundColor(Color.parseColor("#FF0000"))
+                                ToastUtils.showToastL(context, "扫码数量+无码数量不能大于该订单的计划箱数")
+                                editText.setText("0".toCharArray(),0,1)
+                            } else {
+                                editText.addTextChangedListener(mTextWatcher)
+                                editText.setBackgroundColor(Color.parseColor("#AAAAAA"))
+                            }
+                        }
+                    }
+                }
             } else {
                 viewHolder.etNoCodeNum.isFocusable = false
                 viewHolder.etNoCodeNum.isFocusableInTouchMode = false
@@ -150,9 +171,9 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
         }
         return false
     }
-
+    //The position used in this function is non-corresponding to each EditText,so to need to set listener in "getView".
     override fun onFocusChange(v: View?, hasFocus: Boolean) {
-        val editText = v as EditText
+        /*val editText = v as EditText
         if (hasFocus) {
             str=editText.text
             editText.addTextChangedListener(mTextWatcher)
@@ -169,7 +190,7 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
                     editText.setBackgroundColor(Color.parseColor("#AAAAAA"))
                 }
             }
-        }
+        }*/
     }
 
     inner class ViewHolder(private val reuseView: View) {

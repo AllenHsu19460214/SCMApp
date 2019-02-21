@@ -41,7 +41,7 @@ class DialogUtils private constructor() {
         val d = m.defaultDisplay // 获取屏幕宽、高度
         val p = dialogWindow?.attributes // 获取对话框当前的参数值
         p?.height = (d.height * 0.5).toInt()// 高度设置为屏幕的0.6，根据实际情况调整
-        p?.width = (d.width * 0.7).toInt()// 宽度设置为屏幕的0.65，根据实际情况调整
+        p?.width = (d.width * 0.7).toInt()// 宽度设置为屏幕的0.7，根据实际情况调整
         p?.alpha = 1F
         dialogWindow?.attributes = p
     }
