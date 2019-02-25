@@ -149,13 +149,12 @@ object SPUtils {
             } catch (e: IllegalAccessException) {
             } catch (e: InvocationTargetException) {
             }
-
             editor.commit()
         }
     }
 
     /**
-     * 存放实体类以及任意类型
+     * Store entity classes and any type
      *
      * @param context 上下文对象
      * @param key
@@ -192,17 +191,13 @@ object SPUtils {
         var obj: Any? = null
         try {
             val base64 = getSharedPreferences(context).getString(key, "")
-            if (base64 == "") {
-                return null
-            }
-            val base64Bytes = Base64.decode(base64.toByteArray(), 1)
+            val base64Bytes = Base64.decode(base64?.toByteArray(), 1)
             val bais = ByteArrayInputStream(base64Bytes)
             val ois = ObjectInputStream(bais)
             obj = ois.readObject()
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
         return obj
     }
 

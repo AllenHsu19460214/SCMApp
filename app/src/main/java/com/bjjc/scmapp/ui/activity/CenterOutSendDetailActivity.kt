@@ -607,7 +607,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
      * Creates the ToolBar。
      */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        toolbarMenu = setToolBarMenu(arrayListOf("清除缓存"))
+        toolbarMenu = setToolBarMenu(arrayListOf("减箱","清除缓存"))
         searchView = setSearchView()
         initToolbarItemListener()
         return true
@@ -616,6 +616,9 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     private fun initToolbarItemListener() {
         toolbarMenu.setOnMenuItemClickListener {
             when (it.itemId) {
+                R.id.reduceBox->{
+                    myToast("\"减箱\" is clicked!")
+                }
                 R.id.wipeCache -> {
                     wipeCacheByWayBillNumber()
                 }
