@@ -629,6 +629,24 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     }
 
     private fun wipeCacheByWayBillNumber() {
+        //customDialogYesOrNo()
+        DialogUtils.instance()
+            .customDialogYesOrNo(this@CenterOutSendDetailActivity)
+            .setTitle("提示")
+            .setMessage("您确定要清除单号为:\n${data.单号}\n的缓存信息吗?请谨慎清除!")
+            .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
+                override fun onPositiveBtnClicked() {
+                    wipeCache()
+                }
+            })
+            .setOnNegativeClickListener(object : DialogUtils.OnNegativeClickListener {
+                override fun onNegativeBtnClicked() {
+                }
+            })
+            .show()
+    }
+
+    private fun wipeCache() {
         isWipedCache = true
         checkScannedSucceededScanCodeList.clear()
         checkScannedExceptionCodeList.clear()
