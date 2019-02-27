@@ -29,7 +29,7 @@
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       tools:text="WLD2018062814022310501"
-                      android:textSize="17sp"
+                      android:textSize="15sp"
                       android:textColor="@color/black"/>
         </LinearLayout>
         <LinearLayout android:layout_width="match_parent"
@@ -46,7 +46,7 @@
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       tools:text="1325"
-                      android:textSize="17sp"
+                      android:textSize="15sp"
                       android:textColor="@color/black"/>
         </LinearLayout>
         <View android:layout_width="match_parent"
@@ -70,14 +70,14 @@
                           android:textStyle="bold"
                           android:gravity="center_horizontal"
                           android:textColor="@color/black"
-                          android:textSize="18sp"
+                          android:textSize="16sp"
                           android:text="扫描总量:"/>
                 <TextView android:id="@+id/tvScanTotal"
                           android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:gravity="center_horizontal"
                           android:text="0"
-                          android:textSize="50sp"
+                          android:textSize="30sp"
                           android:textColor="@android:color/holo_red_dark"/>
 
             </LinearLayout>
@@ -91,14 +91,14 @@
                           android:gravity="center_horizontal"
                           android:textStyle="bold"
                           android:textColor="@color/black"
-                          android:textSize="18sp"
+                          android:textSize="16sp"
                           android:text="无码总量:"/>
                 <TextView android:id="@+id/tvNoCodeTotal"
                           android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:gravity="center_horizontal"
                           android:text="0"
-                          android:textSize="50sp"
+                          android:textSize="30sp"
                           android:textColor="@android:color/holo_green_dark"/>
             </LinearLayout>
         </LinearLayout>
@@ -180,6 +180,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="扫描条码"
+                android:textColor="@color/white"
                 android:textSize="25sp"
                 android:layout_margin="3dp"
                 android:background="@drawable/shape_rectangle_all_dark_blue"
@@ -189,6 +190,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="提交"
+                android:textColor="@color/white"
                 android:textSize="25sp"
                 android:layout_margin="3dp"
                 android:background="@drawable/shape_rectangle_all_dark_green"/>

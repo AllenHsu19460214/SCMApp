@@ -29,6 +29,7 @@
             android:id="@+id/btnScan_CenterOutSendActivity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:text="扫描条码"
             android:textSize="25sp"
             android:layout_margin="3dp"

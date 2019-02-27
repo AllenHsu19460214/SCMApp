@@ -91,13 +91,14 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
         viewHolder.tvSpareNumber.text = data[position].备件编号
         viewHolder.tvPlanBoxNum.text = data[position].计划箱数.toString()
         viewHolder.tvScanCodeNum.text = data[position].出库箱数.toString()
-        if (data[position].是否允许扫描 == 0) {
-            //0 means:allowed input;1 means:scan QR code.
+        if (data[position].是否允许扫描 == 1) {
+            //0 means allowed inputting and 1 means allowed scanning QR code ,These cases was at design time.
+            // now,1 means allowed inputting and 0 means allowed scanning QR code.
             viewHolder.llNoCodeNum.visibility = View.VISIBLE
             if (data[position].允许输入箱数 == 0) {
                 viewHolder.etNoCodeNum.isFocusableInTouchMode = true
                 viewHolder.etNoCodeNum.isFocusable = true
-                viewHolder.etNoCodeNum.setText((data[position].允许输入箱数 + data[position].出库输入箱数).toString())
+                viewHolder.etNoCodeNum.setText(data[position].出库输入箱数.toString())
                 viewHolder.etNoCodeNum.onFocusChange { v, hasFocus ->
                     val editText = v as EditText
                     if (hasFocus) {
@@ -123,6 +124,7 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
             } else {
                 viewHolder.etNoCodeNum.isFocusable = false
                 viewHolder.etNoCodeNum.isFocusableInTouchMode = false
+                viewHolder.etNoCodeNum.setBackgroundColor(Color.parseColor("#00000000"))
                 viewHolder.etNoCodeNum.setText(data[position].出库输入箱数.toString())
             }
         } else {

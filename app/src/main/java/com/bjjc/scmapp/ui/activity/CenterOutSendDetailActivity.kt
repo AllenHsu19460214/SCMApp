@@ -139,7 +139,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                 DialogUtils.instance()
                     .customDialogYesOrNo(this@CenterOutSendDetailActivity)
                     .setTitle("提示")
-                    .setMessage("订单已完成，是否提交!")
+                    .setMessage("订单已完成，要提交到服务器吗?")
                     .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
                         override fun onPositiveBtnClicked() {
                             commitOrSaveOutInfo(isFinished())
@@ -154,7 +154,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                 DialogUtils.instance()
                     .customDialogYesOrNo(this@CenterOutSendDetailActivity)
                     .setTitle("提示")
-                    .setMessage("订单未完成，是否保存!")
+                    .setMessage("订单未完成，要保存到服务器吗?")
                     .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
                         override fun onPositiveBtnClicked() {
                             commitOrSaveOutInfo(isFinished())
@@ -310,7 +310,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
             orderDataChanged.addAll(orderDatas)
             //Sets order number.
             tvWaybillNumber.text = data.单号
-            setNoCodeIsAllowed(data)
+            //setNoCodeIsAllowed(data)//value "仓是否输入" of the main order into disuse
             addTestDataForOrderData(orderDataChanged)
             planBoxTotal = computePlanningBoxNum()
             //Sets planning box count
@@ -617,7 +617,10 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
         toolbarMenu.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.reduceBox->{
-                    myToast("\"减箱\" is clicked!")
+                    //myToast("\"减箱\" is clicked!")
+                    val intent = Intent(context, CenterOutSendReduceBoxActivity::class.java)
+                    //intent.putExtra("UserIdentityBean", App.sfBean)
+                    context.startActivity(intent)
                 }
                 R.id.wipeCache -> {
                     wipeCacheByWayBillNumber()
