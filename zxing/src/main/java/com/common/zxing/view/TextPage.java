@@ -13,7 +13,7 @@ import android.widget.EditText;
 /**
  * @author chroya
  */
-public class TextPage extends EditText {
+public class TextPage extends android.support.v7.widget.AppCompatEditText {
 	private int off; //字符串的偏移值
 
 	public TextPage(Context context) {
