@@ -12,16 +12,17 @@
     <GridView
             android:id="@+id/gvMain"
             android:layout_marginTop="15dp"
-            android:verticalSpacing="2dp"
-            android:numColumns="2"
-            android:layout_width="match_parent"
+            android:paddingLeft="26dp"
+            android:paddingRight="26dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
+            android:background="@color/transparent"
+            android:descendantFocusability="blocksDescendants"
+            android:verticalSpacing="4dp"
+            android:numColumns="2"
             android:gravity="center"
             android:scrollbars="none"
             android:listSelector="@null"
             tools:listitem="@layout/layout_adpitem_main_grid">
-
     </GridView>
 </LinearLayout>

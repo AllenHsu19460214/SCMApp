@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.bjjc.scmapp">
+          xmlns:tools="http://schemas.android.com/tools" package="com.bjjc.scmapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -8,15 +8,16 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
             android:name=".app.App"
-            android:allowBackup="true"
             android:icon="@mipmap/launch_icon"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme" tools:ignore="AllowBackup">
         <activity android:name=".ui.activity.CenterOutSendReduceBoxActivity">
         </activity>
         <!-- developmentMode，debug:debugMode，test:testMode，pro:productionMode -->
@@ -50,9 +51,8 @@
         </activity>
         <activity android:name=".ui.activity.CenterOutReverseActivity">
         </activity>
-        <activity
-                android:name=".ui.activity.CenterOutSendDetailActivity"
-                android:windowSoftInputMode="adjustPan|stateHidden">
+        <activity android:name=".ui.activity.CenterOutSendDetailActivity"
+                  android:windowSoftInputMode="adjustPan|stateHidden">
         </activity> <!-- CenterIn -->
         <activity android:name=".ui.activity.CenterInModeActivity">
         </activity>

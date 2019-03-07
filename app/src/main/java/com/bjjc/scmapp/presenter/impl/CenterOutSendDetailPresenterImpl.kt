@@ -130,9 +130,9 @@ class CenterOutSendDetailPresenterImpl(var context:Context,var centerOutSendDeta
             }
         }
         val gson = Gson()
-        val data: CenterOutSendDetailVo =
+        val datum: CenterOutSendDetailVo =
             gson.fromJson<CenterOutSendDetailVo>(centerOutSendDetailVoJson, CenterOutSendDetailVo::class.java)
-        centerOutSendDetailView.onLoadWaybillDetailDataSuccess(data)
+        centerOutSendDetailView.onLoadWaybillDetailDataSuccess(datum)
     }
     //saves order info to server.
     override fun commitOrSaveOrderInfo2Server(b:Boolean,data: CenterOutSendBean, info: String,trace:String) {

@@ -7,6 +7,8 @@ import android.os.Build
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.model.bean.UserIdentityBean
 import com.bjjc.scmapp.model.vo.LoginVo
+import com.hjq.toast.ToastUtils
+import com.hjq.toast.style.ToastWhiteStyle
 import java.io.InputStream
 import java.util.*
 
@@ -36,6 +38,8 @@ class App : Application() {
         devModel = getDevModel()
         loadConfig()
         base_url = getDevModelValue("BASE_URL")
+        //Initialize ToastUtils
+        ToastUtils.init(this, ToastWhiteStyle())
     }
 
 

@@ -33,6 +33,16 @@ android {
             //aidl.srcDirs = ['src/main/aidl']
         }
     }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'armeabi-v7a', 'x86_64'
+            universalApk true
+        }
+    }
+
 }
 kotlin {
     experimental {
@@ -58,4 +68,6 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
     implementation project(':zxing')
+    implementation 'com.hjq:xxpermissions:5.3'
+    implementation 'com.hjq:toast:5.6'
 }

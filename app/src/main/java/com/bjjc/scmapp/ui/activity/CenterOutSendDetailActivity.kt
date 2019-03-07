@@ -53,9 +53,9 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     //==============================================FieldStart=====================================================================
     override val context: Context by lazy { this }
     override val toolbar: Toolbar by lazy { find<Toolbar>(R.id.toolbar) }
-    private lateinit var data: CenterOutSendBean
+    private lateinit var datum: CenterOutSendBean
     private lateinit var checkScanCodeVo: CheckScanCodeVo
-    private val orderDatas: MutableList<CenterOutSendDetailBean> by lazy { ArrayList<CenterOutSendDetailBean>() }
+    private val orderData: MutableList<CenterOutSendDetailBean> by lazy { ArrayList<CenterOutSendDetailBean>() }
     private var scanToTal: Long = -1
     private var onCodeToTal: Long = -1
     private var planBoxTotal: Long = 0
@@ -116,7 +116,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                 }
                 /*R.id.rbDetailList -> {
                     val bundle = Bundle()
-                    bundle.putSerializable("orderDatas", orderDatas as Serializable)
+                    bundle.putSerializable("orderData", orderData as Serializable)
                     detailListFragment.arguments = bundle
                     switchFragment(detailListFragment).commit()
                 }*/
@@ -171,16 +171,16 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     }
 
     private fun isFinished(): Boolean {
-        if (planBoxTotal == calculateReality()) {
+        if (planBoxTotal == calculateActual()) {
             return true
         }
         return false
     }
 
-    private fun commitOrSaveOutInfo(b: Boolean) {
+    private fun commitOrSaveOutInfo(isFinished: Boolean) {
         val info = getSaveOrderInfoJson(orderDataChanged)
         val trace = getTraceJson()
-        //centerOutSendDetailPresenter.commitOrSaveOrderInfo2Server(b,data,info,trace)
+        centerOutSendDetailPresenter.commitOrSaveOrderInfo2Server(isFinished,datum,info,trace)
     }
 
     private fun getSaveOrderInfoJson(orderDataChanged: MutableList<CenterOutSendDetailBean>): String {
@@ -214,7 +214,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
             RESULT_OK ->
                 //1.Returns value of bar code scanned.
             {
-                //info{data?.extras?.getString("result")}
+                //info{datum?.extras?.getString("result")}
                 val barCodeValue: String? = data?.extras?.getString("result")
                 ToastUtils.showToastS(this@CenterOutSendDetailActivity, barCodeValue)
                 //vibrate Feedback。
@@ -248,52 +248,52 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
         }
         initCenterOutSendDetailToolBar()
 
-        data =
+        datum =
             intent.getSerializableExtra(IntentKey.CENTER_OUT_SEND_AND_CENTER_OUT_SEND_DETAIL_CURRENTDATA) as CenterOutSendBean
         /**
          * after sp save.
          */
 
-        if (null != SPUtils.getBean(context, "orderDataChanged${data.单号}")
-            || null != SPUtils.getBean(context, "checkScannedSucceededScanCodeList${data.单号}")
-            || null != SPUtils.getBean(context, "checkScannedExceptionCodeList${data.单号}")
+        if (null != SPUtils.getBean(context, "orderDataChanged${datum.单号}")
+            || null != SPUtils.getBean(context, "checkScannedSucceededScanCodeList${datum.单号}")
+            || null != SPUtils.getBean(context, "checkScannedExceptionCodeList${datum.单号}")
         ) {
-            if (null != SPUtils.getBean(context, "checkScannedSucceededScanCodeList${data.单号}")) {
+            if (null != SPUtils.getBean(context, "checkScannedSucceededScanCodeList${datum.单号}")) {
                 checkScannedSucceededScanCodeList.clear()
                 checkScannedSucceededScanCodeList.addAll(
                     SPUtils.getBean(
                         context,
-                        "checkScannedSucceededScanCodeList${data.单号}"
+                        "checkScannedSucceededScanCodeList${datum.单号}"
                     ) as MutableList<String>
                 )
             }
-            if (null != SPUtils.getBean(context, "checkScannedExceptionCodeList${data.单号}")) {
+            if (null != SPUtils.getBean(context, "checkScannedExceptionCodeList${datum.单号}")) {
                 checkScannedExceptionCodeList.clear()
                 checkScannedExceptionCodeList.addAll(
                     SPUtils.getBean(
                         context,
-                        "checkScannedExceptionCodeList${data.单号}"
+                        "checkScannedExceptionCodeList${datum.单号}"
                     ) as MutableList<String>
                 )
             }
-            if (null != SPUtils.getBean(context, "orderDataChanged${data.单号}")) {
+            if (null != SPUtils.getBean(context, "orderDataChanged${datum.单号}")) {
                 orderDataChanged.clear()
                 orderDataChanged.addAll(
                     SPUtils.getBean(
                         context,
-                        "orderDataChanged${data.单号}"
+                        "orderDataChanged${datum.单号}"
                     ) as MutableList<CenterOutSendDetailBean>
                 )
             }
-            tvWaybillNumber.text = data.单号
+            tvWaybillNumber.text = datum.单号
             planBoxTotal = computePlanningBoxNum()
             //Sets planning box count
             tvPlanBoxTotal.text = planBoxTotal.toString()
-            //Transmit data from CenterOutSendDetailActivity to DataListFragment.
+            //Transmit datum from CenterOutSendDetailActivity to DataListFragment.
             transmitData2DataListFragment()
             updateScanCodeTotal()
         } else {
-            centerOutSendDetailPresenter.loadWaybillDetailData(false, data)
+            centerOutSendDetailPresenter.loadWaybillDetailData(false, datum)
         }
         setRbtnExceptionTextColor()
     }
@@ -304,20 +304,20 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
 
     override fun onLoadWaybillDetailDataSuccess(data: CenterOutSendDetailVo) {
         if (data.code == "10") {
-            orderDatas.clear()
-            orderDatas.addAll(data.mx)
+            orderData.clear()
+            orderData.addAll(data.mx)
             orderDataChanged.clear()
-            orderDataChanged.addAll(orderDatas)
+            orderDataChanged.addAll(orderData)
             //Sets order number.
             tvWaybillNumber.text = data.单号
-            //setNoCodeIsAllowed(data)//value "仓是否输入" of the main order into disuse
+            //setNoCodeIsAllowed(datum)//value "仓是否输入" of the main order into disuse
             addTestDataForOrderData(orderDataChanged)
             planBoxTotal = computePlanningBoxNum()
             //Sets planning box count
             tvPlanBoxTotal.text = planBoxTotal.toString()
             updateScanCodeTotal()
             if (isWipedCache) {
-                //dataListFragment.dataListAdapter.updateData(orderDataChanged, data.单号)
+                //dataListFragment.dataListAdapter.updateData(orderDataChanged, datum.单号)
                 dataListFragment.updateData(orderDataChanged)
                 dataListFragment.dataListAdapter.notifyDataSetChanged()
                 exceptionCodeInfoList.clear()
@@ -325,7 +325,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                 exceptionListFragment.updateList()
                 isWipedCache = false
             } else {
-                //Transmit data from CenterOutSendDetailActivity to DataListFragment.
+                //Transmit datum from CenterOutSendDetailActivity to DataListFragment.
                 transmitData2DataListFragment()
             }
 
@@ -335,7 +335,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     }
 
     /**
-     * Transmit data from CenterOutSendDetailActivity to DataListFragment.
+     * Transmit datum from CenterOutSendDetailActivity to DataListFragment.
      */
     private fun transmitData2DataListFragment() {
         val bundle = Bundle()
@@ -345,16 +345,16 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
         )
         bundle.putString(
             IntentKey.CENTER_OUT_SEND_AND_DATA_LIST_FRAGMENT_ORDERNUMBER,
-            data.单号
+            datum.单号
         )
         dataListFragment.arguments = bundle
 
-        if (null != SPUtils.getBean(context, "exceptionCodeInfoList${data.单号}")) {
+        if (null != SPUtils.getBean(context, "exceptionCodeInfoList${datum.单号}")) {
             exceptionCodeInfoList.clear()
             exceptionCodeInfoList.addAll(
                 SPUtils.getBean(
                     context,
-                    "exceptionCodeInfoList${data.单号}"
+                    "exceptionCodeInfoList${datum.单号}"
                 ) as MutableList<ExceptionCodeInfoBean>
             )
             bundle.putSerializable(
@@ -397,7 +397,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     }
 
     /**
-     * Add the test data to order data.
+     * Add the test datum to order datum.
      */
     private fun addTestDataForOrderData(orderDataChanged: List<CenterOutSendDetailBean>) {
         for ((index, valueTest) in orderDataChanged.withIndex()) {
@@ -436,7 +436,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
         return planBoxTotal
     }
 
-    private fun calculateReality(): Long {
+    private fun calculateActual(): Long {
         var realityBoxTotal: Long = 0
         for (mx: CenterOutSendDetailBean in orderDataChanged) {
             realityBoxTotal += mx.数量 + mx.输入箱数
@@ -539,10 +539,10 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                         }
                     }
                 }
-                SPUtils.putBean(context, "orderDataChanged${data.单号}", orderDataChanged)
+                SPUtils.putBean(context, "orderDataChanged${datum.单号}", orderDataChanged)
                 SPUtils.putBean(
                     context,
-                    "checkScannedSucceededScanCodeList${data.单号}",
+                    "checkScannedSucceededScanCodeList${datum.单号}",
                     checkScannedSucceededScanCodeList
                 )
             }
@@ -556,8 +556,8 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                 }
                 checkScannedExceptionCodeList.add(scanCode)
                 exceptionCodeInfoList.add(exceptionCodeInfoBean)
-                SPUtils.putBean(context, "exceptionCodeInfoList${data.单号}", exceptionCodeInfoList)
-                SPUtils.putBean(context, "checkScannedExceptionCodeList${data.单号}", checkScannedExceptionCodeList)
+                SPUtils.putBean(context, "exceptionCodeInfoList${datum.单号}", exceptionCodeInfoList)
+                SPUtils.putBean(context, "checkScannedExceptionCodeList${datum.单号}", checkScannedExceptionCodeList)
                 val bundle = Bundle()
                 bundle.putSerializable("exceptionCodeInfoList", exceptionCodeInfoList as Serializable)
                 exceptionListFragment.arguments = bundle
@@ -636,7 +636,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
         DialogUtils.instance()
             .customDialogYesOrNo(this@CenterOutSendDetailActivity)
             .setTitle("提示")
-            .setMessage("您确定要清除单号为:\n${data.单号}\n的缓存信息吗?请谨慎清除!")
+            .setMessage("您确定要清除单号为:\n${datum.单号}\n的缓存信息吗?请谨慎清除!")
             .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
                 override fun onPositiveBtnClicked() {
                     wipeCache()
@@ -654,14 +654,14 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
         checkScannedSucceededScanCodeList.clear()
         checkScannedExceptionCodeList.clear()
         //Wiping the cache which records number of boxes with QR code and no code.
-        SPUtils.remove(context, "orderDataChanged${data.单号}")
+        SPUtils.remove(context, "orderDataChanged${datum.单号}")
         //Wiping the cache which records number of improper boxes.
-        SPUtils.remove(context, "exceptionCodeInfoList${data.单号}")
+        SPUtils.remove(context, "exceptionCodeInfoList${datum.单号}")
         //Wiping the cache which records list of QR code of boxes successfully verified.
-        SPUtils.remove(context, "checkScannedSucceededScanCodeList${data.单号}")
+        SPUtils.remove(context, "checkScannedSucceededScanCodeList${datum.单号}")
         //Wiping the cache which records list of QR code of improper boxes
-        SPUtils.remove(context, "checkScannedExceptionCodeList${data.单号}")
-        centerOutSendDetailPresenter.loadWaybillDetailData(false, data)
+        SPUtils.remove(context, "checkScannedExceptionCodeList${datum.单号}")
+        centerOutSendDetailPresenter.loadWaybillDetailData(false, datum)
     }
 
     @SuppressLint("HandlerLeak")
