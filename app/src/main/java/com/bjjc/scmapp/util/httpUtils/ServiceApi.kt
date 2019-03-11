@@ -65,7 +65,7 @@ interface ServiceApi {
         @Field("zt") zt: String,
         @Field("mx") mx: String,
         @Field("trace") trace: String,
-        @Field("point") point: String,
+        @Field("point") point: String?,
         @Field("flag") flag: String,
         @Field("isfxdd") isfxdd: String
     ): Call<CommonResultBean>

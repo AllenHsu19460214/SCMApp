@@ -1,9 +1,12 @@
 package com.bjjc.scmapp.app
 
+import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Handler
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.model.bean.UserIdentityBean
 import com.bjjc.scmapp.model.vo.LoginVo
@@ -14,12 +17,31 @@ import java.util.*
 
 /**
  * Created by Allen on 2018/11/30 14:47
+ * custom Application is Used for global initialization.
  */
 class App : Application() {
 
     private var property: Properties? = null
 
     companion object {
+        @JvmStatic
+        @SuppressLint("StaticFieldLeak")
+        private var context: Context?=null
+        @JvmStatic
+        private var handler: Handler? = null
+        @JvmStatic
+        private var mainThreadId: Int = 0
+
+        fun getContext():Context{
+            return context!!
+        }
+        fun getHandler():Handler{
+            return handler!!
+        }
+        fun getMainThreadId():Int{
+            return mainThreadId
+        }
+
         var deviceModel: String = ""
         var isPDA: Boolean = false
         var offLineFlag: Boolean = false
@@ -32,6 +54,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        initGlobalVariable()
         deviceModel = getDeviceModel()
         isPDA = isPDA()
         verName = getVerName()
@@ -42,6 +65,11 @@ class App : Application() {
         ToastUtils.init(this, ToastWhiteStyle())
     }
 
+    private fun initGlobalVariable() {
+        context = applicationContext
+        handler = Handler()
+        mainThreadId = android.os.Process.myTid()
+    }
 
     /**
      * Load the configuration file of the development environment.

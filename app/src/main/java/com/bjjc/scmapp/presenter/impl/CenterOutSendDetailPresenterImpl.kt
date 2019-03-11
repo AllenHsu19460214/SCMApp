@@ -135,7 +135,13 @@ class CenterOutSendDetailPresenterImpl(var context:Context,var centerOutSendDeta
         centerOutSendDetailView.onLoadWaybillDetailDataSuccess(datum)
     }
     //saves order info to server.
-    override fun commitOrSaveOrderInfo2Server(b:Boolean,data: CenterOutSendBean, info: String,trace:String) {
+    override fun commitOrSaveOrderInfo2Server(
+        b: Boolean,
+        data: CenterOutSendBean,
+        info: String,
+        trace: String,
+        point: String?
+    ) {
         val progressDialog =
             ProgressDialogUtils.showProgressDialog(context, "正在保存数据中!")
         RetrofitUtils.getRetrofit(App.base_url!!).create(ServiceApi::class.java)
@@ -146,7 +152,7 @@ class CenterOutSendDetailPresenterImpl(var context:Context,var centerOutSendDeta
                 if(b){"已出库"}else{"未出完"},
                 info,
                 trace,
-                "",
+                point,
                 "0",
                 "0"
             ).enqueue(object : Callback<CommonResultBean> {

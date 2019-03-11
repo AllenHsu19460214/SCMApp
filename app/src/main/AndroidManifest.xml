@@ -36,11 +36,13 @@
 
                 <action android:name="android.intent.action.VIEW"/>
             </intent-filter>
-        </activity> <!-- SplashActivity -->
+        </activity>
+        <!-- SplashActivity -->
         <activity
                 android:name=".ui.activity.SplashActivity"
                 android:theme="@style/AppTheme.FullScreen">
-        </activity> <!-- CenterOut -->
+        </activity>
+        <!-- CenterOut -->
         <activity android:name=".ui.activity.CenterOutModeActivity">
         </activity>
         <activity android:name=".ui.activity.CenterOutSendActivity">
@@ -59,7 +61,8 @@
         <activity android:name=".ui.activity.CenterInActivity">
         </activity>
         <activity android:name=".ui.activity.CenterInTransferActivity">
-        </activity> <!-- Center -->
+        </activity>
+        <!-- Center -->
         <activity android:name=".ui.activity.SearchActivity">
         </activity>
         <activity android:name=".ui.activity.InventoryActivity">

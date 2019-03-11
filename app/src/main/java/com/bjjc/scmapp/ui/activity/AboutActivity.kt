@@ -15,8 +15,9 @@ class AboutActivity : BaseActivity() {
     private var mLocation: Location? = null
     override fun getLayoutId(): Int = R.layout.layout_aty_about
     override fun initData() {
-        mLocation = GpsUtils.getGPSContacts(this)
+        /*mLocation = GpsUtils.getGPSContacts(this)
         tv_latitude.text = mLocation?.latitude.toString()
-        tv_longitude.text = mLocation?.longitude.toString()
+        tv_longitude.text = mLocation?.longitude.toString()*/
+        tv_latitude.text = GpsUtils.getGPSPointString()
     }
 }

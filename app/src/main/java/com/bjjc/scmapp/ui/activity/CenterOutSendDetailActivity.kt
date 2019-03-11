@@ -180,7 +180,8 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     private fun commitOrSaveOutInfo(isFinished: Boolean) {
         val info = getSaveOrderInfoJson(orderDataChanged)
         val trace = getTraceJson()
-        centerOutSendDetailPresenter.commitOrSaveOrderInfo2Server(isFinished,datum,info,trace)
+        val point:String? = GpsUtils.getGPSPointString()
+        centerOutSendDetailPresenter.commitOrSaveOrderInfo2Server(isFinished,datum,info,trace,point)
     }
 
     private fun getSaveOrderInfoJson(orderDataChanged: MutableList<CenterOutSendDetailBean>): String {
@@ -377,7 +378,10 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     override fun onCommitOrSaveOrderInfoSuccess(data: CommonResultBean) {
         if (data.code == "08") {
             //Wiping the cache which correspond to order.
-            wipeCacheByWayBillNumber()
+            //SPUtils.remove(context, "orderDataChanged${datum.单号}")
+            if(SPUtils.contains(UIUtils.getContext(),"orderDataChanged${datum.单号}")){
+                wipeCacheByWayBillNumber()
+            }
             myToast("保存数据成功!")
         } else {
             myToast(data.msg)

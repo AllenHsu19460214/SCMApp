@@ -14,7 +14,7 @@ object MD5Utils {
             val instance: MessageDigest = MessageDigest.getInstance("MD5")
             //对字符串加密，返回字节数组
             val digest: ByteArray = instance.digest(text?.toByteArray())
-            val sb: StringBuffer = StringBuffer()
+            val sb = StringBuffer()
             for (b in digest) {
                 //获取低八位有效值
                 val i: Int = b.toInt() and 0xff
