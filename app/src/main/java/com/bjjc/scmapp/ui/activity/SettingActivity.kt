@@ -17,7 +17,7 @@ class SettingActivity : BaseActivity(),ToolbarManager {
     override val toolbar: Toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     override fun getLayoutId(): Int =R.layout.layout_aty_setting
     override fun initData() {
-        initSettingToolBar()
+        initToolBar("设置界面")
         //Gets whether push notifications are selected.
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
         val pushNotice = sp.getBoolean("push_notice",false)

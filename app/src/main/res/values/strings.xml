@@ -58,6 +58,7 @@
     <string name="billStatusAll">显示全部</string>
     <string name="deviceModel">Android Handheld Terminal</string>
     <string name="wipeCache">清除缓存</string>
+    <string name="wipeCacheAll">清除全部缓存</string>
     <string name="reduceBox">减箱</string>
 
 

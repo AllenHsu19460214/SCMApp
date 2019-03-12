@@ -56,15 +56,17 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
     override fun getLayoutId(): Int = R.layout.layout_aty_center_out_send
 
     override fun initView() {
-        if (!App.isPDA){
-            btnScan_CenterOutSendActivity.visibility=View.VISIBLE
+        if (!App.isPDA) {
+            btnScan_CenterOutSendActivity.visibility = View.VISIBLE
         }
     }
+
     override fun initListener() {
         //Initialize color of refreshing control.
         refreshLayout.setColorSchemeColors(Color.GREEN, Color.RED, Color.BLUE)
         //Sets listener of refreshing control.
         refreshLayout.setOnRefreshListener {
+            //clean content of the searchView on initialization
             searchView?.setQuery(null, false)
             centerOutSendPresenter.loadWaybillData(true)
         }
@@ -95,34 +97,33 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
                 ToastUtils.showToastS(this@CenterOutSendActivity, barCodeValue)
                 //vibrate Feedback。
                 FeedbackUtils.vibrate(this@CenterOutSendActivity, 200)
-                scanNumber=barCodeValue
+                scanNumber = barCodeValue
                 searchView?.setQuery(barCodeValue, true)
             }
         }
     }
 
     override fun initData() {
-        initCenterOutSendToolBar()
+        initToolBar("配送单出库")
         centerOutSendPresenter.loadWaybillData(false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        toolbarMenu = setToolBarMenu(
-            arrayListOf(
-                ToolbarManager.SEARCH,
-                ToolbarManager.SEARCH_BY_BILL_STATUS,
-                ToolbarManager.BILL_STATUS_ALL,
-                ToolbarManager.BILL_STATUS_APPROVE,
-                ToolbarManager.BILL_STATUS_PASS,
-                ToolbarManager.BILL_STATUS_UNDONE
-            )
+        val itemId = intArrayOf(
+            R.id.searchView,
+            R.id.searchByBillStatus,
+            R.id.billStatusAll,
+            R.id.billStatusApprove,
+            R.id.billStatusPass,
+            R.id.billStatusUndone
         )
+        toolbarMenu = setToolBarMenu(R.menu.menu_center_out_send, *itemId)
         searchView = setSearchView()
-        initToolbarItemListener()
+        setToolbarListener()
         return true
     }
 
-    private fun initToolbarItemListener() {
+    private fun setToolbarListener() {
         toolbarMenu.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.billStatusAll -> {
@@ -162,7 +163,7 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
 
                 }
             }
-            if(currentData.size==0){
+            if (currentData.size == 0) {
                 myToast("无查询结果")
             }
             //Updates the data in the adapter to avoid using previous data when user clicks an item of list.
@@ -181,14 +182,14 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
             override fun onQueryTextSubmit(query: String): Boolean {
                 val searchCode = query.trim()
                 val searchCodeData: ArrayList<CenterOutSendBean> = ArrayList()
-                for (value in originalData) {
+                for (value in currentData) {
                     if (value.单号.contains(searchCode)) {
                         searchCodeData.add(value)
                     }
                 }
-                currentData.clear()
-                currentData.addAll(searchCodeData)
-                if (currentData.size > 0) {
+                if (searchCodeData.size > 0) {
+                    currentData.clear()
+                    currentData.addAll(searchCodeData)
                     centerOutSendListViewAdapter.updateData(currentData)
                 } else {
                     DialogUtils.instance()
@@ -223,8 +224,10 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
                     //vibrate Feedback。
                     FeedbackUtils.vibrate(this@CenterOutSendActivity, 200)
                     scanNumber = currentScanCode
-                    //Sets the content of the searchView.
-                    //param submit : Search now(true)
+                   /*
+                    Sets the content of the searchView.
+                    param submit : True means that search  immediately.
+                    */
                     searchView?.setQuery(currentScanCode, true)
                 }
                 //Reading the bar code is failing.

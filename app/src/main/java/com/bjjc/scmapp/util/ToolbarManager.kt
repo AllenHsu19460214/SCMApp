@@ -2,7 +2,6 @@ package com.bjjc.scmapp.util
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
@@ -10,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.ui.activity.CenterOutSendActivity
-import com.bjjc.scmapp.ui.activity.SettingActivity
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
 import org.jetbrains.anko.appcompat.v7.coroutines.onQueryTextFocusChange
 
@@ -38,57 +36,29 @@ interface ToolbarManager {
      * To initialize toolbar for MainActivity.
      */
     @SuppressLint("SetTextI18n")
-    fun initMainToolBar(role: String, trueName: String) {
+    fun initToolBar(title: String, subtitle: String) {
         initToolbar()
-        setTitle(role, trueName)
+        setTitle(title, subtitle)
         setToolBarNavigation()
     }
-
+    fun initToolBar(title: String) {
+        initToolbar()
+        setTitle(title)
+        setToolBarNavigation()
+    }
     /**
-     * To initialize toolbar for SettingActivity.
+     * Sets title.
      */
-    fun initSettingToolBar() {
-        initToolbar()
-        setTitle("设置界面")
-        setToolBarNavigation()
+    fun setTitle(title: String, subtitle: String) {
+        toolbar.title = title
+        toolbar.subtitle = title
+        //toolbarTitle.text = "$role : $trueName"
     }
 
-    /**
-     * To initialize toolbar for CenterOutModeActivity.
-     */
-    fun initChuKuModeChoiceToolBar() {
-        initToolbar()
-        setTitle("出库模式选择")
-        setToolBarNavigation()
+    fun setTitle(title: String) {
+        toolbar.title = title
+        //toolbarTitle.text = "$role : $trueName"
     }
-
-    /**
-     * To initialize toolbar for CenterInModeActivity.
-     */
-    fun initRuKuModeChoiceToolBar() {
-        initToolbar()
-        setTitle("入库模式选择")
-        setToolBarNavigation()
-    }
-
-    /**
-     * To initialize toolbar for CenterOutSendActivity.
-     */
-    fun initCenterOutSendToolBar() {
-        initToolbar()
-        setTitle("配送单出库")
-        setToolBarNavigation()
-    }
-
-    /**
-     * To initialize toolbar for CenterOutSendDetailActivity.
-     */
-    fun initCenterOutSendDetailToolBar() {
-        initToolbar()
-        setTitle("出库", "扫描信息")
-        setToolBarNavigation()
-    }
-
     /**
      * initialize toolbar.
      */
@@ -111,32 +81,23 @@ interface ToolbarManager {
     /**
      * Sets menu.
      */
-    fun setToolBarMenu(menuItemShow: ArrayList<String>): Toolbar {
-        toolbar.inflateMenu(R.menu.menu_main)
-        val menu = toolbar.menu
+    fun setToolBarMenu(id:Int,vararg itemIds:Int): Toolbar {
+        toolbar.inflateMenu(id)
         menuItems = ArrayList()
-        menuItems.add(menu.findItem(R.id.setting))
-        menuItems.add(menu.findItem(R.id.searchView))
-        menuItems.add(menu.findItem(R.id.searchByBillStatus))
-        menuItems.add(menu.findItem(R.id.billStatusAll))
-        menuItems.add(menu.findItem(R.id.billStatusApprove))
-        menuItems.add(menu.findItem(R.id.billStatusPass))
-        menuItems.add(menu.findItem(R.id.billStatusUndone))
-        menuItems.add(menu.findItem(R.id.reduceBox))
-        menuItems.add(menu.findItem(R.id.wipeCache))
-        menuItems.forEach {
-            it.isVisible = menuItemShow.contains(it.title)
+        for(itemId in itemIds){
+            menuItems.add(toolbar.menu.findItem(itemId))
         }
-        toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.setting -> {
-                    //Toast.makeText(toolbar.context,"点击了设置按钮",Toast.LENGTH_SHORT).show()
-                    //goto setting activity.
-                    toolbar.context?.startActivity(Intent(toolbar.context, SettingActivity::class.java))
-                }
-            }
-            true
-        }
+        /*
+        menuItems.add(toolbar.menu.findItem(R.id.setting))
+        menuItems.add(toolbar.menu.findItem(R.id.searchView))
+        menuItems.add(toolbar.menu.findItem(R.id.searchByBillStatus))
+        menuItems.add(toolbar.menu.findItem(R.id.billStatusAll))
+        menuItems.add(toolbar.menu.findItem(R.id.billStatusApprove))
+        menuItems.add(toolbar.menu.findItem(R.id.billStatusPass))
+        menuItems.add(toolbar.menu.findItem(R.id.billStatusUndone))
+        menuItems.add(toolbar.menu.findItem(R.id.reduceBox))
+        menuItems.add(toolbar.menu.findItem(R.id.wipeCache))
+        */
         return toolbar
     }
 
@@ -163,20 +124,6 @@ interface ToolbarManager {
             }
         }
         return searchView
-    }
-
-    /**
-     * Sets title.
-     */
-    fun setTitle(role: String, trueName: String) {
-        toolbar.title = role
-        toolbar.subtitle = trueName
-        //toolbarTitle.text = "$role : $trueName"
-    }
-
-    fun setTitle(title: String) {
-        toolbar.title = title
-        //toolbarTitle.text = "$role : $trueName"
     }
 
     /**设置SearchView下划线透明 */

@@ -5,9 +5,6 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
-import com.bjjc.scmapp.R
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.XXPermissions
 import com.hjq.toast.ToastUtils
@@ -113,14 +110,5 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
             //TODO handle exception message show.
         }
         return hasNavigationBar
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main,menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return super.onOptionsItemSelected(item)
     }
 }

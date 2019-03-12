@@ -2,14 +2,14 @@ package com.bjjc.scmapp.ui.activity
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.adapter.MainGridAdapter
 import com.bjjc.scmapp.model.bean.UserIdentityBean
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
-import com.bjjc.scmapp.util.DialogUtils
-import com.bjjc.scmapp.util.ToolbarManager
+import com.bjjc.scmapp.util.*
 import kotlinx.android.synthetic.main.layout_aty_main.*
 import org.jetbrains.anko.find
 
@@ -32,7 +32,7 @@ class MainActivity : BaseActivity(), ToolbarManager {
     override fun initData() {
         val userIdentityBean = intent.getSerializableExtra("UserIdentityBean") as UserIdentityBean
         //Sets toolbar title.
-        initMainToolBar(userIdentityBean.role, userIdentityBean.truename)//Sets toolbar title.
+        initToolBar(userIdentityBean.role, userIdentityBean.truename)//Sets toolbar title.
         //phoneRoleData=出库,入库,货品查询,盘库,货品信息,台帐,分单
         phoneRoleData = userIdentityBean.phoneRoleData.split(",").toTypedArray()
         mainGridViewAdapter.setData(phoneRoleData)
@@ -109,8 +109,42 @@ class MainActivity : BaseActivity(), ToolbarManager {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        setToolBarMenu(arrayListOf(ToolbarManager.SETTING))
+        val itemId = intArrayOf(R.id.wipeCacheAll)
+        setToolBarMenu(R.menu.menu_main, *itemId).setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.wipeCacheAll -> {
+                    //startActivity(Intent(toolbar.context, SettingActivity::class.java))
+                    wipeCacheAll()
+                }
+            }
+            true
+        }
         return true
+    }
+
+    private fun wipeCacheAll() {
+        //customDialogYesOrNo()
+        DialogUtils.instance()
+            .customDialogYesOrNo(this@MainActivity)
+            .setTitle("提示")
+            .setMessage("您确定要清除全部缓存吗?请谨慎清除!")
+            .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
+                override fun onPositiveBtnClicked() {
+                    SPUtils.clear(UIUtils.getContext())
+                    showWaitingProgressBar()
+                }
+            })
+            .setOnNegativeClickListener(object : DialogUtils.OnNegativeClickListener {
+                override fun onNegativeBtnClicked() {
+                }
+            })
+            .show()
+
+    }
+
+    private fun showWaitingProgressBar() {
+        val progressDialog = ProgressDialogUtils.showProgressDialog(this, "正在清除缓存中!")
+        Handler().postDelayed({ progressDialog.dismiss()}, 1000)
     }
 
 

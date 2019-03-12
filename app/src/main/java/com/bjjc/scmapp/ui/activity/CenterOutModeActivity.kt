@@ -1,6 +1,7 @@
 package com.bjjc.scmapp.ui.activity
 
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import com.bjjc.scmapp.R
@@ -17,13 +18,23 @@ class CenterOutModeActivity : BaseActivity(), ToolbarManager {
     override val toolbar: Toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     override fun getLayoutId(): Int = R.layout.layout_aty_center_out_mode
     override fun initData() {
-        initChuKuModeChoiceToolBar()//Sets toolbar title.
+        initToolBar("出库模式选择")//Sets toolbar title.
         chuKuModeChoiceGridViewAdapter.setData(buttonArray)
         gvChuKuModeChoice.adapter = chuKuModeChoiceGridViewAdapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        setToolBarMenu(arrayListOf("设置"))
+        val itemId= intArrayOf(R.id.setting)
+        setToolBarMenu(R.menu.menu_center_out_mode,*itemId).setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.setting -> {
+                    //Toast.makeText(toolbar.context,"点击了设置按钮",Toast.LENGTH_SHORT).show()
+                    //goto setting activity.
+                    toolbar.context?.startActivity(Intent(toolbar.context, SettingActivity::class.java))
+                }
+            }
+            true
+        }
         return true
     }
 }

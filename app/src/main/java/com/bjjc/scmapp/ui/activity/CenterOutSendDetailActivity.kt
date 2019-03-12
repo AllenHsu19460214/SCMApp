@@ -247,7 +247,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                 }
             }
         }
-        initCenterOutSendDetailToolBar()
+        initToolBar("出库","扫描信息")
 
         datum =
             intent.getSerializableExtra(IntentKey.CENTER_OUT_SEND_AND_CENTER_OUT_SEND_DETAIL_CURRENTDATA) as CenterOutSendBean
@@ -380,7 +380,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
             //Wiping the cache which correspond to order.
             //SPUtils.remove(context, "orderDataChanged${datum.单号}")
             if(SPUtils.contains(UIUtils.getContext(),"orderDataChanged${datum.单号}")){
-                wipeCacheByWayBillNumber()
+                wipeCache()
             }
             myToast("保存数据成功!")
         } else {
@@ -611,13 +611,13 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
      * Creates the ToolBar。
      */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        toolbarMenu = setToolBarMenu(arrayListOf("减箱","清除缓存"))
-        searchView = setSearchView()
-        initToolbarItemListener()
+        val itemId= intArrayOf(R.id.reduceBox,R.id.wipeCache)
+        toolbarMenu = setToolBarMenu(R.menu.menu_center_out_send_detail,*itemId)
+        setToolbarListener()
         return true
     }
 
-    private fun initToolbarItemListener() {
+    private fun setToolbarListener() {
         toolbarMenu.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.reduceBox->{
@@ -636,21 +636,26 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     }
 
     private fun wipeCacheByWayBillNumber() {
-        //customDialogYesOrNo()
-        DialogUtils.instance()
-            .customDialogYesOrNo(this@CenterOutSendDetailActivity)
-            .setTitle("提示")
-            .setMessage("您确定要清除单号为:\n${datum.单号}\n的缓存信息吗?请谨慎清除!")
-            .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
-                override fun onPositiveBtnClicked() {
-                    wipeCache()
-                }
-            })
-            .setOnNegativeClickListener(object : DialogUtils.OnNegativeClickListener {
-                override fun onNegativeBtnClicked() {
-                }
-            })
-            .show()
+        if(SPUtils.contains(UIUtils.getContext(),"orderDataChanged${datum.单号}")){
+            //customDialogYesOrNo()
+            DialogUtils.instance()
+                .customDialogYesOrNo(this@CenterOutSendDetailActivity)
+                .setTitle("提示")
+                .setMessage("您确定要清除单号为:\n${datum.单号}\n的缓存信息吗?请谨慎清除!")
+                .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
+                    override fun onPositiveBtnClicked() {
+                        wipeCache()
+                    }
+                })
+                .setOnNegativeClickListener(object : DialogUtils.OnNegativeClickListener {
+                    override fun onNegativeBtnClicked() {
+                    }
+                })
+                .show()
+        }else{
+            myToast("此单号无缓存信息!")
+        }
+
     }
 
     private fun wipeCache() {
