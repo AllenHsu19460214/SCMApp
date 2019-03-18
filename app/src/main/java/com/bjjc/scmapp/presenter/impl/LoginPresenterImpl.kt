@@ -1,7 +1,6 @@
 package com.bjjc.scmapp.presenter.impl
 
 import android.content.Context
-import android.content.Intent
 import com.bjjc.scmapp.app.App
 import com.bjjc.scmapp.model.bean.DeviceBean
 import com.bjjc.scmapp.model.vo.LoginVo
@@ -13,6 +12,7 @@ import com.bjjc.scmapp.util.httpUtils.ServiceApi
 import com.bjjc.scmapp.view.LoginView
 import com.google.gson.Gson
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.uiThread
 import retrofit2.Call
 import retrofit2.Callback
@@ -120,8 +120,10 @@ class LoginPresenterImpl(val context:Context,var loginView:LoginView) :LoginPres
      * 跳转到主页面
      */
     private fun gotoMainActivity() {
-        val intent = Intent(context, MainActivity::class.java)
+      /*  val intent = Intent(context, MainActivity::class.java)
         intent.putExtra("UserIdentityBean", App.sfBean)
         context.startActivity(intent)
+        */
+        context.startActivity<MainActivity>("UserIdentityBean" to  App.sfBean )
     }
 }

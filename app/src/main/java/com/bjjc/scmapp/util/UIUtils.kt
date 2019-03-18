@@ -24,32 +24,32 @@ object UIUtils {
     }
     // Get string from xml of strings.
     fun getString(id: Int): String? {
-        return getContext()?.resources?.getString(id)
+        return getContext().resources?.getString(id)
     }
     // Get string array from xml of strings.
     fun getStringArray(id: Int): Array<String>? {
-        return getContext()?.resources?.getStringArray(id)
+        return getContext().resources?.getStringArray(id)
     }
     //Get drawable from file in resources of drawable.
     fun getDrawable(id: Int): Drawable? {
-        return getContext()?.resources?.getDrawable(id)
+        return getContext().resources?.getDrawable(id)
     }
     // Get color from file in resources of color.
     fun getColor(id: Int): Int? {
-        return getContext()?.resources?.getColor(id)
+        return getContext().resources?.getColor(id)
     }
     // Get dimension from xml of dimens.
     fun getDimen(id: Int): Int? {
-        return getContext()?.resources?.getDimensionPixelSize(id)
+        return getContext().resources?.getDimensionPixelSize(id)
     }
     // Transform dp to px.
     fun dp2px(dp: Float): Int? {
-        val density: Float = getContext()?.resources?.displayMetrics?.density!!
+        val density: Float = getContext().resources?.displayMetrics?.density!!
         return density.let { dp * it + 0.5f }.toInt()
     }
     // Transform px to dp.
     fun px2dp(px: Int): Float {
-        val density: Float = getContext()?.resources?.displayMetrics?.density!!
+        val density: Float = getContext().resources?.displayMetrics?.density!!
         return density.let { px / it }
     }
     // Load file of layout.

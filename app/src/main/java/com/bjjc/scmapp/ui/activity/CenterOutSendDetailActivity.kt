@@ -31,6 +31,9 @@ import com.bjjc.scmapp.ui.activity.base.BaseActivity
 import com.bjjc.scmapp.ui.fragment.DataListFragment
 import com.bjjc.scmapp.ui.fragment.ExceptionListFragment
 import com.bjjc.scmapp.util.*
+import com.bjjc.scmapp.util.dialog_custom.DialogDirector
+import com.bjjc.scmapp.util.dialog_custom.impl.DialogBuilderYesImpl
+import com.bjjc.scmapp.util.dialog_custom.impl.DialogBuilderYesNoImpl
 import com.bjjc.scmapp.util.httpUtils.RetrofitUtils
 import com.bjjc.scmapp.util.httpUtils.ServiceApi
 import com.bjjc.scmapp.view.CenterOutSendDetailView
@@ -136,35 +139,23 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                 value.输入箱数 = value.出库输入箱数
             }
             if (isFinished()) {
-                DialogUtils.instance()
-                    .customDialogYesOrNo(this@CenterOutSendDetailActivity)
-                    .setTitle("提示")
-                    .setMessage("订单已完成，要提交到服务器吗?")
-                    .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
-                        override fun onPositiveBtnClicked() {
-                            commitOrSaveOutInfo(isFinished())
-                        }
-                    })
-                    .setOnNegativeClickListener(object : DialogUtils.OnNegativeClickListener {
-                        override fun onNegativeBtnClicked() {
-                        }
-                    })
-                    .show()
+                DialogDirector.showDialog(
+                    DialogBuilderYesNoImpl(this@CenterOutSendDetailActivity),
+                    "提示",
+                    "订单已完成，要提交到服务器吗?",
+                    {
+                        commitOrSaveOutInfo(isFinished())
+                    }
+                )
             } else {
-                DialogUtils.instance()
-                    .customDialogYesOrNo(this@CenterOutSendDetailActivity)
-                    .setTitle("提示")
-                    .setMessage("订单未完成，要保存到服务器吗?")
-                    .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
-                        override fun onPositiveBtnClicked() {
-                            commitOrSaveOutInfo(isFinished())
-                        }
-                    })
-                    .setOnNegativeClickListener(object : DialogUtils.OnNegativeClickListener {
-                        override fun onNegativeBtnClicked() {
-                        }
-                    })
-                    .show()
+                DialogDirector.showDialog(
+                    DialogBuilderYesNoImpl(this@CenterOutSendDetailActivity),
+                    "提示",
+                    "订单未完成，要保存到服务器吗?",
+                    {
+                        commitOrSaveOutInfo(isFinished())
+                    }
+                )
             }
         }
         btnScan_CenterOutSendDetailActivity.setOnClickListener(this)
@@ -180,8 +171,8 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     private fun commitOrSaveOutInfo(isFinished: Boolean) {
         val info = getSaveOrderInfoJson(orderDataChanged)
         val trace = getTraceJson()
-        val point:String? = GpsUtils.getGPSPointString()
-        centerOutSendDetailPresenter.commitOrSaveOrderInfo2Server(isFinished,datum,info,trace,point)
+        val point: String? = GpsUtils.getGPSPointString()
+        centerOutSendDetailPresenter.commitOrSaveOrderInfo2Server(isFinished, datum, info, trace, point)
     }
 
     private fun getSaveOrderInfoJson(orderDataChanged: MutableList<CenterOutSendDetailBean>): String {
@@ -247,7 +238,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                 }
             }
         }
-        initToolBar("出库","扫描信息")
+        initToolBar("出库", "扫描信息")
 
         datum =
             intent.getSerializableExtra(IntentKey.CENTER_OUT_SEND_AND_CENTER_OUT_SEND_DETAIL_CURRENTDATA) as CenterOutSendBean
@@ -379,7 +370,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
         if (data.code == "08") {
             //Wiping the cache which correspond to order.
             //SPUtils.remove(context, "orderDataChanged${datum.单号}")
-            if(SPUtils.contains(UIUtils.getContext(),"orderDataChanged${datum.单号}")){
+            if (SPUtils.contains(UIUtils.getContext(), "orderDataChanged${datum.单号}")) {
                 wipeCache()
             }
             myToast("保存数据成功!")
@@ -566,26 +557,21 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
                 bundle.putSerializable("exceptionCodeInfoList", exceptionCodeInfoList as Serializable)
                 exceptionListFragment.arguments = bundle
                 exceptionListFragment.updateList()
-              /*  ToastUtils.showToastL(
-                    this@CenterOutSendDetailActivity,
-                    exceptionCodeInfoList.toString()
-                )*/
+                /*  ToastUtils.showToastL(
+                      this@CenterOutSendDetailActivity,
+                      exceptionCodeInfoList.toString()
+                  )*/
                 if (!dialogFlag) {
                     //This dialogFlag prevents repeated display.
                     dialogFlag = true
-                    DialogUtils.instance()
-                        .customDialogYes(this@CenterOutSendDetailActivity)
-                        .setTitle("提示")
-                        .setMessage(
-                            "异常箱码: \n$scanCode\n" +
-                                    "异常原因: \n${checkScanCodeVo.msg}"
-                        )
-                        .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
-                            override fun onPositiveBtnClicked() {
-                                dialogFlag = false
-                            }
-                        })
-                        .show()
+                    DialogDirector.showDialog(
+                        DialogBuilderYesImpl(this@CenterOutSendDetailActivity),
+                        "提示",
+                        "异常箱码:\n$scanCode\n异常原因:\n${checkScanCodeVo.msg}",
+                        {
+                            dialogFlag = false
+                        }
+                    )
                 }
 
 
@@ -611,8 +597,8 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
      * Creates the ToolBar。
      */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val itemId= intArrayOf(R.id.reduceBox,R.id.wipeCache)
-        toolbarMenu = setToolBarMenu(R.menu.menu_center_out_send_detail,*itemId)
+        val itemId = intArrayOf(R.id.reduceBox, R.id.wipeCache)
+        toolbarMenu = setToolBarMenu(R.menu.menu_center_out_send_detail, *itemId)
         setToolbarListener()
         return true
     }
@@ -620,7 +606,7 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     private fun setToolbarListener() {
         toolbarMenu.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.reduceBox->{
+                R.id.reduceBox -> {
                     //myToast("\"减箱\" is clicked!")
                     val intent = Intent(context, CenterOutSendReduceBoxActivity::class.java)
                     //intent.putExtra("UserIdentityBean", App.sfBean)
@@ -636,23 +622,17 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
     }
 
     private fun wipeCacheByWayBillNumber() {
-        if(SPUtils.contains(UIUtils.getContext(),"orderDataChanged${datum.单号}")){
+        if (SPUtils.contains(UIUtils.getContext(), "orderDataChanged${datum.单号}")) {
             //customDialogYesOrNo()
-            DialogUtils.instance()
-                .customDialogYesOrNo(this@CenterOutSendDetailActivity)
-                .setTitle("提示")
-                .setMessage("您确定要清除单号为:\n${datum.单号}\n的缓存信息吗?请谨慎清除!")
-                .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
-                    override fun onPositiveBtnClicked() {
-                        wipeCache()
-                    }
-                })
-                .setOnNegativeClickListener(object : DialogUtils.OnNegativeClickListener {
-                    override fun onNegativeBtnClicked() {
-                    }
-                })
-                .show()
-        }else{
+            DialogDirector.showDialog(
+                DialogBuilderYesNoImpl(this@CenterOutSendDetailActivity),
+                "提示",
+                "您确定要清除单号为:\n${datum.单号}\n的缓存信息吗?请谨慎清除!",
+                {
+                    wipeCache()
+                }
+            )
+        } else {
             myToast("此单号无缓存信息!")
         }
 
@@ -707,11 +687,11 @@ class CenterOutSendDetailActivity : BaseActivity(), ToolbarManager, CenterOutSen
             FeedbackUtils.vibrate(this@CenterOutSendDetailActivity, 200)
             currentScanCodeList.add(currentScanCode)
         } else {
-            DialogUtils.instance()
-                .customDialogYes(this@CenterOutSendDetailActivity)
-                .setTitle("提示")
-                .setMessage("此条码\n $currentScanCode \n已扫描!")
-                .show()
+            DialogDirector.showDialog(
+                DialogBuilderYesImpl(this@CenterOutSendDetailActivity),
+                "提示",
+                "此条码\n $currentScanCode \n已扫描!"
+            )
         }
     }
 

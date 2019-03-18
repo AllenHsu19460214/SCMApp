@@ -87,17 +87,6 @@ interface ToolbarManager {
         for(itemId in itemIds){
             menuItems.add(toolbar.menu.findItem(itemId))
         }
-        /*
-        menuItems.add(toolbar.menu.findItem(R.id.setting))
-        menuItems.add(toolbar.menu.findItem(R.id.searchView))
-        menuItems.add(toolbar.menu.findItem(R.id.searchByBillStatus))
-        menuItems.add(toolbar.menu.findItem(R.id.billStatusAll))
-        menuItems.add(toolbar.menu.findItem(R.id.billStatusApprove))
-        menuItems.add(toolbar.menu.findItem(R.id.billStatusPass))
-        menuItems.add(toolbar.menu.findItem(R.id.billStatusUndone))
-        menuItems.add(toolbar.menu.findItem(R.id.reduceBox))
-        menuItems.add(toolbar.menu.findItem(R.id.wipeCache))
-        */
         return toolbar
     }
 

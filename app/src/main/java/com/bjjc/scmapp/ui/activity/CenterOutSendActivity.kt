@@ -21,10 +21,11 @@ import com.bjjc.scmapp.model.bean.CenterOutSendBean
 import com.bjjc.scmapp.presenter.impl.CenterOutSendPresenterImpl
 import com.bjjc.scmapp.presenter.interf.CenterOutSendPresenter
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
-import com.bjjc.scmapp.util.DialogUtils
 import com.bjjc.scmapp.util.FeedbackUtils
 import com.bjjc.scmapp.util.ToastUtils
 import com.bjjc.scmapp.util.ToolbarManager
+import com.bjjc.scmapp.util.dialog_custom.DialogDirector
+import com.bjjc.scmapp.util.dialog_custom.impl.DialogBuilderYesImpl
 import com.bjjc.scmapp.view.CenterOutSendView
 import com.common.zxing.CaptureActivity
 import kotlinx.android.synthetic.main.layout_aty_center_out_send.*
@@ -71,6 +72,14 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
             centerOutSendPresenter.loadWaybillData(true)
         }
         btnScan_CenterOutSendActivity.setOnClickListener(this)
+        lvCenterOutSend.setOnItemClickListener { parent, view, position, id ->
+            val intent = Intent(
+                this@CenterOutSendActivity,
+                CenterOutSendDetailActivity::class.java
+            )
+            intent.putExtra(IntentKey.CENTER_OUT_SEND_AND_CENTER_OUT_SEND_DETAIL_CURRENTDATA, currentData[position])
+            startActivity(intent)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -138,8 +147,12 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
                             billStatusApprovedData.add(value)
                         }
                     }
-                    currentData.clear()
-                    currentData.addAll(billStatusApprovedData)
+                    if (billStatusApprovedData.size > 0) {
+                        currentData.clear()
+                        currentData.addAll(billStatusApprovedData)
+                    } else {
+                        myToast("无查询结果")
+                    }
                 }
                 R.id.billStatusPass -> {
                     val billStatusPassedData: ArrayList<CenterOutSendBean> = ArrayList()
@@ -148,8 +161,12 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
                             billStatusPassedData.add(value)
                         }
                     }
-                    currentData.clear()
-                    currentData.addAll(billStatusPassedData)
+                    if (billStatusPassedData.size > 0) {
+                        currentData.clear()
+                        currentData.addAll(billStatusPassedData)
+                    } else {
+                        myToast("无查询结果")
+                    }
                 }
                 R.id.billStatusUndone -> {
                     val billStatusUndoneData: ArrayList<CenterOutSendBean> = ArrayList()
@@ -158,31 +175,25 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
                             billStatusUndoneData.add(value)
                         }
                     }
-                    currentData.clear()
-                    currentData.addAll(billStatusUndoneData)
-
+                    if (billStatusUndoneData.size > 0) {
+                        currentData.clear()
+                        currentData.addAll(billStatusUndoneData)
+                    } else {
+                        myToast("无查询结果")
+                    }
                 }
-            }
-            if (currentData.size == 0) {
-                myToast("无查询结果")
             }
             //Updates the data in the adapter to avoid using previous data when user clicks an item of list.
             centerOutSendListViewAdapter.updateData(currentData)
-            lvCenterOutSend.setOnItemClickListener { parent, view, position, id ->
-                val intent = Intent(
-                    this@CenterOutSendActivity,
-                    CenterOutSendDetailActivity::class.java
-                )
-                intent.putExtra(IntentKey.CENTER_OUT_SEND_AND_CENTER_OUT_SEND_DETAIL_CURRENTDATA, currentData[position])
-                startActivity(intent)
-            }
             true
+
         }
+
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 val searchCode = query.trim()
                 val searchCodeData: ArrayList<CenterOutSendBean> = ArrayList()
-                for (value in currentData) {
+                for (value in originalData) {
                     if (value.单号.contains(searchCode)) {
                         searchCodeData.add(value)
                     }
@@ -192,15 +203,11 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
                     currentData.addAll(searchCodeData)
                     centerOutSendListViewAdapter.updateData(currentData)
                 } else {
-                    DialogUtils.instance()
-                        .customDialogYes(this@CenterOutSendActivity)
-                        .setTitle("提示")
-                        .setMessage("未在列表中搜索到该物流单号，\n请输入正确的物流单号!")
-                        .setOnPositiveClickListener(object : DialogUtils.OnPositiveClickListener {
-                            override fun onPositiveBtnClicked() {}
-                        })
-                        .show()
-                    //myToast("未在列表中搜索到该物流单号，\n请输入正确的物流单号!")
+                    DialogDirector.showDialog(
+                        DialogBuilderYesImpl(this@CenterOutSendActivity),
+                        "提示",
+                    "未在列表中搜索到该物流单号，\n请输入正确的物流单号!"
+                    )
                 }
                 return true
             }
@@ -224,10 +231,10 @@ class CenterOutSendActivity : BaseActivity(), ToolbarManager, CenterOutSendView,
                     //vibrate Feedback。
                     FeedbackUtils.vibrate(this@CenterOutSendActivity, 200)
                     scanNumber = currentScanCode
-                   /*
-                    Sets the content of the searchView.
-                    param submit : True means that search  immediately.
-                    */
+                    /*
+                     Sets the content of the searchView.
+                     param submit : True means that search  immediately.
+                     */
                     searchView?.setQuery(currentScanCode, true)
                 }
                 //Reading the bar code is failing.

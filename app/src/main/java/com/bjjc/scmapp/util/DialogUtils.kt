@@ -33,8 +33,9 @@ class DialogUtils private constructor() {
             .setView(dialogInitView(context, layoutId))
             .setCancelable(false)
             .create()
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.show()
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         // 将对话框的大小按屏幕大小的百分比设置
         val dialogWindow = dialog?.window
         val m = context.windowManager
