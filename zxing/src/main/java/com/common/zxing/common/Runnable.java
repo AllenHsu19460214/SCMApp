@@ -15,7 +15,6 @@ import java.util.concurrent.Executors;
 public class Runnable {
 
 	@SuppressLint("NewApi")
-	@SuppressWarnings("unchecked")
 	public static void execAsync(AsyncTask<?, ?, ?> task) {
 		if (Build.VERSION.SDK_INT >= 11) {
 			//task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
