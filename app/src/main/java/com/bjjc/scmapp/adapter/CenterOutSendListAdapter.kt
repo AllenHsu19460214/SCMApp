@@ -1,71 +1,50 @@
 package com.bjjc.scmapp.adapter
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.TextView
 import com.bjjc.scmapp.R
-import com.bjjc.scmapp.model.bean.CenterOutSendBean
+import com.bjjc.scmapp.holder.MyBaseHolder
+import com.bjjc.scmapp.model.bean.CenterOutSendMxBean
+import com.bjjc.scmapp.util.UIUtils
 import org.jetbrains.anko.find
 
 /**
  * Created by Allen on 2018/12/12 13:57
  */
-class CenterOutSendListAdapter(var context: Context) : BaseAdapter() {
-    private  var data: ArrayList<CenterOutSendBean> = ArrayList()
-    fun updateData(data: List<CenterOutSendBean>) {
-        this.data.clear()
-        this.data.addAll(data)
-        notifyDataSetChanged()
+class CenterOutSendListAdapter : MyBaseAdapter<CenterOutSendMxBean>() {
+    override fun getHolder(): MyBaseHolder<CenterOutSendMxBean> {
+        return ViewHolder()
     }
-    @SuppressLint("InflateParams")
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        var reuseView = convertView
-        val viewHolder: CenterOutSendListAdapter.ViewHolder
-        if (reuseView == null) {
-            reuseView = LayoutInflater.from(context).inflate(R.layout.layout_adpitem_center_out_send_list, null)
-            viewHolder = ViewHolder(reuseView)
-            reuseView!!.tag = viewHolder
-        } else {
-            viewHolder = reuseView.tag as CenterOutSendListAdapter.ViewHolder
+
+    inner class ViewHolder : MyBaseHolder<CenterOutSendMxBean>() {
+        private lateinit var view: View
+        private val tvOrderStatus: TextView by lazy { view.find<TextView>(R.id.tvOrderStatus) }
+        private val tvOrderPriority: TextView by lazy { view.find<TextView>(R.id.tvOrderPriority) }
+        private val tvInPlace: TextView by lazy { view.find<TextView>(R.id.tvPutInInstitution) }
+        private val tvOrderNumber: TextView by lazy { view.find<TextView>(R.id.tvOrderNumber) }
+
+        override fun initView(): View {
+            view = UIUtils.inflate(R.layout.layout_adpitem_center_out_send_list)
+            return view
         }
-        viewHolder.tvOrderStatus.text = data[position].单据状态
-        viewHolder.tvOrderPriority.text = data[position].加急级别
-        viewHolder.tvInOrganization.text = formatInOrganizationText(data[position].入库单位)
-        viewHolder.tvOrderNumber.text = data[position].单号
-        return reuseView
-    }
 
-    override fun getItem(position: Int): Any {
-        return data[position]
-    }
-
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    override fun getCount(): Int {
-        return data.size
-    }
-
-    inner class ViewHolder(view: View) {
-         val tvOrderStatus: TextView by lazy { view.find<TextView>(R.id.tvOrderStatus) }
-        val tvOrderPriority: TextView by lazy { view.find<TextView>(R.id.tvOrderPriority) }
-        val tvInOrganization: TextView by lazy { view.find<TextView>(R.id.tvPutInInstitution) }
-        val tvOrderNumber: TextView by lazy { view.find<TextView>(R.id.tvOrderNumber) }
+        override fun refreshView(data: CenterOutSendMxBean) {
+            tvOrderStatus.text = data.单据状态
+            tvOrderPriority.text = data.加急级别
+            tvInPlace.text = formatInPlaceText(data.入库单位)
+            tvOrderNumber.text = data.单号
+        }
 
     }
-    private fun formatInOrganizationText(str:String):String{
-        val strs = str.split(",")
-        val strBuilder:StringBuilder= java.lang.StringBuilder()
-        for(value in strs){
+
+    private fun formatInPlaceText(str: String): String {
+        val places = str.split(",")
+        val strBuilder: StringBuilder = java.lang.StringBuilder()
+        for (value in places) {
             strBuilder.append(value)
             strBuilder.append("\n")
         }
-        strBuilder.deleteCharAt(strBuilder.length-1)
+        strBuilder.deleteCharAt(strBuilder.length - 1)
         return strBuilder.toString()
     }
 }

@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.ListView
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.adapter.DetailListAdapter
-import com.bjjc.scmapp.model.bean.CenterOutSendDetailBean
+import com.bjjc.scmapp.model.bean.CenterOutSendDetailMxBean
 import com.bjjc.scmapp.ui.fragment.base.BaseFragment
 import org.jetbrains.anko.find
 
@@ -12,7 +12,7 @@ import org.jetbrains.anko.find
  * Created by Allen on 2018/12/14 9:56
  */
 class DetailListFragment:BaseFragment() {
-    private var data: List<CenterOutSendDetailBean>? = null
+    private var data: List<CenterOutSendDetailMxBean>? = null
     private var detailListView: View? = null
     private val detailListAdapter: DetailListAdapter by lazy { DetailListAdapter(activity) }
     override fun initView(): View? {
@@ -23,7 +23,7 @@ class DetailListFragment:BaseFragment() {
     override fun initData() {
         val lvDetailList=detailListView!!.find<ListView>(R.id.lvDetailList)
         arguments?.let {
-            data = it.getSerializable("orderDetailList") as List<CenterOutSendDetailBean>
+            data = it.getSerializable("orderDetailList") as List<CenterOutSendDetailMxBean>
         }
         detailListAdapter.setData(data)
         if (lvDetailList.adapter==null){

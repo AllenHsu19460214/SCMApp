@@ -12,7 +12,7 @@ import com.bjjc.scmapp.ui.activity.CenterOutTransferActivity
  * Created by Allen on 2018/12/04 14:57
  */
 class CenterOutModeGridAdapter(override var context: Context) : GridBaseAdapter(context) {
-    override fun whichItemSelected(tag: Any) {
+    override fun whichItemSelected(tag: String) {
         when (tag) {
             "配送出库" -> {
                 val intent=Intent(context, CenterOutSendActivity::class.java)

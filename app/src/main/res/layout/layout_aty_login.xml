@@ -54,7 +54,7 @@
                         android:background="@drawable/user_name"/>
 
                 <EditText
-                        android:text="gz-rh"
+                        android:text="cc"
                         android:id="@+id/etLoginUsername"
                         android:layout_width="0dp"
                         android:layout_height="40dp"

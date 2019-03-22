@@ -81,11 +81,14 @@ object SPUtils {
      *
      * @param context
      */
-    fun clear(context: Context) {
+    fun clearAll(context: Context) {
         val sp = getSharedPreferences(context)
         val editor = sp.edit()
         editor.clear()
         SharedPreferencesCompat.apply(editor)
+    }
+    fun clearOrder(context: Context){
+        getAll(context).filter { it.key!="isNewApp"}.map { remove(context,it.key) }
     }
 
     /**

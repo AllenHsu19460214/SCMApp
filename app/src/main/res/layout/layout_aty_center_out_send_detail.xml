@@ -175,7 +175,7 @@
             android:background="@color/colorPrimaryDark"
             android:orientation="horizontal">
         <Button android:visibility="gone"
-                android:id="@+id/btnScan_CenterOutSendDetailActivity"
+                android:id="@+id/btnScan"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -185,7 +185,7 @@
                 android:layout_margin="3dp"
                 android:background="@drawable/shape_rectangle_all_dark_blue"
                 tools:visibility="visible"/>
-        <Button android:id="@+id/btnOutputSubmit"
+        <Button android:id="@+id/btnSubmit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

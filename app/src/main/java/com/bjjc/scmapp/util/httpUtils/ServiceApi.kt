@@ -1,10 +1,10 @@
 package com.bjjc.scmapp.util.httpUtils
 
 import com.bjjc.scmapp.model.bean.CommonResultBean
-import com.bjjc.scmapp.model.vo.CenterOutSendDetailVo
-import com.bjjc.scmapp.model.vo.CenterOutSendVo
-import com.bjjc.scmapp.model.vo.CheckScanCodeVo
-import com.bjjc.scmapp.model.vo.LoginVo
+import com.bjjc.scmapp.model.bean.CenterOutSendDetailBean
+import com.bjjc.scmapp.model.bean.CenterOutSendBean
+import com.bjjc.scmapp.model.bean.CheckQRCodeBean
+import com.bjjc.scmapp.model.bean.LoginBean
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -24,7 +24,7 @@ interface ServiceApi {
         @Field("sign") sign: String?,
         @Field("type") type: String,
         @Field("sysIndex") sysIndex: String
-    ): Call<LoginVo>
+    ): Call<LoginBean>
 
     @POST("storeJson_1.3.0.php")
     @FormUrlEncoded
@@ -34,7 +34,7 @@ interface ServiceApi {
         @Field("djtype") djtype: String,
         @Field("crktype") crktype: String,
         @Field("sysIndex") sysIndex: String
-    ): Call<CenterOutSendVo>
+    ): Call<CenterOutSendBean>
 
     @POST("storeJson_1.3.0.php")
     @FormUrlEncoded
@@ -43,18 +43,18 @@ interface ServiceApi {
         @Field("key") key: String?,
         @Field("dh") dh: String,
         @Field("smtype") smtype: String
-    ): Call<CenterOutSendDetailVo>
+    ): Call<CenterOutSendDetailBean>
 
     @POST("storeJson_1.3.0.php")
     @FormUrlEncoded
-    fun checkScanCode(
+    fun checkQRCode(
         @Field("command") command: String,
         @Field("type") type: String?,
         @Field("sn") sn: String,
         @Field("ckdw") ckdw: String,
         @Field("rkdw") rkdw: String,
         @Field("dh") dh: String
-    ): Call<CheckScanCodeVo>
+    ): Call<CheckQRCodeBean>
 
     @POST("storeJson_1.3.0.php")
     @FormUrlEncoded

@@ -3,7 +3,7 @@ package com.bjjc.scmapp.presenter.impl
 import android.content.Context
 import com.bjjc.scmapp.app.App
 import com.bjjc.scmapp.model.bean.DeviceBean
-import com.bjjc.scmapp.model.vo.LoginVo
+import com.bjjc.scmapp.model.bean.LoginBean
 import com.bjjc.scmapp.presenter.interf.LoginPresenter
 import com.bjjc.scmapp.ui.activity.MainActivity
 import com.bjjc.scmapp.util.*
@@ -24,7 +24,7 @@ import retrofit2.Response
 class LoginPresenterImpl(val context:Context,var loginView:LoginView) :LoginPresenter{
     private val deviceBean by lazy { DeviceBean() }
     override fun login(username:String,password:String) {
-        checkLoginInfo(username, password)
+        checkUserInfo(username, password)
     }
     /**
      * get some Information of current device.
@@ -45,14 +45,10 @@ class LoginPresenterImpl(val context:Context,var loginView:LoginView) :LoginPres
     /**
      * Checks the information of inputting by user.
      */
-    private fun checkLoginInfo(username:String, password:String) {
+    private fun checkUserInfo(username:String, password:String) {
         if (checkStringUtils.checkUserName(username)){
             if (checkStringUtils.checkPassWord(password)) {
-                if (App.offLineFlag){
-                    getUserInfoOffLine()
-                }else{
-                    getUserInfoFromServer(username, password)
-                }
+                if (!App.offLineFlag) loginIn(username, password)else loginInOffline()
             }else{
                 loginView.onError("请确保密码符合以下规则:\n(长度在6~20之间，只能包含字母、数字)")
             }
@@ -61,9 +57,9 @@ class LoginPresenterImpl(val context:Context,var loginView:LoginView) :LoginPres
         }
     }
     //Sending request of login to server.
-    private fun getUserInfoFromServer(username: String, password: String) {
+    private fun loginIn(username: String, password: String) {
         val progressDialog = ProgressDialogUtils.showProgressDialog(context, "正在登录中!")
-            RetrofitUtils.getRetrofit(App.base_url!!).create(ServiceApi::class.java)
+            RetrofitUtils.getRetrofit(App.base_url).create(ServiceApi::class.java)
                 .login(
                     "1",
                     username,
@@ -72,58 +68,44 @@ class LoginPresenterImpl(val context:Context,var loginView:LoginView) :LoginPres
                     deviceBean.sign,
                     "PDA",
                     "0"
-                ).enqueue(object : Callback<LoginVo> {
-                    override fun onFailure(call: Call<LoginVo>, t: Throwable) {
+                ).enqueue(object : Callback<LoginBean> {
+                    override fun onFailure(call: Call<LoginBean>, t: Throwable) {
                         doAsync {
                             Thread.sleep(2000)
                             uiThread {
-                                // 判断等待框是否正在显示
                                 if (progressDialog.isShowing) {
-                                    progressDialog.dismiss()// 关闭等待框
+                                    progressDialog.dismiss()
                                     loginView.onError(t.message)
                                 }
                             }
                         }
                     }
 
-                    override fun onResponse(call: Call<LoginVo>, response: Response<LoginVo>) {
+                    override fun onResponse(call: Call<LoginBean>, response: Response<LoginBean>) {
                         // 判断等待框是否正在显示
                         if (progressDialog.isShowing) {
                             progressDialog.dismiss()// 关闭等待框
                         }
-                        //myToast(response.body().toString())
-                        App.loginVo = response.body() as LoginVo
-                        //info { loginVo }
-                        if (App.loginVo?.code == "08") {
-                            ToastUtils.showToastS(context, App.loginVo?.msg)
-                            App.sfBean = App.loginVo?.sf
-                            gotoMainActivity()
+                        App.loginBean = response.body() as LoginBean
+                        if (App.loginBean.code == "08") {
+                            ToastUtils.showToastS(context, App.loginBean.msg)
+                            App.userIdentityBean = App.loginBean.sf
+                            context.startActivity<MainActivity>("UserIdentityBean" to App.userIdentityBean )
                         } else {
-                            loginView.onError(App.loginVo?.msg)
+                            loginView.onError(App.loginBean.msg)
                         }
                     }
 
                 })
     }
-    private fun getUserInfoOffLine() {
-        val loginVoJson = readFileUtils.getFromAssets(context, "offline/login.json")
-        val gson = Gson()
-        App.loginVo = gson.fromJson<LoginVo>(loginVoJson, LoginVo::class.java)
-        if (App.loginVo?.code == "08") {
-            loginView.onError(App.loginVo!!.msg)
-            App.sfBean = App.loginVo?.sf
-            gotoMainActivity()
+    private fun loginInOffline() {
+        val loginBeanJson = readFileUtils.getFromAssets(context, "offline/login.json")
+        App.loginBean = Gson().fromJson<LoginBean>(loginBeanJson, LoginBean::class.java)
+        if (App.loginBean.code == "08") {
+            loginView.onError(App.loginBean.msg)
+            App.userIdentityBean = App.loginBean.sf
+            context.startActivity<MainActivity>("UserIdentityBean" to App.userIdentityBean )
         }
     }
 
-    /**
-     * 跳转到主页面
-     */
-    private fun gotoMainActivity() {
-      /*  val intent = Intent(context, MainActivity::class.java)
-        intent.putExtra("UserIdentityBean", App.sfBean)
-        context.startActivity(intent)
-        */
-        context.startActivity<MainActivity>("UserIdentityBean" to  App.sfBean )
-    }
 }

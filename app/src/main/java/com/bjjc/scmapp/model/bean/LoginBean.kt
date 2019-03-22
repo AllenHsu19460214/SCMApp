@@ -1,6 +1,5 @@
-package com.bjjc.scmapp.model.vo
+package com.bjjc.scmapp.model.bean
 import com.bjjc.scmapp.annotation.Poko
-import com.bjjc.scmapp.model.bean.UserIdentityBean
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
@@ -10,7 +9,7 @@ import java.io.Serializable
  * 登录返回信息实体类
  */
 @Poko
-data class LoginVo(
+data class LoginBean(
     @SerializedName("SerialNo")
     val serialNo: String = "",
     @SerializedName("code")

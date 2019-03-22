@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" package="com.bjjc.scmapp">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.bjjc.scmapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -17,10 +18,19 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme" tools:ignore="AllowBackup">
-        <activity android:name=".ui.activity.CenterOutSendReduceBoxActivity">
+            android:theme="@style/AppTheme"
+            tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity android:name=".ui.activity.TestListRefreshActivity">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>-->
         </activity>
-        <!-- developmentMode，debug:debugMode，test:testMode，pro:productionMode -->
+        <activity android:name=".ui.activity.GuideActivity">
+        </activity>
+        <activity android:name=".ui.activity.CenterOutSendReduceBoxActivity">
+        </activity> <!-- developmentMode，debug:debugMode，test:testMode，pro:productionMode -->
         <meta-data
                 android:name="DEV_MODEL"
                 android:value="debug"/> <!-- MainActivity -->
@@ -29,20 +39,16 @@
         <activity
                 android:name=".ui.activity.LoginActivity"
                 android:theme="@style/AppTheme.intrusiveMood">
+        </activity> <!-- SplashActivity -->
+        <activity
+                android:name=".ui.activity.SplashActivity"
+                android:theme="@style/AppTheme.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
-
-                <action android:name="android.intent.action.VIEW"/>
             </intent-filter>
-        </activity>
-        <!-- SplashActivity -->
-        <activity
-                android:name=".ui.activity.SplashActivity"
-                android:theme="@style/AppTheme.FullScreen">
-        </activity>
-        <!-- CenterOut -->
+        </activity> <!-- CenterOut -->
         <activity android:name=".ui.activity.CenterOutModeActivity">
         </activity>
         <activity android:name=".ui.activity.CenterOutSendActivity">
@@ -53,16 +59,16 @@
         </activity>
         <activity android:name=".ui.activity.CenterOutReverseActivity">
         </activity>
-        <activity android:name=".ui.activity.CenterOutSendDetailActivity"
-                  android:windowSoftInputMode="adjustPan|stateHidden">
+        <activity
+                android:name=".ui.activity.CenterOutSendDetailActivity"
+                android:windowSoftInputMode="adjustPan|stateHidden">
         </activity> <!-- CenterIn -->
         <activity android:name=".ui.activity.CenterInModeActivity">
         </activity>
         <activity android:name=".ui.activity.CenterInActivity">
         </activity>
         <activity android:name=".ui.activity.CenterInTransferActivity">
-        </activity>
-        <!-- Center -->
+        </activity> <!-- Center -->
         <activity android:name=".ui.activity.SearchActivity">
         </activity>
         <activity android:name=".ui.activity.InventoryActivity">

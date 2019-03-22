@@ -7,7 +7,7 @@ import com.bjjc.scmapp.util.dialog_custom.IDialogBuilder
 /**
  * Created by Allen on 2019/03/15 10:45
  */
-class DialogBuilderYesImpl(mContext:Context): DialogBuilderImpl(mContext), IDialogBuilder{
+class DialogBuilderYesImpl(mContext:Context): AbstractDialogBuilderImpl(mContext), IDialogBuilder{
     override fun setLayOutId() {
         mLayoutId= R.layout.layout_dialog_custom_yes
     }

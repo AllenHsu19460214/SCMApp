@@ -2,9 +2,9 @@ package com.bjjc.scmapp.presenter.impl
 
 import android.content.Context
 import com.bjjc.scmapp.app.App
-import com.bjjc.scmapp.model.bean.CenterOutSendBean
+import com.bjjc.scmapp.model.bean.CenterOutSendDetailBean
+import com.bjjc.scmapp.model.bean.CenterOutSendMxBean
 import com.bjjc.scmapp.model.bean.CommonResultBean
-import com.bjjc.scmapp.model.vo.CenterOutSendDetailVo
 import com.bjjc.scmapp.presenter.interf.CenterOutSendDetailPresenter
 import com.bjjc.scmapp.util.ProgressDialogUtils
 import com.bjjc.scmapp.util.httpUtils.RetrofitUtils
@@ -23,27 +23,27 @@ import retrofit2.Response
  */
 class CenterOutSendDetailPresenterImpl(var context:Context,var centerOutSendDetailView: CenterOutSendDetailView):CenterOutSendDetailPresenter {
 
-    override fun loadWaybillDetailData(isRefresh: Boolean,data: CenterOutSendBean) {
+    override fun loadData(data: CenterOutSendMxBean) {
         if (App.offLineFlag){
             loadDetailDataOffLine(data)
         }else{
-            loadDetailDataFromServer(isRefresh,data)
+            loadDetailDataFromServer(data)
         }
     }
     /**
      * Gets Detail of orders for goods from waybill.
      */
-    private fun loadDetailDataFromServer(refresh: Boolean,data: CenterOutSendBean) {
+    private fun loadDetailDataFromServer(data: CenterOutSendMxBean) {
         val progressDialog =
             ProgressDialogUtils.showProgressDialog(context, "正在获取数据中!")
-        RetrofitUtils.getRetrofit(App.base_url!!).create(ServiceApi::class.java)
+        RetrofitUtils.getRetrofit(App.base_url).create(ServiceApi::class.java)
             .centerOutSendDetail(
                 "3",
-                App.loginVo!!.key,
+                App.loginBean.key,
                 data.单号,
                 "CK"
-            ).enqueue(object : Callback<CenterOutSendDetailVo> {
-                override fun onFailure(call: Call<CenterOutSendDetailVo>, t: Throwable) {
+            ).enqueue(object : Callback<CenterOutSendDetailBean> {
+                override fun onFailure(call: Call<CenterOutSendDetailBean>, t: Throwable) {
                     doAsync {
                         Thread.sleep(2000)
                         uiThread {
@@ -56,23 +56,69 @@ class CenterOutSendDetailPresenterImpl(var context:Context,var centerOutSendDeta
                 }
 
                 override fun onResponse(
-                    call: Call<CenterOutSendDetailVo>,
-                    response: Response<CenterOutSendDetailVo>
+                    call: Call<CenterOutSendDetailBean>,
+                    response: Response<CenterOutSendDetailBean>
                 ) {
-                    // 判断等待框是否正在显示
                     if (progressDialog.isShowing) {
-                        progressDialog.dismiss()// 关闭等待框
+                        progressDialog.dismiss()
                     }
-                    centerOutSendDetailView.onLoadWaybillDetailDataSuccess(response.body() as CenterOutSendDetailVo)
+                    centerOutSendDetailView.onLoadSuccess(response.body() as CenterOutSendDetailBean)
                 }
 
             })
     }
 
+    //saves order info to server.
+    override fun submitOrSaveOrderInfo(
+        b: Boolean,
+        data: CenterOutSendMxBean,
+        info: String,
+        trace: String,
+        point: String?
+    ) {
+        val progressDialog =
+            ProgressDialogUtils.showProgressDialog(context, "正在保存数据中!")
+        RetrofitUtils.getRetrofit(App.base_url).create(ServiceApi::class.java)
+            .centerOutSendDetailSaveOrderInfo(
+                "1",
+                App.loginBean.key,
+                data.单号,
+                if(b){"已出库"}else{"未出完"},
+                info,
+                trace,
+                point,
+                "0",
+                "0"
+            ).enqueue(object : Callback<CommonResultBean> {
+                override fun onFailure(call: Call<CommonResultBean>, t: Throwable) {
+                    doAsync {
+                        Thread.sleep(2000)
+                        uiThread {
+                            if (progressDialog.isShowing) {
+                                progressDialog.dismiss()
+                                centerOutSendDetailView.onError(t.message)
+                            }
+                        }
+                    }
+                }
+
+                override fun onResponse(
+                    call: Call<CommonResultBean>,
+                    response: Response<CommonResultBean>
+                ) {
+                    if (progressDialog.isShowing) {
+                        progressDialog.dismiss()
+                    }
+                    centerOutSendDetailView.onSubmitSuccess(response.body() as CommonResultBean)
+                }
+
+            })
+    }
+    //====================================================OffLineData====================================================================
     /**
      * Offline Data
      */
-    private fun loadDetailDataOffLine(data: CenterOutSendBean) {
+    private fun loadDetailDataOffLine(data: CenterOutSendMxBean) {
         val centerOutSendDetailVoJson = when (data.单号) {
             "WLD2018111216311209001" -> {
                 readFileUtils.getFromAssets(
@@ -130,56 +176,10 @@ class CenterOutSendDetailPresenterImpl(var context:Context,var centerOutSendDeta
             }
         }
         val gson = Gson()
-        val datum: CenterOutSendDetailVo =
-            gson.fromJson<CenterOutSendDetailVo>(centerOutSendDetailVoJson, CenterOutSendDetailVo::class.java)
-        centerOutSendDetailView.onLoadWaybillDetailDataSuccess(datum)
+        val datum: CenterOutSendDetailBean =
+            gson.fromJson<CenterOutSendDetailBean>(centerOutSendDetailVoJson, CenterOutSendDetailBean::class.java)
+        centerOutSendDetailView.onLoadSuccess(datum)
     }
-    //saves order info to server.
-    override fun commitOrSaveOrderInfo2Server(
-        b: Boolean,
-        data: CenterOutSendBean,
-        info: String,
-        trace: String,
-        point: String?
-    ) {
-        val progressDialog =
-            ProgressDialogUtils.showProgressDialog(context, "正在保存数据中!")
-        RetrofitUtils.getRetrofit(App.base_url!!).create(ServiceApi::class.java)
-            .centerOutSendDetailSaveOrderInfo(
-                "1",
-                App.loginVo!!.key,
-                data.单号,
-                if(b){"已出库"}else{"未出完"},
-                info,
-                trace,
-                point,
-                "0",
-                "0"
-            ).enqueue(object : Callback<CommonResultBean> {
-                override fun onFailure(call: Call<CommonResultBean>, t: Throwable) {
-                    doAsync {
-                        Thread.sleep(2000)
-                        uiThread {
-                            if (progressDialog.isShowing) {
-                                progressDialog.dismiss()
-                                centerOutSendDetailView.onError(t.message)
-                            }
-                        }
-                    }
-                }
-
-                override fun onResponse(
-                    call: Call<CommonResultBean>,
-                    response: Response<CommonResultBean>
-                ) {
-                    // 判断等待框是否正在显示
-                    if (progressDialog.isShowing) {
-                        progressDialog.dismiss()// 关闭等待框
-                    }
-                    centerOutSendDetailView.onCommitOrSaveOrderInfoSuccess(response.body() as CommonResultBean)
-                }
-
-            })
-    }
+    //====================================================/OffLineData===================================================================
 
 }

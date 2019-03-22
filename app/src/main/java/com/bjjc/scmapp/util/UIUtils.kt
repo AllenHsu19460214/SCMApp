@@ -43,7 +43,7 @@ object UIUtils {
         return getContext().resources?.getDimensionPixelSize(id)
     }
     // Transform dp to px.
-    fun dp2px(dp: Float): Int? {
+    fun dp2px(dp: Float): Int {
         val density: Float = getContext().resources?.displayMetrics?.density!!
         return density.let { dp * it + 0.5f }.toInt()
     }

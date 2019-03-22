@@ -13,7 +13,7 @@
                   android:layout_weight="1"
                   android:orientation="vertical">
         <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/refreshLayout"
+                android:id="@+id/srlPullToRefresh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             <ListView
@@ -26,7 +26,7 @@
 
     </LinearLayout>
     <Button android:visibility="gone"
-            android:id="@+id/btnScan_CenterOutSendActivity"
+            android:id="@+id/btnScan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"

@@ -1,4 +1,4 @@
-package com.bjjc.scmapp.model.vo
+package com.bjjc.scmapp.model.bean
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
@@ -6,7 +6,7 @@ import java.io.Serializable
 /**
  * Created by Allen on 2018/12/21 14:10
  */
-data class CheckScanCodeVo(
+data class CheckQRCodeBean(
     @SerializedName("SerialNo")
     val serialNo: String = "",
     @SerializedName("code")

@@ -9,7 +9,7 @@
         tools:context=".ui.activity.CenterOutModeActivity">
     <include layout="@layout/toolbar"/>
     <GridView
-            android:id="@+id/gvChuKuModeChoice"
+            android:id="@+id/gvCenterOutMode"
             android:layout_marginTop="15dp"
             android:paddingLeft="26dp"
             android:paddingRight="26dp"

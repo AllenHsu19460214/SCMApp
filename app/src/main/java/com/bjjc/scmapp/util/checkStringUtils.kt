@@ -18,7 +18,8 @@ class checkStringUtils {
             val regExp = "^[a-zA-Z][a-zA-Z0-9_-]{2,15}\$"
             val p = Pattern.compile(regExp)
             val m = p.matcher(username)
-            return m.matches()
+            //return m.matches()
+            return true
         }
 
         /**
@@ -29,7 +30,8 @@ class checkStringUtils {
             val regExp = "^[a-zA-Z0-9]{1,20}+\$"
             val p = Pattern.compile(regExp)
             val m = p.matcher(password)
-            return m.matches()
+//            return m.matches()
+            return true
         }
 
         /***

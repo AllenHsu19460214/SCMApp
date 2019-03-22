@@ -93,8 +93,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
      */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         /*
-         val inflater = menuInflater
-         inflater.inflate(R.menu.menu_login, menu)
+         menuInflater.inflate(R.menu.menu_login, menu)
          */
         return true
     }

@@ -8,15 +8,15 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.bjjc.scmapp.R
-import com.bjjc.scmapp.model.bean.CenterOutSendDetailBean
+import com.bjjc.scmapp.model.bean.CenterOutSendDetailMxBean
 import org.jetbrains.anko.find
 
 /**
  * Created by Allen on 2018/12/13 11:24
  */
 class DetailListAdapter(var context: FragmentActivity?):BaseAdapter() {
-    private  var data:List<CenterOutSendDetailBean>? = null
-    fun setData(data: List<CenterOutSendDetailBean>?){
+    private  var data:List<CenterOutSendDetailMxBean>? = null
+    fun setData(data: List<CenterOutSendDetailMxBean>?){
        data?.let {
            this.data = data
        }

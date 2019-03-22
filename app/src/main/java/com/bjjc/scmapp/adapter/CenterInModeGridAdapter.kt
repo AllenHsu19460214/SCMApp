@@ -10,7 +10,7 @@ import com.bjjc.scmapp.ui.activity.CenterInTransferActivity
  * Created by Allen on 2018/12/04 14:57
  */
 class CenterInModeGridAdapter(override var context: Context) : GridBaseAdapter(context) {
-    override fun whichItemSelected(tag: Any) {
+    override fun whichItemSelected(tag: String) {
         when (tag) {
             "中心库入库" -> {
                 val intent = Intent(context, CenterInActivity::class.java)

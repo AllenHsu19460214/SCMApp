@@ -8,8 +8,9 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import com.bjjc.scmapp.R
+import com.bjjc.scmapp.model.bean.LoginBean
 import com.bjjc.scmapp.model.bean.UserIdentityBean
-import com.bjjc.scmapp.model.vo.LoginVo
+import com.bjjc.scmapp.util.SPUtils
 import com.hjq.toast.ToastUtils
 import com.hjq.toast.style.ToastWhiteStyle
 import java.io.InputStream
@@ -41,19 +42,20 @@ class App : Application() {
         fun getMainThreadId():Int{
             return mainThreadId
         }
-
+        var isNewApp:Boolean = true
         var deviceModel: String = ""
         var isPDA: Boolean = false
         var offLineFlag: Boolean = false
         var verName: String? = null
         var devModel: String? = null
-        var base_url: String? = null
-        var loginVo: LoginVo? = null
-        var sfBean: UserIdentityBean? = null
+        lateinit var base_url: String
+        lateinit var loginBean: LoginBean
+        lateinit var userIdentityBean: UserIdentityBean
     }
 
     override fun onCreate() {
         super.onCreate()
+        isNewApp= SPUtils[this, "isNewApp", true] as Boolean
         initGlobalVariable()
         deviceModel = getDeviceModel()
         isPDA = isPDA()

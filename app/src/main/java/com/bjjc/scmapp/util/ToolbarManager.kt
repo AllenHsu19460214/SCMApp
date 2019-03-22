@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import com.bjjc.scmapp.R
-import com.bjjc.scmapp.ui.activity.CenterOutSendActivity
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
 import org.jetbrains.anko.appcompat.v7.coroutines.onQueryTextFocusChange
 
@@ -51,7 +50,7 @@ interface ToolbarManager {
      */
     fun setTitle(title: String, subtitle: String) {
         toolbar.title = title
-        toolbar.subtitle = title
+        toolbar.subtitle = subtitle
         //toolbarTitle.text = "$role : $trueName"
     }
 
@@ -83,14 +82,15 @@ interface ToolbarManager {
      */
     fun setToolBarMenu(id:Int,vararg itemIds:Int): Toolbar {
         toolbar.inflateMenu(id)
-        menuItems = ArrayList()
-        for(itemId in itemIds){
-            menuItems.add(toolbar.menu.findItem(itemId))
-        }
+            menuItems = ArrayList()
+            for(itemId in itemIds){
+                menuItems.add(toolbar.menu.findItem(itemId))
+            }
+
         return toolbar
     }
 
-    fun setSearchView(): SearchView? {
+    fun setSearchView(queryHint:String,iSearchView:ISearchView): SearchView? {
         var searchView:SearchView?=null
         menuItems.forEach {
             if (it.title==ToolbarManager.SEARCH) {
@@ -99,18 +99,12 @@ interface ToolbarManager {
         }
         searchView?.isSubmitButtonEnabled = true
         setUnderLineTransparent(searchView!!)
-        searchView?.queryHint = "输入或扫描单据号码"
+        searchView?.queryHint = queryHint
         searchView?.setOnSearchClickListener {
-            if (CenterOutSendActivity.scanNumber != null) {
-                searchView?.setQuery(CenterOutSendActivity.scanNumber, false)
-            }
+            iSearchView.onSearchClickListener()
         }
         searchView?.onQueryTextFocusChange { v, hasFocus ->
-            if (!hasFocus) {
-                if (CenterOutSendActivity.scanNumber != null) {
-                    CenterOutSendActivity.scanNumber = null
-                }
-            }
+            iSearchView.onQueryTextFocusChange(hasFocus)
         }
         return searchView
     }
@@ -131,6 +125,9 @@ interface ToolbarManager {
         }
 
     }
-
+    interface ISearchView{
+        fun onSearchClickListener()
+        fun onQueryTextFocusChange(hasFocus:Boolean)
+    }
 
 }

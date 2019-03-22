@@ -10,7 +10,7 @@ import com.bjjc.scmapp.ui.activity.*
  */
 class MainGridAdapter(override var context: Context) : GridBaseAdapter(context) {
 
-    override fun whichItemSelected(tag: Any) {
+    override fun whichItemSelected(tag: String) {
         when (tag) {
             "出库" -> {
                 val intent = Intent(context, CenterOutModeActivity::class.java)

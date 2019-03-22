@@ -11,7 +11,7 @@ import org.jetbrains.anko.find
 
 class CenterInModeActivity : BaseActivity(),ToolbarManager {
     override val context: Context by lazy { this }
-    private val buttonArray: Array<String> = arrayOf("中心库入库", "移库入库")
+    private val buttonArray: ArrayList<String> = arrayListOf("中心库入库", "移库入库")
     private val ruKuModeChoiceGridViewAdapter:CenterInModeGridAdapter by lazy {
         CenterInModeGridAdapter(this)
     }

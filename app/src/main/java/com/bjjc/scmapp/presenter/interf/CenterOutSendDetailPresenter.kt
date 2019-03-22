@@ -1,15 +1,15 @@
 package com.bjjc.scmapp.presenter.interf
 
-import com.bjjc.scmapp.model.bean.CenterOutSendBean
+import com.bjjc.scmapp.model.bean.CenterOutSendMxBean
 
 /**
  * Created by Allen on 2019/01/09 9:55
  */
 interface CenterOutSendDetailPresenter {
-    fun loadWaybillDetailData(isRefresh:Boolean,data: CenterOutSendBean)
-    fun commitOrSaveOrderInfo2Server(
+    fun loadData(data: CenterOutSendMxBean)
+    fun submitOrSaveOrderInfo(
         b: Boolean,
-        data: CenterOutSendBean,
+        data: CenterOutSendMxBean,
         info: String,
         trace: String,
         point: String?

@@ -15,7 +15,7 @@ import org.jetbrains.anko.windowManager
 /**
  * Created by Allen on 2019/03/15 13:35
  */
-abstract class DialogBuilderImpl(private val mContext: Context) : IDialogBuilder {
+abstract class AbstractDialogBuilderImpl(private val mContext: Context) : IDialogBuilder {
     private val mBuilder = AlertDialog.Builder(mContext)
     protected var mLayoutId: Int = -1
     private lateinit var mDialog: Dialog
