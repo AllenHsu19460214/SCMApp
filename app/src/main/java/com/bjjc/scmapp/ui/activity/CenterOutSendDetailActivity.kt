@@ -118,13 +118,13 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
         }
         btnSubmit.setOnClickListener {
             // Showing dialog of finished or unfinished to be used to commit or save info of OutOrder.
-            if (isFinished()) {
+            if (isOrderFinished()) {
                 DialogDirector.showDialog(
                     DialogBuilderYesNoImpl(this@CenterOutSendDetailActivity),
                     "提示",
                     "订单已完成，要提交到服务器吗?",
                     {
-                        submitOrderInfo(isFinished())
+                        submitOrderInfo(isOrderFinished())
                     }
                 )
             } else {
@@ -133,7 +133,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
                     "提示",
                     "订单未完成，要保存到服务器吗?",
                     {
-                        submitOrderInfo(isFinished())
+                        submitOrderInfo(isOrderFinished())
                     }
                 )
             }
@@ -144,7 +144,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
     }
 
     //Determines whether the order is finished.
-    private fun isFinished(): Boolean {
+    private fun isOrderFinished(): Boolean {
         if (planTotal == getFinishedTotal()) {
             return true
         }
@@ -168,7 +168,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
         /**
          * after sp save.
          */
-        if (null != SPUtils.getBean(context, "mxData${datum.单号}")) {
+        if (SPUtils.contains(context, "mxData${datum.单号}")) {
             this.mxData.clear()
             this.mxData.addAll(
                 SPUtils.getBean(
@@ -176,7 +176,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
                     "mxData${datum.单号}"
                 ) as ArrayList<CenterOutSendDetailMxBean>
             )
-            if (null != SPUtils.getBean(context, "cachedQRCodeList${datum.单号}")) {
+            if (SPUtils.contains(context, "cachedQRCodeList${datum.单号}")) {
                 cachedQRCodeList.clear()
                 cachedQRCodeList.addAll(
                     SPUtils.getBean(
@@ -185,7 +185,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
                     ) as ArrayList<String>
                 )
             }
-            if (null != SPUtils.getBean(context, "cachedExceptionQRCodeList${datum.单号}")) {
+            if (SPUtils.contains(context, "cachedExceptionQRCodeList${datum.单号}")) {
                 cachedExceptionQRCodeList.clear()
                 cachedExceptionQRCodeList.addAll(
                     SPUtils.getBean(
@@ -194,11 +194,12 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
                     ) as ArrayList<String>
                 )
             }
-            setPlanTotalText()
-            setScanTotalText()
+
         } else {
             centerOutSendDetailPresenter.loadData(datum)
         }
+        setPlanTotalText()
+        setScanTotalText()
         //Transmit datum from CenterOutSendDetailActivity to DataListFragment.
         transmitData2DataListFragment()
         setRbtnExceptionTextColor()
@@ -324,64 +325,37 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
     /**
      * Add the test datum to order datum.
      */
-    private fun addTestData2MxData(mxDataChanged: List<CenterOutSendDetailMxBean>) {
-        for ((index, valueTest) in mxDataChanged.withIndex()) {
+    private fun addTestData2MxData(mxData: List<CenterOutSendDetailMxBean>) {
+        for ((index, valueTest) in mxData.withIndex()) {
             when (valueTest.原始订单号) {
                 "2906261286-2-4" -> {
-                    mxDataChanged[index].出库箱数 += 25
+                    mxData[index].出库箱数 += 25
                     //mxData[indexTest].允许输入箱数+=100
                 }
                 "2906261800-1-1" -> {
-                    mxDataChanged[index].出库箱数 += 10
+                    mxData[index].出库箱数 += 10
                     //mxData[indexTest].允许输入箱数+=101
                 }
                 "2906261800-1-2" -> {
-                    mxDataChanged[index].出库箱数 += 5
+                    mxData[index].出库箱数 += 5
                     //mxData[indexTest].允许输入箱数+=102
                 }
                 "2906261800-2-1" -> {
-                    mxDataChanged[index].出库箱数 += 15
+                    mxData[index].出库箱数 += 15
                     //mxData[indexTest].允许输入箱数+=103
                 }
                 "FOCEJS059201810250002-1" -> {
-                    mxDataChanged[index].出库箱数 += 20
+                    mxData[index].出库箱数 += 20
                 }
                 "Z3B054M2018111242" -> {
-                    mxDataChanged[index].出库箱数 += 25
+                    mxData[index].出库箱数 += 25
                 }
             }
         }
     }
 
 
-    private fun checkQRCodeOffLine(scanCode: String) {
-        var checkCodeResult = ""
-        val gson = Gson()
-        val code020Json = readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/code-020.json")
-        val code530Json = readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/code-530.json")
-        val code071Json = readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/code-071.json")
 
-        val code020List = gson.fromJson<List<String>>(code020Json, object : TypeToken<List<String>>() {}.type)
-        val code530List = gson.fromJson<List<String>>(code530Json, object : TypeToken<List<String>>() {}.type)
-        val code071List = gson.fromJson<List<String>>(code071Json, object : TypeToken<List<String>>() {}.type)
-
-        when {
-            code020List.contains(scanCode) -> checkCodeResult =
-                readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode08-020.json")
-            code530List.contains(scanCode) -> checkCodeResult =
-                readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode08-530.json")
-            code071List.contains(scanCode) -> checkCodeResult =
-                readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode071.json")
-        }
-        runOnUiThread {
-            checkQRCodeBean = gson.fromJson<CheckQRCodeBean>(checkCodeResult, CheckQRCodeBean::class.java)
-            increaseQRCodeNum(scanCode)
-            setRbtnExceptionTextColor()
-            getScanTotal()
-            isReachScanTotal()
-        }
-
-    }
 
     private fun checkQRCode(QRCode: String) {
         RetrofitUtils.getRetrofit(App.base_url).create(ServiceApi::class.java)
@@ -389,9 +363,9 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
                 "18",
                 "ZXKCK",
                 QRCode,
-                "广州库(成都日鸿)",
-                "无锡市众达汽车销售服务有限公司,无锡市众达汽车销售服务有限公司",
-                "WLD2018111216311209001"
+                datum.出库单位,
+                datum.入库单位,
+                datum.单号
             ).enqueue(object : Callback<CheckQRCodeBean> {
                 override fun onFailure(call: Call<CheckQRCodeBean>, t: Throwable) {
                     doAsync {
@@ -492,7 +466,6 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
             rbExceptionList.setTextColor(resources.getColorStateList(R.color.selector_radio_btn_textcolor))
         }
     }
-
 
     /**
      * Creates the ToolBar。
@@ -631,4 +604,34 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
         threadExit = true
         super.onDestroy()
     }
+    //====================================================OffLineData===================================================================
+    private fun checkQRCodeOffLine(scanCode: String) {
+        var checkCodeResult = ""
+        val gson = Gson()
+        val code020Json = readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/code-020.json")
+        val code530Json = readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/code-530.json")
+        val code071Json = readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/code-071.json")
+
+        val code020List = gson.fromJson<List<String>>(code020Json, object : TypeToken<List<String>>() {}.type)
+        val code530List = gson.fromJson<List<String>>(code530Json, object : TypeToken<List<String>>() {}.type)
+        val code071List = gson.fromJson<List<String>>(code071Json, object : TypeToken<List<String>>() {}.type)
+
+        when {
+            code020List.contains(scanCode) -> checkCodeResult =
+                readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode08-020.json")
+            code530List.contains(scanCode) -> checkCodeResult =
+                readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode08-530.json")
+            code071List.contains(scanCode) -> checkCodeResult =
+                readFileUtils.getFromAssets(this@CenterOutSendDetailActivity, "offline/checkScanCode071.json")
+        }
+        runOnUiThread {
+            checkQRCodeBean = gson.fromJson<CheckQRCodeBean>(checkCodeResult, CheckQRCodeBean::class.java)
+            increaseQRCodeNum(scanCode)
+            setRbtnExceptionTextColor()
+            getScanTotal()
+            isReachScanTotal()
+        }
+
+    }
+    //===================================================/OffLineData===================================================================
 }
