@@ -30,7 +30,7 @@ class LoginPresenterImpl(val context:Context,var loginView:LoginView) :LoginPres
      * get some Information of current device.
      */
     override fun getDeviceInfo() {
-        //Obtain the phone IMEI.
+        //Gets the phone IMEI.
         if(App.isPDA){
             deviceBean.imei= MobileInfoUtil.getIMEI(context)
         }else{
@@ -38,8 +38,8 @@ class LoginPresenterImpl(val context:Context,var loginView:LoginView) :LoginPres
             deviceBean.imei= "355128005784806"
         }
         //deviceBean.imei= "862460034821507"
-        //Obtain the Key form SD card.
-        deviceBean.sign= getSign.readTxtFile(ResourcePathUtils.getSDRootPath(), "${context.packageName}/Key/sign.key")
+        //Get the Key form SD card.
+        deviceBean.sign= GetSign.readTxtFile(ResourcePathUtils.getSDRootPath(), "${context.packageName}/Key/sign.key")
     }
 
     /**
@@ -82,9 +82,8 @@ class LoginPresenterImpl(val context:Context,var loginView:LoginView) :LoginPres
                     }
 
                     override fun onResponse(call: Call<LoginBean>, response: Response<LoginBean>) {
-                        // 判断等待框是否正在显示
                         if (progressDialog.isShowing) {
-                            progressDialog.dismiss()// 关闭等待框
+                            progressDialog.dismiss()
                         }
                         App.loginBean = response.body() as LoginBean
                         if (App.loginBean.code == "08") {

@@ -13,8 +13,8 @@ import android.widget.BaseAdapter
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.bjjc.scmapp.R
 import com.bjjc.scmapp.model.bean.CenterOutSendDetailMxBean
+import com.bjjc.scmapp.ui.activity.CenterOutSendDetailActivity
 import com.bjjc.scmapp.util.KeyBoardShowListener
 import com.bjjc.scmapp.util.SPUtils
 import com.bjjc.scmapp.util.ToastUtils
@@ -23,20 +23,20 @@ import com.bjjc.scmapp.view.CenterOutSendDetailView
 import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk27.coroutines.onFocusChange
 
+
+
 /**
  * Created by Allen on 2018/12/13 11:24
  */
 class DataListAdapter(val context: Context?, private val centerOutSendDetailView: CenterOutSendDetailView) :
     BaseAdapter(), View.OnTouchListener {
+    //=====================================Field==================================================================
     private var selectedEditTextPosition: Int = -1
     private lateinit var data: ArrayList<CenterOutSendDetailMxBean>
     private var position: Int = -1
     private var orderNumber: String = ""
 
-    companion object {
-        var noCodeCount: String = "0"
-    }
-
+    //=====================================/Field=================================================================
     fun updateData(
         data: ArrayList<CenterOutSendDetailMxBean>,
         orderNumber: String
@@ -53,7 +53,7 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
         val holder: DataListAdapter.ViewHolder
         if (reuseView == null) {
             reuseView = LayoutInflater.from(context)
-                .inflate(R.layout.layout_adpitem_center_out_send_data_list, null)
+                .inflate(com.bjjc.scmapp.R.layout.layout_adpitem_center_out_send_data_list, null)
             holder = ViewHolder(reuseView)
             reuseView!!.tag = holder
         } else {
@@ -133,8 +133,8 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
         for (value in data) {
             noCodeTotal += value.出库输入箱数.toLong()
         }
-        centerOutSendDetailView.onSetNoCodeText(noCodeTotal)
-
+        val centerOutSendDetailActivity = centerOutSendDetailView as CenterOutSendDetailActivity
+        centerOutSendDetailActivity.centerOutSendDetailPresenter.setNoCodeToTal(noCodeTotal)
         return reuseView
     }
 
@@ -151,10 +151,21 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
     }
 
     private val mTextWatcher = object : MyTextWatcher() {
-        override fun afterTextChanged(s: Editable?) {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             if (selectedEditTextPosition != -1 && s?.length!! > 0) {
                 data[selectedEditTextPosition].出库输入箱数 = s.toString().toInt()
+            } else {
+                //If the following statement is used,
+                // it will cause corresponding EditText is set 0
+                // to press backspace key until no number is present and exit the current activity.
+               // data[selectedEditTextPosition].出库输入箱数 = 0
             }
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            /* if (selectedEditTextPosition != -1 && s?.length!! > 0) {
+                 data[selectedEditTextPosition].出库输入箱数 = s.toString().toInt()
+             }*/
         }
     }
 
@@ -168,12 +179,12 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
     }
 
     inner class ViewHolder(private val reuseView: View) {
-        val tvOrderNumber: TextView by lazy { reuseView.find<TextView>(R.id.tvOrderNumber) }
-        val tvSpareNumber: TextView by lazy { reuseView.find<TextView>(R.id.tvSpareNumber) }
-        val tvPlanBoxNum: TextView by lazy { reuseView.find<TextView>(R.id.tvPlanBoxNum) }
-        val tvScanCodeNum: TextView by lazy { reuseView.find<TextView>(R.id.tvScanCodeNum) }
-        val etNoCodeNum: EditText by lazy { reuseView.find<EditText>(R.id.etNoCodeNum) }
-        val llNoCodeNum: LinearLayout by lazy { reuseView.find<LinearLayout>(R.id.llNoCodeNum) }
+        val tvOrderNumber: TextView by lazy { reuseView.find<TextView>(com.bjjc.scmapp.R.id.tvOrderNumber) }
+        val tvSpareNumber: TextView by lazy { reuseView.find<TextView>(com.bjjc.scmapp.R.id.tvSpareNumber) }
+        val tvPlanBoxNum: TextView by lazy { reuseView.find<TextView>(com.bjjc.scmapp.R.id.tvPlanBoxNum) }
+        val tvScanCodeNum: TextView by lazy { reuseView.find<TextView>(com.bjjc.scmapp.R.id.tvScanCodeNum) }
+        val etNoCodeNum: EditText by lazy { reuseView.find<EditText>(com.bjjc.scmapp.R.id.etNoCodeNum) }
+        val llNoCodeNum: LinearLayout by lazy { reuseView.find<LinearLayout>(com.bjjc.scmapp.R.id.llNoCodeNum) }
 
     }
 }

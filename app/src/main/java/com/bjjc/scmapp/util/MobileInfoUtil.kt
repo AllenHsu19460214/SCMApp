@@ -20,9 +20,7 @@ object MobileInfoUtil {
     @SuppressLint("HardwareIds")
     fun getIMEI(context: Context): String? {
         try {
-            //实例化TelephonyManager对象
             val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            //获取IMEI号
             if (ActivityCompat.checkSelfPermission(
                     context,
                     Manifest.permission.READ_PHONE_STATE

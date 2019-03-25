@@ -12,23 +12,23 @@ data class CenterOutSendDetailBean(
     @SerializedName("SerialNo")
     val serialNo: String = "",
     @SerializedName("allowyc")
-    val allowyc: MutableList<Any> = arrayListOf(),
+    val allowyc: ArrayList<Any> = arrayListOf(),
     @SerializedName("ckdwpoint")
-    val ckdwpoint: MutableList<Any> = arrayListOf(),
+    val ckdwpoint: ArrayList<Any> = arrayListOf(),
     @SerializedName("code")
     val code: String = "", // 10
     @SerializedName("msg")
     val msg: String = "", // 返回成功
     @SerializedName("mx")
-    val mx: MutableList<CenterOutSendDetailMxBean> = arrayListOf(),
+    val mx: ArrayList<CenterOutSendDetailMxBean> = arrayListOf(),
     @SerializedName("rkdwpoint")
-    val rkdwpoint: MutableList<Any> = arrayListOf(),
+    val rkdwpoint: ArrayList<Any> = arrayListOf(),
     @SerializedName("rkxmygpp")
     val rkxmygpp: Int = 0, // 0
     @SerializedName("trace")
-    val trace: MutableList<Any> = arrayListOf(),
+    val trace: ArrayList<Any> = arrayListOf(),
     @SerializedName("transport")
-    val transport: MutableList<Any> = arrayListOf(),
+    val transport: ArrayList<Any> = arrayListOf(),
     @SerializedName("仓是否输入")
     var 仓是否输入: Int = 0, // 0
     @SerializedName("修改司机编号标识")

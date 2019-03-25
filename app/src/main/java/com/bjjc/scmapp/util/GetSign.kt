@@ -7,7 +7,7 @@ import java.io.FileReader
 /**
  * Created by Allen on 2019/01/04 13:48
  */
-object getSign {
+object GetSign {
     /**
      * 读TXT文件内容
      * Obtain the Key form SD card.

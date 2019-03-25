@@ -8,7 +8,7 @@ import java.io.InputStreamReader
  * Created by Allen on 2018/12/25 13:25
  */
 object readFileUtils {
-    //从assets 文件夹中获取文件并读取数据
+    //Gets file from assets folder and read data.
      fun getFromAssets(context:Context,fileName: String): String {
         return try {
             val inputReader = InputStreamReader(context.resources.assets.open(fileName))
