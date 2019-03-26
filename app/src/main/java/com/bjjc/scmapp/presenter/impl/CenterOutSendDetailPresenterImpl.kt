@@ -53,8 +53,8 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     private val cachedExceptionQRCodeList: ArrayList<String> by lazy { ArrayList<String>() }
     private var dialogFlag: Boolean = false
     private var threadExit: Boolean = false
-    private var scanToTal: Long = -1
-    private var noCodeTotal: Long = -1
+    private var scanToTal: Long = 0
+    private var noCodeTotal: Long = 0
     private var planTotal: Long = 0
     private var currentFragment: Fragment? = null
     //No locking is required after using CopyOnWriteArrayList()
@@ -66,13 +66,16 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     }
 
     override fun readCache() {
-        mxData.clear()
-        mxData.addAll(
-            SPUtils.getBean(
-                context,
-                "mxData${mDatum.单号}"
-            ) as ArrayList<CenterOutSendDetailMxBean>
-        )
+        if(SPUtils.contains(context, "mxData${mDatum.单号}")){
+            mxData.clear()
+            mxData.addAll(
+                SPUtils.getBean(
+                    context,
+                    "mxData${mDatum.单号}"
+                ) as ArrayList<CenterOutSendDetailMxBean>
+            )
+        }
+
         if (SPUtils.contains(context, "cachedQRCodeList${mDatum.单号}")) {
             cachedQRCodeList.clear()
             cachedQRCodeList.addAll(
@@ -103,7 +106,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
         }
         getPlanNum()
         getScanTotal()
-        centerOutSendDetailView.updateView(planTotal,scanToTal)
+        centerOutSendDetailView.updateView(planTotal, scanToTal)
         centerOutSendDetailView.setExceptionTitleColor(exceptionCodeInfoList)
     }
 
@@ -153,12 +156,13 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     }
 
     //start Async thread to scan QR code.
+    //Be sure to prevent this method from being started twice
     override fun startScanQRCodeThread() {
         doAsync {
             whileLoop@ while (!threadExit) {
-                if (scanToTal >= planTotal) {
+                /*if (scanToTal >= planTotal) {
                     break@whileLoop
-                }
+                }*/
                 if (queueQRCode.isNotEmpty() && queueQRCode.size > 0) {
                     if (!App.offLineFlag) {
                         checkQRCode(queueQRCode.removeAt(0))
@@ -193,7 +197,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
         RetrofitUtils.getRetrofit(App.base_url).create(ServiceApi::class.java)
             .checkQRCode(
                 "18",
-                "ZXKCK",
+                "ZZCCK",
                 QRCode,
                 mDatum.出库单位,
                 mDatum.入库单位,
@@ -213,14 +217,10 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                     response: Response<CheckQRCodeBean>
                 ) {
                     checkQRCodeBean = response.body() as CheckQRCodeBean
-                    if(checkQRCodeBean.code=="08"){
-                        increaseQRCodeNum(QRCode)
-                        getScanTotal()
-                        centerOutSendDetailView.updateView(planTotal,scanToTal)
-                        isReachScanTotal()
-                    }else{
-                        centerOutSendDetailView.onError(checkQRCodeBean.msg)
-                    }
+                    increaseQRCodeNum(QRCode)
+                    getScanTotal()
+                    centerOutSendDetailView.updateView(planTotal, scanToTal)
+                    isReachScanTotal()
 
                 }
 
@@ -276,7 +276,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                     cachedQRCodeList
                 )
             }
-            "071" -> {
+            else -> {
                 //Occurs exception code.
                 val exceptionCodeInfoBean = ExceptionCodeInfoBean()
                 exceptionCodeInfoBean.code = QRCode
@@ -288,7 +288,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                 exceptionCodeInfoList.add(exceptionCodeInfoBean)
                 SPUtils.putBean(context, "exceptionCodeInfoList${mDatum.单号}", exceptionCodeInfoList)
                 SPUtils.putBean(context, "cachedExceptionQRCodeList${mDatum.单号}", cachedExceptionQRCodeList)
-
+                SPUtils.putBean(context, "mxData${mDatum.单号}", this.mxData)
                 val bundle = Bundle()
                 bundle.putSerializable("exceptionCodeInfoList", exceptionCodeInfoList as Serializable)
                 exceptionListFragment.arguments = bundle
@@ -305,7 +305,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                         }
                     )
                 }
-
+                centerOutSendDetailView.setExceptionTitleColor(exceptionCodeInfoList)
             }
 
         }
@@ -362,6 +362,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                     exceptionListFragment.updateList()
                     centerOutSendDetailView.onLoadSuccess(centerOutSendDetailBean)
                     centerOutSendDetailView.updateView(planTotal, scanToTal)
+                    centerOutSendDetailView.setExceptionTitleColor(exceptionCodeInfoList)
                 }
 
             })
@@ -487,7 +488,10 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     }
 
     override fun wipeCacheByOrder() {
-        if (SPUtils.contains(UIUtils.getContext(), "mxData${mDatum.单号}")) {
+        if (SPUtils.contains(context, "mxData${mDatum.单号}")||
+            SPUtils.contains(context, "exceptionCodeInfoList${mDatum.单号}")||
+            SPUtils.contains(context, "cachedQRCodeList${mDatum.单号}")||
+            SPUtils.contains(context, "cachedExceptionQRCodeList${mDatum.单号}"))  {
             //customDialogYesOrNo()
             DialogDirector.showDialog(
                 DialogBuilderYesNoImpl(context),
@@ -583,6 +587,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
             gson.fromJson<CenterOutSendDetailBean>(centerOutSendDetailVoJson, CenterOutSendDetailBean::class.java)
         centerOutSendDetailView.onLoadSuccess(datum)
         centerOutSendDetailView.updateView(planTotal, scanToTal)
+        centerOutSendDetailView.setExceptionTitleColor(exceptionCodeInfoList)
     }
 
     private fun checkQRCodeOffLine(scanCode: String) {
@@ -608,7 +613,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
             checkQRCodeBean = gson.fromJson<CheckQRCodeBean>(checkCodeResult, CheckQRCodeBean::class.java)
             increaseQRCodeNum(scanCode)
             getScanTotal()
-            centerOutSendDetailView.updateView(planTotal,scanToTal)
+            centerOutSendDetailView.updateView(planTotal, scanToTal)
             isReachScanTotal()
         }
 

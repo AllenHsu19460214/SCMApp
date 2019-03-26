@@ -60,12 +60,16 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
     }
 
     override fun initData() {
+        centerOutSendDetailPresenter.startScanQRCodeThread()
         initToolBar("出库", "扫描信息")
         tvNoCodeTotal.text = "0"
         datum = intent.getSerializableExtra(CenterOutSendActivity.INTENT_KEY_ORDER_DATUM) as CenterOutSendMxBean
         centerOutSendDetailPresenter.setInitData(datum)
         tvWaybillNumber.text = datum.单号
-        if (SPUtils.contains(context, "mxData${datum.单号}")) {
+        if (SPUtils.contains(context, "mxData${datum.单号}")||
+            SPUtils.contains(context, "exceptionCodeInfoList${datum.单号}")||
+            SPUtils.contains(context, "cachedQRCodeList${datum.单号}")||
+            SPUtils.contains(context, "cachedExceptionQRCodeList${datum.单号}")) {
             centerOutSendDetailPresenter.readCache()
         } else {
             //Loads data for initialize.
@@ -140,7 +144,6 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
 
     override fun onLoadSuccess(data: CenterOutSendDetailBean) {
         if (data.code == "10") {
-            centerOutSendDetailPresenter.startScanQRCodeThread()
             //Sets order number.
             tvWaybillNumber.text = data.单号
         } else {
