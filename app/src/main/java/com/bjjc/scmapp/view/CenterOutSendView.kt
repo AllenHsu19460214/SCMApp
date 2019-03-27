@@ -7,5 +7,5 @@ import com.bjjc.scmapp.model.bean.CenterOutSendMxBean
  */
 interface CenterOutSendView {
     fun onError(message: String?)
-    fun onSuccess(data: ArrayList<CenterOutSendMxBean>)
+    fun onLoadSuccess(data: ArrayList<CenterOutSendMxBean>)
 }

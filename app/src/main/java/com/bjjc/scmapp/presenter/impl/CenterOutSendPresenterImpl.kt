@@ -63,11 +63,11 @@ class CenterOutSendPresenterImpl(var context: Context, var centerOutSendView: Ce
                             progressDialog.dismiss()
                         }
                     }
-                    val centerOutSendVo = response.body() as CenterOutSendBean
-                    if (centerOutSendVo.code == "10") {
-                        centerOutSendView.onSuccess(centerOutSendVo.mx)
+                    val centerOutSendBean = response.body() as CenterOutSendBean
+                    if (centerOutSendBean.code == "10") {
+                        centerOutSendView.onLoadSuccess(centerOutSendBean.mx)
                     } else {
-                        centerOutSendView.onError(centerOutSendVo.msg)
+                        centerOutSendView.onError(centerOutSendBean.msg)
                     }
                 }
 
@@ -77,7 +77,7 @@ class CenterOutSendPresenterImpl(var context: Context, var centerOutSendView: Ce
     private fun loadOffLineData() {
         val centerOutSendBeanJson = readFileUtils.getFromAssets(context, "offline/logisticsDocuments.json")
         val centerOutSendBean = Gson().fromJson<CenterOutSendBean>(centerOutSendBeanJson, CenterOutSendBean::class.java)
-        centerOutSendView.onSuccess(centerOutSendBean.mx)
+        centerOutSendView.onLoadSuccess(centerOutSendBean.mx)
     }
 
 }

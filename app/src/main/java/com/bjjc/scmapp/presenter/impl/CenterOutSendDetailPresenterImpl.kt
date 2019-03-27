@@ -42,10 +42,10 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
         const val EXCEPTION_LIST_FRAGMENT: Int = 1
     }
 
-    private lateinit var mDatum: CenterOutSendMxBean
+    private lateinit var centerOutSendDetailBean: CenterOutSendDetailBean
+    private lateinit var mDatum:CenterOutSendMxBean
     private lateinit var checkQRCodeBean: CheckQRCodeBean
     private val cachedQRCodeList: ArrayList<String> by lazy { ArrayList<String>() }
-    private lateinit var centerOutSendDetailBean: CenterOutSendDetailBean
     private val mxData: ArrayList<CenterOutSendDetailMxBean> by lazy { ArrayList<CenterOutSendDetailMxBean>() }
     private val dataListFragment: DataListFragment by lazy { DataListFragment() }
     private val exceptionListFragment: ExceptionListFragment by lazy { ExceptionListFragment() }
@@ -57,6 +57,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     private var noCodeTotal: Long = 0
     private var planTotal: Long = 0
     private var currentFragment: Fragment? = null
+    private var outType:String =""
     //No locking is required after using CopyOnWriteArrayList()
     private var queueQRCode: CopyOnWriteArrayList<String> = CopyOnWriteArrayList()
 
@@ -66,41 +67,41 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     }
 
     override fun readCache() {
-        if(SPUtils.contains(context, "mxData${mDatum.单号}")){
+        if(SPUtils.contains(context, "mxData${centerOutSendDetailBean.单号}")){
             mxData.clear()
             mxData.addAll(
                 SPUtils.getBean(
                     context,
-                    "mxData${mDatum.单号}"
+                    "mxData${centerOutSendDetailBean.单号}"
                 ) as ArrayList<CenterOutSendDetailMxBean>
             )
         }
 
-        if (SPUtils.contains(context, "cachedQRCodeList${mDatum.单号}")) {
+        if (SPUtils.contains(context, "cachedQRCodeList${centerOutSendDetailBean.单号}")) {
             cachedQRCodeList.clear()
             cachedQRCodeList.addAll(
                 SPUtils.getBean(
                     context,
-                    "cachedQRCodeList${mDatum.单号}"
+                    "cachedQRCodeList${centerOutSendDetailBean.单号}"
                 ) as ArrayList<String>
             )
         }
-        if (SPUtils.contains(context, "exceptionCodeInfoList${mDatum.单号}")) {
+        if (SPUtils.contains(context, "exceptionCodeInfoList${centerOutSendDetailBean.单号}")) {
             exceptionCodeInfoList.clear()
             exceptionCodeInfoList.addAll(
 
                 (SPUtils.getBean(
                     context,
-                    "exceptionCodeInfoList${mDatum.单号}"
+                    "exceptionCodeInfoList${centerOutSendDetailBean.单号}"
                 ) as ArrayList<ExceptionCodeInfoBean>)
             )
         }
-        if (SPUtils.contains(context, "cachedExceptionQRCodeList${mDatum.单号}")) {
+        if (SPUtils.contains(context, "cachedExceptionQRCodeList${centerOutSendDetailBean.单号}")) {
             cachedExceptionQRCodeList.clear()
             cachedExceptionQRCodeList.addAll(
                 SPUtils.getBean(
                     context,
-                    "cachedExceptionQRCodeList${mDatum.单号}"
+                    "cachedExceptionQRCodeList${centerOutSendDetailBean.单号}"
                 ) as ArrayList<String>
             )
         }
@@ -192,16 +193,32 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
             )
         }
     }
+    private fun getOutType(any:Map<String, Any> ):String{
 
+        val ckdwType = any["出库单位类型"] as String
+        val fxdd = any["反向订单"] as Int
+        return if(1==fxdd){
+            when(ckdwType){
+                "销售店"->"XSDCK"
+                else->""
+            }
+        }else{
+            when(ckdwType){
+                "中转仓"->"ZZCCK"
+                "中心库","自建中心库"->"ZXKCK"
+                else->""
+            }
+        }
+    }
     private fun checkQRCode(QRCode: String) {
         RetrofitUtils.getRetrofit(App.base_url).create(ServiceApi::class.java)
             .checkQRCode(
                 "18",
-                "ZZCCK",
+                outType,
                 QRCode,
-                mDatum.出库单位,
-                mDatum.入库单位,
-                mDatum.单号
+                centerOutSendDetailBean.出库单位,
+                centerOutSendDetailBean.入库单位,
+                centerOutSendDetailBean.单号
             ).enqueue(object : Callback<CheckQRCodeBean> {
                 override fun onFailure(call: Call<CheckQRCodeBean>, t: Throwable) {
                     doAsync {
@@ -269,10 +286,10 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                         }
                     }
                 }
-                SPUtils.putBean(context, "mxData${mDatum.单号}", this.mxData)
+                SPUtils.putBean(context, "mxData${centerOutSendDetailBean.单号}", this.mxData)
                 SPUtils.putBean(
                     context,
-                    "cachedQRCodeList${mDatum.单号}",
+                    "cachedQRCodeList${centerOutSendDetailBean.单号}",
                     cachedQRCodeList
                 )
             }
@@ -286,9 +303,9 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                 }
                 cachedExceptionQRCodeList.add(QRCode)
                 exceptionCodeInfoList.add(exceptionCodeInfoBean)
-                SPUtils.putBean(context, "exceptionCodeInfoList${mDatum.单号}", exceptionCodeInfoList)
-                SPUtils.putBean(context, "cachedExceptionQRCodeList${mDatum.单号}", cachedExceptionQRCodeList)
-                SPUtils.putBean(context, "mxData${mDatum.单号}", this.mxData)
+                SPUtils.putBean(context, "exceptionCodeInfoList${centerOutSendDetailBean.单号}", exceptionCodeInfoList)
+                SPUtils.putBean(context, "cachedExceptionQRCodeList${centerOutSendDetailBean.单号}", cachedExceptionQRCodeList)
+                SPUtils.putBean(context, "mxData${centerOutSendDetailBean.单号}", this.mxData)
                 val bundle = Bundle()
                 bundle.putSerializable("exceptionCodeInfoList", exceptionCodeInfoList as Serializable)
                 exceptionListFragment.arguments = bundle
@@ -352,6 +369,10 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                         progressDialog.dismiss()
                     }
                     centerOutSendDetailBean = response.body() as CenterOutSendDetailBean
+                    val mapType = HashMap<String, Any>()
+                    mapType["反向订单"] = centerOutSendDetailBean.反向订单
+                    mapType["出库单位类型"] = centerOutSendDetailBean.出库单位类型
+                    outType=getOutType(mapType)
                     mxData.clear()
                     mxData.addAll(centerOutSendDetailBean.mx)
                     addTestDataToMxData(mxData)
@@ -402,7 +423,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
             .centerOutSendDetailSaveOrderInfo(
                 "1",
                 App.loginBean.key,
-                mDatum.单号,
+                centerOutSendDetailBean.单号,
                 if (isOrderFinished()) {
                     "已出库"
                 } else {
@@ -488,15 +509,15 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     }
 
     override fun wipeCacheByOrder() {
-        if (SPUtils.contains(context, "mxData${mDatum.单号}")||
-            SPUtils.contains(context, "exceptionCodeInfoList${mDatum.单号}")||
-            SPUtils.contains(context, "cachedQRCodeList${mDatum.单号}")||
-            SPUtils.contains(context, "cachedExceptionQRCodeList${mDatum.单号}"))  {
+        if (SPUtils.contains(context, "mxData${centerOutSendDetailBean.单号}")||
+            SPUtils.contains(context, "exceptionCodeInfoList${centerOutSendDetailBean.单号}")||
+            SPUtils.contains(context, "cachedQRCodeList${centerOutSendDetailBean.单号}")||
+            SPUtils.contains(context, "cachedExceptionQRCodeList${centerOutSendDetailBean.单号}"))  {
             //customDialogYesOrNo()
             DialogDirector.showDialog(
                 DialogBuilderYesNoImpl(context),
                 "提示",
-                "您确定要清除单号为:\n${mDatum.单号}\n的缓存信息吗?请谨慎清除!",
+                "您确定要清除单号为:\n${centerOutSendDetailBean.单号}\n的缓存信息吗?请谨慎清除!",
                 {
                     wipeCache()
                 }
@@ -511,13 +532,13 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
         cachedQRCodeList.clear()
         cachedExceptionQRCodeList.clear()
         //Wiping the cache which records number of boxes with QR code and no code.
-        SPUtils.remove(context, "mxData${mDatum.单号}")
+        SPUtils.remove(context, "mxData${centerOutSendDetailBean.单号}")
         //Wiping the cache which records number of improper boxes.
-        SPUtils.remove(context, "exceptionCodeInfoList${mDatum.单号}")
+        SPUtils.remove(context, "exceptionCodeInfoList${centerOutSendDetailBean.单号}")
         //Wiping the cache which records list of QR code of boxes successfully verified.
-        SPUtils.remove(context, "cachedQRCodeList${mDatum.单号}")
+        SPUtils.remove(context, "cachedQRCodeList${centerOutSendDetailBean.单号}")
         //Wiping the cache which records list of QR code of improper boxes
-        SPUtils.remove(context, "cachedExceptionQRCodeList${mDatum.单号}")
+        SPUtils.remove(context, "cachedExceptionQRCodeList${centerOutSendDetailBean.单号}")
         loadData()
     }
 
@@ -526,7 +547,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
      * Offline Data
      */
     private fun loadDataOffLine() {
-        val centerOutSendDetailVoJson = when (mDatum.单号) {
+        val centerOutSendDetailVoJson = when (centerOutSendDetailBean.单号) {
             "WLD2018111216311209001" -> {
                 readFileUtils.getFromAssets(
                     context,

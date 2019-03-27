@@ -22,6 +22,7 @@ import com.bjjc.scmapp.util.dialog_custom.DialogDirector
 import com.bjjc.scmapp.util.dialog_custom.impl.DialogBuilderYesImpl
 import com.bjjc.scmapp.view.CenterOutSendView
 import com.common.zxing.CaptureActivity
+import com.common.zxing.Intents
 import kotlinx.android.synthetic.main.layout_aty_center_out_send.*
 import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
@@ -80,6 +81,7 @@ class CenterOutSendActivity : BaseScannerActivity(), ToolbarManager, CenterOutSe
             R.id.btnScan -> {
                 //Go to the camera activity.
                 val openCameraIntent = Intent(context, CaptureActivity::class.java)
+                intent.action = Intents.Scan.ACTION
                 openCameraIntent.putExtra("autoEnlarged", true)
                 startActivityForResult(openCameraIntent, 0)
             }
@@ -214,7 +216,7 @@ class CenterOutSendActivity : BaseScannerActivity(), ToolbarManager, CenterOutSe
         })
     }
 
-    override fun onSuccess(data: ArrayList<CenterOutSendMxBean>) {
+    override fun onLoadSuccess(data: ArrayList<CenterOutSendMxBean>) {
         //Hides the Icon of the refreshing component.
         srlPullToRefresh.isRefreshing = false
         myToast("获取数据成功!")

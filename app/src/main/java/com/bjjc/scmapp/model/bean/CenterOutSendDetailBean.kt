@@ -88,5 +88,9 @@ data class CenterOutSendDetailBean(
     @SerializedName("解锁标识")
     val 解锁标识: Int = 0, // 0
     @SerializedName("输数入库")
-    val 输数入库: Int = 0 // 0
+    val 输数入库: Int = 0,// 0
+    @SerializedName("出库单位类型")
+    val 出库单位类型: String = "",
+    @SerializedName("入库单位类型")
+    val 入库单位类型: String = ""
 ): Serializable

@@ -44,6 +44,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
     private lateinit var datum: CenterOutSendMxBean
     private var threadExit: Boolean = false
     private lateinit var toolbarMenu: Toolbar
+    private lateinit var centerOutSendDetailBean:CenterOutSendDetailBean
     val centerOutSendDetailPresenter: CenterOutSendDetailPresenter by lazy {
         CenterOutSendDetailPresenterImpl(
             this,
@@ -144,8 +145,10 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
 
     override fun onLoadSuccess(data: CenterOutSendDetailBean) {
         if (data.code == "10") {
+            centerOutSendDetailBean=data
             //Sets order number.
             tvWaybillNumber.text = data.单号
+
         } else {
             ToastUtils.showToastS(context, data.msg)
         }
