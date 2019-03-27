@@ -67,41 +67,41 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     }
 
     override fun readCache() {
-        if(SPUtils.contains(context, "mxData${centerOutSendDetailBean.单号}")){
+        if(SPUtils.contains(context, "mxData${mDatum.单号}")){
             mxData.clear()
             mxData.addAll(
                 SPUtils.getBean(
                     context,
-                    "mxData${centerOutSendDetailBean.单号}"
+                    "mxData${mDatum.单号}"
                 ) as ArrayList<CenterOutSendDetailMxBean>
             )
         }
 
-        if (SPUtils.contains(context, "cachedQRCodeList${centerOutSendDetailBean.单号}")) {
+        if (SPUtils.contains(context, "cachedQRCodeList${mDatum.单号}")) {
             cachedQRCodeList.clear()
             cachedQRCodeList.addAll(
                 SPUtils.getBean(
                     context,
-                    "cachedQRCodeList${centerOutSendDetailBean.单号}"
+                    "cachedQRCodeList${mDatum.单号}"
                 ) as ArrayList<String>
             )
         }
-        if (SPUtils.contains(context, "exceptionCodeInfoList${centerOutSendDetailBean.单号}")) {
+        if (SPUtils.contains(context, "exceptionCodeInfoList${mDatum.单号}")) {
             exceptionCodeInfoList.clear()
             exceptionCodeInfoList.addAll(
 
                 (SPUtils.getBean(
                     context,
-                    "exceptionCodeInfoList${centerOutSendDetailBean.单号}"
+                    "exceptionCodeInfoList${mDatum.单号}"
                 ) as ArrayList<ExceptionCodeInfoBean>)
             )
         }
-        if (SPUtils.contains(context, "cachedExceptionQRCodeList${centerOutSendDetailBean.单号}")) {
+        if (SPUtils.contains(context, "cachedExceptionQRCodeList${mDatum.单号}")) {
             cachedExceptionQRCodeList.clear()
             cachedExceptionQRCodeList.addAll(
                 SPUtils.getBean(
                     context,
-                    "cachedExceptionQRCodeList${centerOutSendDetailBean.单号}"
+                    "cachedExceptionQRCodeList${mDatum.单号}"
                 ) as ArrayList<String>
             )
         }
@@ -286,7 +286,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                         }
                     }
                 }
-                SPUtils.putBean(context, "mxData${centerOutSendDetailBean.单号}", this.mxData)
+                SPUtils.putBean(context, "mxData${centerOutSendDetailBean.单号}", mxData)
                 SPUtils.putBean(
                     context,
                     "cachedQRCodeList${centerOutSendDetailBean.单号}",
@@ -305,7 +305,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                 exceptionCodeInfoList.add(exceptionCodeInfoBean)
                 SPUtils.putBean(context, "exceptionCodeInfoList${centerOutSendDetailBean.单号}", exceptionCodeInfoList)
                 SPUtils.putBean(context, "cachedExceptionQRCodeList${centerOutSendDetailBean.单号}", cachedExceptionQRCodeList)
-                SPUtils.putBean(context, "mxData${centerOutSendDetailBean.单号}", this.mxData)
+                SPUtils.putBean(context, "mxData${centerOutSendDetailBean.单号}", mxData)
                 val bundle = Bundle()
                 bundle.putSerializable("exceptionCodeInfoList", exceptionCodeInfoList as Serializable)
                 exceptionListFragment.arguments = bundle
@@ -470,7 +470,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
 
     private fun getFinishedTotal(): Long {
         var actualFinishedTotal: Long = 0
-        for (mx: CenterOutSendDetailMxBean in this.mxData) {
+        for (mx: CenterOutSendDetailMxBean in mxData) {
             actualFinishedTotal += mx.出库箱数 + mx.出库输入箱数
         }
         return actualFinishedTotal
@@ -547,7 +547,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
      * Offline Data
      */
     private fun loadDataOffLine() {
-        val centerOutSendDetailVoJson = when (centerOutSendDetailBean.单号) {
+        val centerOutSendDetailVoJson = when (mDatum.单号) {
             "WLD2018111216311209001" -> {
                 readFileUtils.getFromAssets(
                     context,
@@ -604,9 +604,9 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
             }
         }
         val gson = Gson()
-        val datum: CenterOutSendDetailBean =
+        val centerOutSendDetailBean: CenterOutSendDetailBean =
             gson.fromJson<CenterOutSendDetailBean>(centerOutSendDetailVoJson, CenterOutSendDetailBean::class.java)
-        centerOutSendDetailView.onLoadSuccess(datum)
+        centerOutSendDetailView.onLoadSuccess(centerOutSendDetailBean)
         centerOutSendDetailView.updateView(planTotal, scanToTal)
         centerOutSendDetailView.setExceptionTitleColor(exceptionCodeInfoList)
     }
