@@ -134,7 +134,7 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
             noCodeTotal += value.出库输入箱数.toLong()
         }
         val centerOutSendDetailActivity = centerOutSendDetailView as CenterOutSendDetailActivity
-        centerOutSendDetailActivity.centerOutSendDetailPresenter.setNoCodeToTal(noCodeTotal)
+        centerOutSendDetailActivity.mPresenter.setNoCodeToTal(noCodeTotal)
         return reuseView
     }
 

@@ -5,4 +5,5 @@ package com.bjjc.scmapp.view
  */
 interface LoginView {
     fun onError(message:String?)
+    fun onSuccess()
 }

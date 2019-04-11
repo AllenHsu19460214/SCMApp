@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.layout_aty_center_out_send_reduce_box.*
 import org.jetbrains.anko.find
 
 
-class CenterOutSendReduceBoxActivity : BaseActivity(), ToolbarManager {
+    class CenterOutSendReduceBoxActivity : BaseActivity(), ToolbarManager {
     //==============================================FieldStart===================================================================
     override val context: Context by lazy { this }
     override val toolbar: Toolbar by lazy { find<Toolbar>(com.bjjc.scmapp.R.id.toolbar) }

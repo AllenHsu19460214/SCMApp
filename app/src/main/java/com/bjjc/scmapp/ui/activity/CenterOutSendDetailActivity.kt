@@ -42,10 +42,9 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
     override val context: Context by lazy { this }
     override val toolbar: Toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     private lateinit var datum: CenterOutSendMxBean
-    private var threadExit: Boolean = false
     private lateinit var toolbarMenu: Toolbar
     private lateinit var centerOutSendDetailBean:CenterOutSendDetailBean
-    val centerOutSendDetailPresenter: CenterOutSendDetailPresenter by lazy {
+    val mPresenter: CenterOutSendDetailPresenter by lazy {
         CenterOutSendDetailPresenterImpl(
             this,
             this
@@ -61,23 +60,23 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
     }
 
     override fun initData() {
-        centerOutSendDetailPresenter.startScanQRCodeThread()
+        mPresenter.startScanQRCodeThread()
         initToolBar("出库", "扫描信息")
         tvNoCodeTotal.text = "0"
         datum = intent.getSerializableExtra(CenterOutSendActivity.INTENT_KEY_ORDER_DATUM) as CenterOutSendMxBean
-        centerOutSendDetailPresenter.setInitData(datum)
+        mPresenter.setInitData(datum)
         tvWaybillNumber.text = datum.单号
         if (SPUtils.contains(context, "mxData${datum.单号}")||
             SPUtils.contains(context, "exceptionCodeInfoList${datum.单号}")||
             SPUtils.contains(context, "cachedQRCodeList${datum.单号}")||
             SPUtils.contains(context, "cachedExceptionQRCodeList${datum.单号}")) {
-            centerOutSendDetailPresenter.readCache()
+            mPresenter.readCache()
         } else {
             //Loads data for initialize.
-            centerOutSendDetailPresenter.loadData()
+            mPresenter.loadData()
         }
         //Transmit datum from CenterOutSendDetailActivity to DataListFragment.
-        centerOutSendDetailPresenter.transmitDataToDataListFragment()
+        mPresenter.transmitDataToDataListFragment()
         rbExceptionList.isChecked = true
         //Setting dataList is initially selected.
         rbDataList.isChecked = true
@@ -91,23 +90,23 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
         rgListButton.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.rbDataList -> {
-                    centerOutSendDetailPresenter.switchFragment(CenterOutSendDetailPresenterImpl.DATA_LIST_FRAGMENT).commit()
+                    mPresenter.switchFragment(CenterOutSendDetailPresenterImpl.DATA_LIST_FRAGMENT).commit()
                 }
                 R.id.rbExceptionList -> {
-                    centerOutSendDetailPresenter.switchFragment(CenterOutSendDetailPresenterImpl.EXCEPTION_LIST_FRAGMENT).commit()
+                    mPresenter.switchFragment(CenterOutSendDetailPresenterImpl.EXCEPTION_LIST_FRAGMENT).commit()
                 }
             }
 
         }
         btnSubmit.setOnClickListener {
             // Showing dialog of finished or unfinished to be used to commit or save info of OutOrder.
-            if (centerOutSendDetailPresenter.isOrderFinished()) {
+            if (mPresenter.isOrderFinished()) {
                 DialogDirector.showDialog(
                     DialogBuilderYesNoImpl(this@CenterOutSendDetailActivity),
                     "提示",
                     "订单已完成，要提交到服务器吗?",
                     {
-                        centerOutSendDetailPresenter.submitOrSaveOrderInfo()
+                        mPresenter.submitOrderInfo()
                     }
                 )
             } else {
@@ -116,7 +115,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
                     "提示",
                     "订单未完成，要保存到服务器吗?",
                     {
-                        centerOutSendDetailPresenter.submitOrSaveOrderInfo()
+                        mPresenter.submitOrderInfo()
                     }
                 )
             }
@@ -132,7 +131,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
     }
 
     override fun onScanCodeSuccess(scanCodeResult: String?) {
-        centerOutSendDetailPresenter.enqueueQRCode(scanCodeResult)
+        mPresenter.enqueueQRCode(scanCodeResult)
     }
 
     override fun onScanCodeFailure() {
@@ -163,7 +162,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
             //Wiping the cache which correspond to order.
             //SPUtils.remove(context, "mxData${datum.单号}")
             if (SPUtils.contains(UIUtils.getContext(), "mxData${datum.单号}")) {
-                centerOutSendDetailPresenter.wipeCache()
+                mPresenter.wipeCache()
             }
             myToast("保存数据成功!")
         } else {
@@ -200,7 +199,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
                     context.startActivity<CenterOutSendReduceBoxActivity>("datum" to datum)
                 }
                 R.id.wipeCache -> {
-                    centerOutSendDetailPresenter.wipeCacheByOrder()
+                    mPresenter.wipeCacheByOrder()
                 }
             }
             true
@@ -220,7 +219,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
     }
 
     override fun onDestroy() {
-        threadExit = true
+        CenterOutSendDetailPresenterImpl.threadExit = true
         super.onDestroy()
     }
 }

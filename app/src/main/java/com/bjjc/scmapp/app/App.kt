@@ -9,7 +9,7 @@ import android.os.Build
 import android.os.Handler
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.model.bean.LoginBean
-import com.bjjc.scmapp.model.bean.UserIdentityBean
+import com.bjjc.scmapp.model.bean.UserBean
 import com.bjjc.scmapp.util.SPUtils
 import com.hjq.toast.ToastUtils
 import com.hjq.toast.style.ToastWhiteStyle
@@ -50,7 +50,7 @@ class App : Application() {
         var devModel: String? = null
         lateinit var base_url: String
         lateinit var loginBean: LoginBean
-        lateinit var userIdentityBean: UserIdentityBean
+        lateinit var userIdentityBean: UserBean
     }
 
     override fun onCreate() {

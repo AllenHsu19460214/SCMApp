@@ -19,6 +19,6 @@ data class LoginBean(
     @SerializedName("msg")
     val msg: String = "", // 登录成功
     @SerializedName("sf")
-    val sf: UserIdentityBean = UserIdentityBean()
+    val sf: UserBean = UserBean()
 ): Serializable
 

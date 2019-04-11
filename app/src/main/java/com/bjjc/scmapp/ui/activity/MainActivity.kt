@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import com.bjjc.scmapp.R
 import com.bjjc.scmapp.adapter.MainGridAdapter
-import com.bjjc.scmapp.model.bean.UserIdentityBean
+import com.bjjc.scmapp.model.bean.UserBean
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
 import com.bjjc.scmapp.util.ProgressDialogUtils
 import com.bjjc.scmapp.util.SPUtils
@@ -29,7 +29,7 @@ class MainActivity : BaseActivity(), ToolbarManager {
     override fun getLayoutId(): Int = R.layout.layout_aty_main
 
     override fun initData() {
-        val userIdentityBean = intent.extras["UserIdentityBean"] as UserIdentityBean
+        val userIdentityBean = intent.extras["UserBean"] as UserBean
         //Sets toolbar title.
         initToolBar(userIdentityBean.role, userIdentityBean.truename)
         //phoneRoleData includes 出库,入库,货品查询,盘库,货品信息,台帐,分单

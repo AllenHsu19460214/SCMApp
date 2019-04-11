@@ -1,6 +1,6 @@
 package com.bjjc.scmapp.ui.activity
 
-import android.annotation.SuppressLint
+import android.app.Dialog
 import android.view.Menu
 import android.view.View
 import com.bjjc.scmapp.R
@@ -9,12 +9,15 @@ import com.bjjc.scmapp.extension.dp2px
 import com.bjjc.scmapp.presenter.impl.LoginPresenterImpl
 import com.bjjc.scmapp.presenter.interf.LoginPresenter
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
+import com.bjjc.scmapp.util.ProgressDialogUtils
+import com.bjjc.scmapp.util.UIUtils
 import com.bjjc.scmapp.view.LoginView
 import kotlinx.android.synthetic.main.layout_aty_login.*
-import org.jetbrains.anko.info
+import org.jetbrains.anko.startActivity
 
 
 class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
+
     //==============================================FieldStart=====================================================================
     /**
      * The tag of the current activity
@@ -28,6 +31,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
      * The exitTime is used to press the return key twice in two seconds to exit the program.
      */
     private var exitTime: Long = 0
+    private lateinit var progressDialog: Dialog
     //==============================================FieldEnd=====================================================================
     /**
      * Loading the layout of the current activity.
@@ -42,12 +46,10 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
         if (checkDeviceHasNavigationBar(this)) {
             ll_login.setPadding(0, 0, 0, 50.dp2px(this))
         }
-        val username = etLoginUsername.text
-        info { username }
     }
 
     /**
-     *  Initialize listeners of components.
+     *  Initialize the listener of components.
      */
     override fun initListener() {
         btnLoginSubmit.setOnClickListener(this)
@@ -57,11 +59,10 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
     /**
      * Initialize data.
      */
-    @SuppressLint("SetTextI18n")
     override fun initData() {
         //Set the version name and development model for current App.
-        tvVerNameAndDevModel.text = "V" + App.verName + "-" + App.devModel + "-" + if (App.isPDA) "PDA" else "PHONE"
-        loginPresenter.getDeviceInfo()
+        tvVerNameAndDevModel.text = UIUtils.concatVerNameAndDevModel()
+        loginPresenter.initData()
     }
 
     /**
@@ -70,21 +71,23 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnLoginSubmit -> {
-                //Obtaining user_name and password.
-                val username = etLoginUsername.text.toString()
-                val password = etLoginPassword.text.toString()
-                loginPresenter.login(username, password)
+                progressDialog = ProgressDialogUtils.showProgressDialog(this, "正在登录中!")
+                loginPresenter.login(etLoginUsername.text.toString(), etLoginPassword.text.toString())
             }
             R.id.cbOffLine -> {
                 App.offLineFlag = cbOffLine.isChecked
             }
         }
     }
-
+    override fun onSuccess() {
+        if (progressDialog.isShowing) progressDialog.dismiss()
+        startActivity<MainActivity>("UserBean" to App.userIdentityBean )
+    }
     /**
      *  The callback of the onError from the interface LoginView.
      */
     override fun onError(message: String?) {
+        if (progressDialog.isShowing) progressDialog.dismiss()
         message?.let { myToast(message) }
     }
 

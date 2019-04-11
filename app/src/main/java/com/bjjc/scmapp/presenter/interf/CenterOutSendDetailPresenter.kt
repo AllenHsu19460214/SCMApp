@@ -9,7 +9,7 @@ import com.bjjc.scmapp.model.bean.CenterOutSendMxBean
 interface CenterOutSendDetailPresenter {
     fun setInitData(datum: CenterOutSendMxBean)
     fun loadData()
-    fun submitOrSaveOrderInfo()
+    fun submitOrderInfo()
     fun startScanQRCodeThread()
     fun enqueueQRCode(scanCodeResult: String?)
     fun isOrderFinished():Boolean

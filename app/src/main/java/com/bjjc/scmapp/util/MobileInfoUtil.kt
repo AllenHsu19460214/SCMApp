@@ -12,7 +12,7 @@ import android.telephony.TelephonyManager
  */
 object MobileInfoUtil {
     /**
-     * 获取手机IMEI
+     * Obtain the IMEI of the device.
      *
      * @param context
      * @return
