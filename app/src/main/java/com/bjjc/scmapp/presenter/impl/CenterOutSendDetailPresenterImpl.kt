@@ -507,7 +507,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
         }
     }
 
-    override fun wipeCacheByOrder() {
+    override fun wipeCacheByOrderId() {
         if (SPUtils.contains(context, "mxData${mDatum.单号}") ||
             SPUtils.contains(context, "exceptionCodeInfoList${mDatum.单号}") ||
             SPUtils.contains(context, "cachedQRCodeList${mDatum.单号}") ||

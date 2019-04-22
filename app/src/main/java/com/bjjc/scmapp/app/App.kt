@@ -111,9 +111,6 @@ class App : Application() {
         return (appInfo.metaData.get("DEV_MODEL") as String).toUpperCase()
     }
 
-    /**
-     *
-     */
     private fun getDeviceModel(): String {
         if (getString(R.string.deviceModel).contains(Build.MODEL)) {
             return "PDA"

@@ -16,7 +16,7 @@ interface CenterOutSendDetailPresenter {
     fun setNoCodeToTal(noCodeTotal: Long)
     fun readCache()
     fun transmitDataToDataListFragment()
-    fun wipeCacheByOrder()
+    fun wipeCacheByOrderId()
     fun wipeCache()
     fun switchFragment(targetFragmentInt: Int): FragmentTransaction
 }

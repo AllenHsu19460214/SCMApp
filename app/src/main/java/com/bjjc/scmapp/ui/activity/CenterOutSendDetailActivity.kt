@@ -199,7 +199,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
                     context.startActivity<CenterOutSendReduceBoxActivity>("datum" to datum)
                 }
                 R.id.wipeCache -> {
-                    mPresenter.wipeCacheByOrder()
+                    mPresenter.wipeCacheByOrderId()
                 }
             }
             true
