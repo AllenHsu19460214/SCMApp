@@ -14,4 +14,5 @@ interface CenterOutSendDetailView {
     fun onSubmitSuccess(data:CommonResultBean)
     fun updateView(planTotal:Long,scanToTal:Long)
     fun setExceptionTitleColor(exceptionCodeInfoList: ArrayList<ExceptionCodeInfoBean>)
+    fun onReturnOutType(outType:String)
 }

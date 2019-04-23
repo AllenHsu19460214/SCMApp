@@ -44,6 +44,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
     private lateinit var datum: CenterOutSendMxBean
     private lateinit var toolbarMenu: Toolbar
     private lateinit var centerOutSendDetailBean:CenterOutSendDetailBean
+    private var mOutType: String = ""
     val mPresenter: CenterOutSendDetailPresenter by lazy {
         CenterOutSendDetailPresenterImpl(
             this,
@@ -129,7 +130,10 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
         tvPlanBoxTotal.text = planTotal.toString()
         tvScanTotal.text = scanToTal.toString()
     }
-
+    override fun onReturnOutType(outType: String) {
+        mOutType = outType
+        SPUtils.put(this,"outType${datum.单号}",outType)
+    }
     override fun onScanCodeSuccess(scanCodeResult: String?) {
         mPresenter.enqueueQRCode(scanCodeResult)
     }
@@ -159,12 +163,12 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
 
     override fun onSubmitSuccess(data: CommonResultBean) {
         if (data.code == "08") {
+            myToast(data.msg)
             //Wiping the cache which correspond to order.
             //SPUtils.remove(context, "mxData${datum.单号}")
             if (SPUtils.contains(UIUtils.getContext(), "mxData${datum.单号}")) {
                 mPresenter.wipeCache()
             }
-            myToast("保存数据成功!")
         } else {
             myToast(data.msg)
         }
@@ -192,11 +196,14 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
     }
 
     private fun setToolbarListener() {
+        val datum =Pair("datum",datum)
+        val outType =Pair("outType",mOutType)
         toolbarMenu.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.reduceBox -> {
                     //myToast("\"减箱\" is clicked!")
-                    context.startActivity<CenterOutSendReduceBoxActivity>("datum" to datum)
+//                    context.startActivity<CenterOutSendReduceBoxActivity>("datum" to datum)
+                    context.startActivity<CenterOutSendReduceBoxActivity>(datum,outType)
                 }
                 R.id.wipeCache -> {
                     mPresenter.wipeCacheByOrderId()

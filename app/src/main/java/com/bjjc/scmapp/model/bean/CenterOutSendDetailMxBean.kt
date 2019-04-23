@@ -9,7 +9,7 @@ import java.io.Serializable
  * Center Out Send Detail goods order.
  */
 @Poko
-data class CenterOutSendDetailMxBean (
+data class CenterOutSendDetailMxBean(
     @SerializedName("允许输入箱数")
     var 允许输入箱数: Int = 0, // 0
     @SerializedName("入库单位")
@@ -35,5 +35,7 @@ data class CenterOutSendDetailMxBean (
     @SerializedName("物料编码")
     val 物料编码: String = "", // 0000013
     @SerializedName("计划箱数")
-    val 计划箱数: Int = 0 // 1
-): Serializable
+    val 计划箱数: Int = 0, // 1
+    var 数量: Int = 0,
+    var 输入箱数: Int = 0
+) : Serializable

@@ -1,10 +1,6 @@
 package com.bjjc.scmapp.util.httpUtils
 
-import com.bjjc.scmapp.model.bean.CommonResultBean
-import com.bjjc.scmapp.model.bean.CenterOutSendDetailBean
-import com.bjjc.scmapp.model.bean.CenterOutSendBean
-import com.bjjc.scmapp.model.bean.CheckQRCodeBean
-import com.bjjc.scmapp.model.bean.LoginBean
+import com.bjjc.scmapp.model.bean.*
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -68,5 +64,13 @@ interface ServiceApi {
         @Field("point") point: String?,
         @Field("flag") flag: String,
         @Field("isfxdd") isfxdd: String
+    ): Call<CommonResultBean>
+
+    @POST("jxJson_1.2.0.php")
+    @FormUrlEncoded
+    fun centerOutSendDetailWipeCache(
+        @Field("command") command: String,
+        @Field("dh") dh: String,
+        @Field("type") type: String
     ): Call<CommonResultBean>
 }

@@ -35,7 +35,8 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
     private lateinit var data: ArrayList<CenterOutSendDetailMxBean>
     private var position: Int = -1
     private var orderNumber: String = ""
-
+    private var noCodeTotal:Long = 0
+    private val centerOutSendDetailActivity = centerOutSendDetailView as CenterOutSendDetailActivity
     //=====================================/Field=================================================================
     fun updateData(
         data: ArrayList<CenterOutSendDetailMxBean>,
@@ -129,12 +130,22 @@ class DataListAdapter(val context: Context?, private val centerOutSendDetailView
             }
         }
 
-        var noCodeTotal: Long = 0
-        for (value in data) {
-            noCodeTotal += value.出库输入箱数.toLong()
+        if(data[position].是否允许扫描 == 1){
+            noCodeTotal = 0
+            for (value in data) {
+                noCodeTotal += value.出库输入箱数.toLong()
+            }
+            centerOutSendDetailActivity.mPresenter.setNoCodeToTal(noCodeTotal)
+        }else{
+            noCodeTotal = 0
+            if (data[position].允许输入箱数 > 0){
+                for (value in data) {
+                    noCodeTotal += value.允许输入箱数.toLong()
+                }
+                centerOutSendDetailActivity.mPresenter.setNoCodeToTal(noCodeTotal)
+            }
         }
-        val centerOutSendDetailActivity = centerOutSendDetailView as CenterOutSendDetailActivity
-        centerOutSendDetailActivity.mPresenter.setNoCodeToTal(noCodeTotal)
+
         return reuseView
     }
 

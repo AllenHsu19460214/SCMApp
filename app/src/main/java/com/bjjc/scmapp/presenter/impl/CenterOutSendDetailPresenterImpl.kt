@@ -57,8 +57,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     private var noCodeTotal: Long = 0
     private var planTotal: Long = 0
     private var currentFragment: Fragment? = null
-    private var outType: String = ""
-    //No locking is required after using CopyOnWriteArrayList()
+    private var mOutType: String = ""
     private var queueQRCode: CopyOnWriteArrayList<String> = CopyOnWriteArrayList()
 
     //==============================================/Field================================================================
@@ -75,6 +74,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                     "mxData${mDatum.单号}"
                 ) as ArrayList<CenterOutSendDetailMxBean>
             )
+            centerOutSendDetailView.onReturnOutType(SPUtils[context, "outType${mDatum.单号}", "1"] as String)
         }
 
         if (SPUtils.contains(context, "cachedQRCodeList${mDatum.单号}")) {
@@ -215,7 +215,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
         RetrofitUtils.getRetrofit(App.base_url).create(ServiceApi::class.java)
             .checkQRCode(
                 "18",
-                outType,
+                mOutType,
                 QRCode,
                 centerOutSendDetailBean.出库单位,
                 centerOutSendDetailBean.入库单位,
@@ -377,7 +377,8 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                     val mapType = HashMap<String, Any>()
                     mapType["反向订单"] = centerOutSendDetailBean.反向订单
                     mapType["出库单位类型"] = centerOutSendDetailBean.出库单位类型
-                    outType = getOutType(mapType)
+                    mOutType = getOutType(mapType)
+                    centerOutSendDetailView.onReturnOutType(mOutType)
                     mxData.clear()
                     mxData.addAll(centerOutSendDetailBean.mx)
                     addTestDataToMxData(mxData)
@@ -414,6 +415,10 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     //saves order info to server.
     override fun submitOrderInfo() {
         val gson: Gson = Gson()
+        mxData.map {
+            it.数量=it.出库箱数
+            it.输入箱数 = it.出库输入箱数
+        }
         val infoJson = gson.toJson(mxData)
         val traceJson = gson.toJson(cachedQRCodeList)
         val point: String? = GpsUtils.getGPSPointString()
@@ -422,7 +427,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
             .centerOutSendDetailSaveOrderInfo(
                 "1",
                 App.loginBean.key,
-                centerOutSendDetailBean.单号,
+                mDatum.单号,
                 if (isOrderFinished()) {
                     "已出库"
                 } else {
@@ -457,6 +462,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                 }
 
             })
+
     }
 
     //Determines whether the order is finished.
@@ -519,7 +525,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                 "提示",
                 "您确定要清除单号为:\n${mDatum.单号}\n的缓存信息吗?请谨慎清除!",
                 {
-                    wipeCache()
+                    informServerWipeCache()
                 }
             )
         } else {
@@ -539,7 +545,33 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
         SPUtils.remove(context, "cachedQRCodeList${mDatum.单号}")
         //Wiping the cache which records list of QR code of improper boxes
         SPUtils.remove(context, "cachedExceptionQRCodeList${mDatum.单号}")
+        SPUtils.remove(context, "outType${mDatum.单号}")
+        ToastUtils.showToastS(context, "本地单号${mDatum.单号}的缓存已清除!")
         loadData()
+    }
+
+    private fun informServerWipeCache() {
+        val progressDialog = ProgressDialogUtils.showProgressDialog(context, "正在保存数据中!")
+        RetrofitUtils.getRetrofit(App.base_url).create(ServiceApi::class.java)
+            .centerOutSendDetailWipeCache(
+                "4",
+                mDatum.单号,//This verification of order number from server is at question.It can still pass in this case that is "mDatum.单号+1111111".
+                "CK"
+            ).enqueue(object : Callback<CommonResultBean> {
+                override fun onFailure(call: Call<CommonResultBean>, t: Throwable) {
+                    if (progressDialog.isShowing) {
+                        progressDialog.dismiss()
+                        centerOutSendDetailView.onError(t.message)
+                    }
+                }
+
+                override fun onResponse(call: Call<CommonResultBean>, response: Response<CommonResultBean>) {
+                    if (progressDialog.isShowing) {
+                        progressDialog.dismiss()
+                    }
+                    centerOutSendDetailView.onSubmitSuccess(response.body() as CommonResultBean)
+                }
+            })
     }
 
     //====================================================OffLineData====================================================================

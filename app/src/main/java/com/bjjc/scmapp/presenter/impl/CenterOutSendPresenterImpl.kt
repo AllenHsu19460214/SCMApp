@@ -73,11 +73,11 @@ class CenterOutSendPresenterImpl(var context: Context, var centerOutSendView: Ce
 
             })
     }
-
+    //====================================================OffLineData====================================================================
     private fun loadOffLineData() {
         val centerOutSendBeanJson = readFileUtils.getFromAssets(context, "offline/logisticsDocuments.json")
         val centerOutSendBean = Gson().fromJson<CenterOutSendBean>(centerOutSendBeanJson, CenterOutSendBean::class.java)
         centerOutSendView.onLoadSuccess(centerOutSendBean.mx)
     }
-
+    //====================================================/OffLineData===================================================================
 }
