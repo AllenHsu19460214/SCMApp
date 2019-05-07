@@ -53,7 +53,7 @@ class CenterOutSendRBoxPresenterImpl(var context: Context, var centerOutSendRedu
     //Be sure to prevent this method from being started twice
     override fun startScanQRCodeThread() {
         doAsync {
-            whileLoop@ while (!CenterOutSendDetailPresenterImpl.threadExit) {
+            whileLoop@ while (!threadExit) {
                 /*if (scanToTal >= planTotal) {
                     break@whileLoop
                 }*/

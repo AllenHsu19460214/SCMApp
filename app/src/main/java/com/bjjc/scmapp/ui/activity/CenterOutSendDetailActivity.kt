@@ -39,11 +39,12 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
         const val INTENT_KEY_ORDER_DATA: String = "mxData"
         const val INTENT_KEY_ORDER_NUMBER: String = "orderNumber"
     }
+
     override val context: Context by lazy { this }
     override val toolbar: Toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     private lateinit var datum: CenterOutSendMxBean
     private lateinit var toolbarMenu: Toolbar
-    private lateinit var centerOutSendDetailBean:CenterOutSendDetailBean
+    private lateinit var centerOutSendDetailBean: CenterOutSendDetailBean
     private var mOutType: String = ""
     val mPresenter: CenterOutSendDetailPresenter by lazy {
         CenterOutSendDetailPresenterImpl(
@@ -51,6 +52,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
             this
         )
     }
+
     //==============================================FieldEnd=====================================================================
     override fun getLayoutId(): Int = R.layout.layout_aty_center_out_send_detail
 
@@ -67,10 +69,11 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
         datum = intent.getSerializableExtra(CenterOutSendActivity.INTENT_KEY_ORDER_DATUM) as CenterOutSendMxBean
         mPresenter.setInitData(datum)
         tvWaybillNumber.text = datum.单号
-        if (SPUtils.contains(context, "mxData${datum.单号}")||
-            SPUtils.contains(context, "exceptionCodeInfoList${datum.单号}")||
-            SPUtils.contains(context, "cachedQRCodeList${datum.单号}")||
-            SPUtils.contains(context, "cachedExceptionQRCodeList${datum.单号}")) {
+        if (SPUtils.contains(context, "mxData${datum.单号}") ||
+            SPUtils.contains(context, "exceptionCodeInfoList${datum.单号}") ||
+            SPUtils.contains(context, "cachedQRCodeList${datum.单号}") ||
+            SPUtils.contains(context, "cachedExceptionQRCodeList${datum.单号}")
+        ) {
             mPresenter.readCache()
         } else {
             //Loads data for initialize.
@@ -130,10 +133,12 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
         tvPlanBoxTotal.text = planTotal.toString()
         tvScanTotal.text = scanToTal.toString()
     }
+
     override fun onReturnOutType(outType: String) {
         mOutType = outType
-        SPUtils.put(this,"outType${datum.单号}",outType)
+        SPUtils.put(this, "outType${datum.单号}", outType)
     }
+
     override fun onScanCodeSuccess(scanCodeResult: String?) {
         mPresenter.enqueueQRCode(scanCodeResult)
     }
@@ -148,7 +153,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
 
     override fun onLoadSuccess(data: CenterOutSendDetailBean) {
         if (data.code == "10") {
-            centerOutSendDetailBean=data
+            centerOutSendDetailBean = data
             //Sets order number.
             tvWaybillNumber.text = data.单号
 
@@ -189,24 +194,27 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
      * Creates the ToolBar。
      */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val itemId = intArrayOf(R.id.reduceBox, R.id.wipeCache)
+        val itemId = intArrayOf(R.id.reduceBox, R.id.wipeCache,R.id.wipeExceptionCode)
         toolbarMenu = setToolBarMenu(R.menu.menu_center_out_send_detail, *itemId)
         setToolbarListener()
         return true
     }
 
     private fun setToolbarListener() {
-        val datum =Pair("datum",datum)
-        val outType =Pair("outType",mOutType)
+        val datum = Pair("datum", datum)
+        val outType = Pair("outType", mOutType)
         toolbarMenu.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.reduceBox -> {
                     //myToast("\"减箱\" is clicked!")
 //                    context.startActivity<CenterOutSendReduceBoxActivity>("datum" to datum)
-                    context.startActivity<CenterOutSendReduceBoxActivity>(datum,outType)
+                    context.startActivity<CenterOutSendReduceBoxActivity>(datum, outType)
                 }
                 R.id.wipeCache -> {
                     mPresenter.wipeCacheByOrderId()
+                }
+                R.id.wipeExceptionCode->{
+                    (mPresenter as CenterOutSendDetailPresenterImpl).wipeExceptionCode()
                 }
             }
             true
@@ -216,7 +224,18 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (event.repeatCount == 0) {
             if (keyCode == 4) {
-                onBackPressed()
+                if (CenterOutSendDetailPresenterImpl.exitFlag) {
+                    onBackPressed()
+                } else {
+                    DialogDirector.showDialog(
+                        DialogBuilderYesNoImpl(this@CenterOutSendDetailActivity),
+                        "提示",
+                        "已扫描的箱码队列未全部处理完，您是否要终止处理?",
+                        {
+                            onBackPressed()
+                        }
+                    )
+                }
             } else if (keyCode == 211 || keyCode == 212 || keyCode == 220 || keyCode == 221) {
                 //扫描开始
                 Scanner.Read()
@@ -226,6 +245,7 @@ class CenterOutSendDetailActivity : BaseScannerActivity(), ToolbarManager, Cente
     }
 
     override fun onDestroy() {
+        //Log.d("CenterOutSendDetail","onDestroy")
         CenterOutSendDetailPresenterImpl.threadExit = true
         super.onDestroy()
     }

@@ -41,6 +41,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
         const val DATA_LIST_FRAGMENT: Int = 0
         const val EXCEPTION_LIST_FRAGMENT: Int = 1
         var threadExit: Boolean = false
+        var exitFlag:Boolean= true
     }
 
     private lateinit var centerOutSendDetailBean: CenterOutSendDetailBean
@@ -105,8 +106,8 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                 ) as ArrayList<String>
             )
         }
-        getPlanTotal()
-        getScanTotal()
+        getPlannedTotal()
+        getScannedTotal()
         centerOutSendDetailView.updateView(planTotal, scanToTal)
         centerOutSendDetailView.setExceptionTitleColor(exceptionCodeInfoList)
     }
@@ -159,6 +160,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     //start Async thread to scan QR code.
     //Be sure to prevent this method from being started twice
     override fun startScanQRCodeThread() {
+        threadExit=false
         doAsync {
             whileLoop@ while (!threadExit) {
                 /*if (scanToTal >= planTotal) {
@@ -185,6 +187,8 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
         if (!cachedQRCodeList.contains(scanCodeResult) && !cachedExceptionQRCodeList.contains(scanCodeResult)) {
             FeedbackUtils.vibrate(context, 200)
             queueQRCode.add(scanCodeResult)
+            startScanQRCodeThread()
+            exitFlag=false
         } else {
             DialogDirector.showDialog(
                 DialogBuilderYesImpl(context),
@@ -212,6 +216,8 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     }
 
     private fun checkQRCode(QRCode: String) {
+        ToastUtils.showToastL(UIUtils.getContext(),"已发送验证！")
+        exitFlag=true
         RetrofitUtils.getRetrofit(App.base_url).create(ServiceApi::class.java)
             .checkQRCode(
                 "18",
@@ -226,6 +232,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                         Thread.sleep(2000)
                         uiThread {
                             centerOutSendDetailView.onError(t.toString())
+                            exitFlag=true
                         }
                     }
                 }
@@ -234,15 +241,15 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                     call: Call<CheckQRCodeBean>,
                     response: Response<CheckQRCodeBean>
                 ) {
-                    checkQRCodeBean = response.body() as CheckQRCodeBean
+                    response.body()?.let { checkQRCodeBean=it }
                     increaseQRCodeNum(QRCode)
-                    getScanTotal()
+                    getScannedTotal()
                     centerOutSendDetailView.updateView(planTotal, scanToTal)
                     isReachScanTotal()
-
+                    exitFlag=true
                 }
-
             })
+
     }
 
     override fun setNoCodeToTal(noCodeTotal: Long) {
@@ -382,8 +389,8 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                     mxData.clear()
                     mxData.addAll(centerOutSendDetailBean.mx)
                     addTestDataToMxData(mxData)
-                    getPlanTotal()
-                    getScanTotal()
+                    getPlannedTotal()
+                    getScannedTotal()
                     dataListFragment.updateData(mxData)
                     exceptionCodeInfoList.clear()
                     exceptionListFragment.updateList()
@@ -398,14 +405,14 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     /**
      * Updates Num of ScanCode and show it.
      */
-    private fun getScanTotal() {
+    private fun getScannedTotal() {
         scanToTal = 0
         for (mx in mxData) {
             scanToTal += mx.出库箱数
         }
     }
 
-    private fun getPlanTotal() {
+    private fun getPlannedTotal() {
         planTotal = 0
         for (mx: CenterOutSendDetailMxBean in mxData) {
             planTotal += mx.计划箱数
@@ -551,7 +558,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
     }
 
     private fun informServerWipeCache() {
-        val progressDialog = ProgressDialogUtils.showProgressDialog(context, "正在保存数据中!")
+        val progressDialog = ProgressDialogUtils.showProgressDialog(context, "正在清除缓存中!")
         RetrofitUtils.getRetrofit(App.base_url).create(ServiceApi::class.java)
             .centerOutSendDetailWipeCache(
                 "4",
@@ -573,7 +580,19 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
                 }
             })
     }
-
+    fun wipeExceptionCode(){
+        val bundle = Bundle()
+        exceptionCodeInfoList.clear()
+        cachedExceptionQRCodeList.clear()
+        bundle.putSerializable("exceptionCodeInfoList", exceptionCodeInfoList as Serializable)
+        exceptionListFragment.arguments = bundle
+        exceptionListFragment.updateList()
+        centerOutSendDetailView.setExceptionTitleColor(exceptionCodeInfoList)
+        //Wiping the cache which records number of improper boxes.
+        SPUtils.remove(context, "exceptionCodeInfoList${mDatum.单号}")
+        //Wiping the cache which records list of QR code of improper boxes
+        SPUtils.remove(context, "cachedExceptionQRCodeList${mDatum.单号}")
+    }
     //====================================================OffLineData====================================================================
     /**
      * Offline Data
@@ -665,7 +684,7 @@ class CenterOutSendDetailPresenterImpl(var context: Context, var centerOutSendDe
         context.runOnUiThread {
             checkQRCodeBean = gson.fromJson<CheckQRCodeBean>(checkCodeResult, CheckQRCodeBean::class.java)
             increaseQRCodeNum(scanCode)
-            getScanTotal()
+            getScannedTotal()
             centerOutSendDetailView.updateView(planTotal, scanToTal)
             isReachScanTotal()
         }

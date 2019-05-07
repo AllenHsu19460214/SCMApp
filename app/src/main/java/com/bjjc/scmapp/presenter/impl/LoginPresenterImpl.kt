@@ -27,19 +27,16 @@ import retrofit2.Response
 class LoginPresenterImpl (): LoginPresenter,Callback<LoginBean> {
     //================================================Field=============================================================================
     companion object {
-        val sCallback = Callback()
         lateinit var sLoginView: LoginView
     }
-
     private val deviceDao: DeviceDao by lazy { DeviceDao() }
     private val userDao: UserDao by lazy { UserDao() }
     private lateinit var deviceBean: DeviceBean
     private lateinit var context:Context
-    private lateinit var loginView:LoginView
     //================================================/Field=============================================================================
     constructor( context: Context, loginView: LoginView) : this(){
         this.context=context
-        this.loginView=loginView
+        sLoginView=loginView
     }
 
     override fun login(username: String, password: String) {
@@ -48,7 +45,6 @@ class LoginPresenterImpl (): LoginPresenter,Callback<LoginBean> {
 
     override fun initData() {
         deviceBean = deviceDao.getDevice()
-        sLoginView = loginView
     }
 
     /**
@@ -69,7 +65,7 @@ class LoginPresenterImpl (): LoginPresenter,Callback<LoginBean> {
         doAsync {
             Thread.sleep(2000)
             uiThread {
-                LoginPresenterImpl.sCallback.onFailure(t)
+                sLoginView.onError(t.toString())
             }
         }
     }
@@ -85,28 +81,6 @@ class LoginPresenterImpl (): LoginPresenter,Callback<LoginBean> {
         }
     }
 
-    class Callback : ICallback<LoginBean> {
-        override fun onResponse(response: LoginBean) {
-            App.loginBean = response
-            if (App.loginBean.code == "08") {
-                ToastUtils.showToastS(UIUtils.getContext(), App.loginBean.msg)
-                App.userIdentityBean = App.loginBean.sf
-                sLoginView.onSuccess()
-            } else {
-                sLoginView.onError(App.loginBean.msg)
-            }
-        }
-
-        override fun onFailure(t: Throwable) {
-            sLoginView.onError(t.message)
-        }
-    }
-
-    interface ICallback<T> {
-        fun onResponse(response: T)
-        fun onFailure(t: Throwable)
-
-    }
 
     //======================================================Offline========================================================================
     private fun loginInOffline() {

@@ -36,7 +36,7 @@ class CenterOutSendActivity : BaseScannerActivity(), ToolbarManager, CenterOutSe
         //intent key
         const val INTENT_KEY_ORDER_DATUM: String = "orderDatum"
     }
-    private val TAG: String = CenterOutSendActivity::class.java.simpleName
+    //private val TAG: String = CenterOutSendActivity::class.java.simpleName
     override val context: Context by lazy { this }
     override val toolbar: Toolbar by lazy { find<Toolbar>(R.id.toolbar) }
     private val centerOutSendPresenter: CenterOutSendPresenter by lazy { CenterOutSendPresenterImpl(this, this) }
@@ -71,7 +71,7 @@ class CenterOutSendActivity : BaseScannerActivity(), ToolbarManager, CenterOutSe
             }
         }
         btnScan.setOnClickListener(this)
-        lvCenterOutSend.setOnItemClickListener { parent, view, position, id ->
+        lvCenterOutSend.setOnItemClickListener { _, _, position, _ ->
             startActivity<CenterOutSendDetailActivity>(INTENT_KEY_ORDER_DATUM to searchResultData[position])
         }
     }

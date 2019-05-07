@@ -27,14 +27,14 @@ class ExceptionListAdapter(private val context: Context) : BaseAdapter() {
     @SuppressLint("InflateParams", "SetTextI18n", "ClickableViewAccessibility")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var reuseView = convertView
-        val viewHolder: ExceptionListAdapter.ViewHolder
+        val viewHolder: ViewHolder
         if (reuseView == null) {
             reuseView = LayoutInflater.from(context)
                 .inflate(R.layout.layout_adpitem_center_out_send_exception_list, null)
             viewHolder = ViewHolder(reuseView)
             reuseView!!.tag = viewHolder
         } else {
-            viewHolder = reuseView.tag as ExceptionListAdapter.ViewHolder
+            viewHolder = reuseView.tag as ViewHolder
         }
         viewHolder.tvExceptionCode.text=data?.get(position)?.code
         viewHolder.tvExceptionMsg.text=data?.get(position)?.msg

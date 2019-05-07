@@ -65,6 +65,7 @@
     <!--/CenterOutSendActivity-->
     <!--CenterOutSendDetailActivity-->
     <string name="wipeCache">清除缓存</string>
+    <string name="wipeExceptionCode">清除异常码</string>
     <string name="reduceBox">减箱</string>
     <!--/CenterOutSendDetailActivity-->
     <!--MainActivity-->
