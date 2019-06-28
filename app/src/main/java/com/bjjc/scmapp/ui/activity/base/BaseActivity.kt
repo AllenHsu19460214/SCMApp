@@ -90,7 +90,7 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
 
     //To check if a navigation bar exists.
     @SuppressLint("PrivateApi")
-    fun checkDeviceHasNavigationBar(context: Context): Boolean {
+    fun hasNavigationBar(context: Context): Boolean {
         var hasNavigationBar = false
         val rs = context.resources
         val id = rs.getIdentifier("config_showNavigationBar", "bool", "android")
@@ -107,7 +107,7 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
                 hasNavigationBar = true
             }
         } catch (e: Exception) {
-            //TODO handle exception message show.
+
         }
         return hasNavigationBar
     }

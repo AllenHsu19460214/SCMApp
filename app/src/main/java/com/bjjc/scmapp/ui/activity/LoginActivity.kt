@@ -4,91 +4,83 @@ import android.app.Dialog
 import android.view.Menu
 import android.view.View
 import com.bjjc.scmapp.R
-import com.bjjc.scmapp.app.App
 import com.bjjc.scmapp.extension.dp2px
+import com.bjjc.scmapp.model.entity.NetEntity
+import com.bjjc.scmapp.model.entity.VersionEntity
+import com.bjjc.scmapp.presenter.base.LoginBasePresenter
 import com.bjjc.scmapp.presenter.impl.LoginPresenterImpl
-import com.bjjc.scmapp.presenter.interf.LoginPresenter
 import com.bjjc.scmapp.ui.activity.base.BaseActivity
-import com.bjjc.scmapp.util.ProgressDialogUtils
-import com.bjjc.scmapp.util.UIUtils
-import com.bjjc.scmapp.view.LoginView
+import com.bjjc.scmapp.ui.view.IView
+import com.bjjc.scmapp.util.getStoragePath
+import com.hjq.toast.ToastUtils
 import kotlinx.android.synthetic.main.layout_aty_login.*
+import org.jetbrains.anko.custom.async
 import org.jetbrains.anko.startActivity
+import java.io.File
+import kotlin.system.exitProcess
 
 
-class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
+class LoginActivity : BaseActivity(), View.OnClickListener, IView {
 
-    //==============================================FieldStart=====================================================================
-    /**
-     * The tag of the current activity
-     */
     private val TAG = LoginActivity::class.java.simpleName
-    /**
-     * The presenter of the login activity.
-     */
-    private val loginPresenter: LoginPresenter by lazy { LoginPresenterImpl(this, this) }
-    /**
-     * The exitTime is used to press the return key twice in two seconds to exit the program.
-     */
+    private val loginPresenter: LoginBasePresenter by lazy { LoginPresenterImpl(this) }
+    /**The exitTime is used to press the return key twice in two seconds to exit the program.* */
     private var exitTime: Long = 0
     private lateinit var progressDialog: Dialog
-    //==============================================FieldEnd=====================================================================
-    /**
-     * Loading the layout of the current activity.
-     */
     override fun getLayoutId(): Int = R.layout.layout_aty_login
 
-    /**
-     *  Initialize the current view.
-     */
     override fun initView() {
-        //Determine whether the device has a virtual key,if so,add 50dp to original value of "paddingBottom".
-        if (checkDeviceHasNavigationBar(this)) {
+        //The paddingBottom is increased by 50,if the device has a virtual key.
+        if (hasNavigationBar(this)) {
             ll_login.setPadding(0, 0, 0, 50.dp2px(this))
         }
     }
 
-    /**
-     *  Initialize the listener of components.
-     */
     override fun initListener() {
-        btnLoginSubmit.setOnClickListener(this)
-        cbOffLine.setOnClickListener(this)
+        btn_login_submit.setOnClickListener(this)
+        cb_offLine.setOnClickListener(this)
     }
 
-    /**
-     * Initialize data.
-     */
     override fun initData() {
-        //Set the version name and development model for current App.
-        tvVerNameAndDevModel.text = UIUtils.concatVerNameAndDevModel()
-        loginPresenter.initData()
+        if (NetEntity.isNetworkConnected()){
+            loginPresenter.getUri()
+        }
+        //Sets the version name and development model.
+        tvVerNameAndDevModel.text = VersionEntity.nameAndModel()
     }
 
-    /**
-     * Setting OnClickListener for Button.
-     */
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.btnLoginSubmit -> {
-                progressDialog = ProgressDialogUtils.showProgressDialog(this, "正在登录中!")
-                loginPresenter.login(etLoginUsername.text.toString(), etLoginPassword.text.toString())
+            R.id.btn_login_submit -> {
+                async {
+                    val extSDCardPath = getStoragePath(this@LoginActivity,false)
+                    val file = File("$extSDCardPath/uuuttt.txt")
+                    file.writeText("fafasfdasfdf")
+                }
+
+
+//                progressDialog = ProgressDialogUtils.showProgressDialog(this, "正在登录中!")
+//                loginPresenter.login(etLoginUsername.text.toString(), etLoginPassword.text.toString())
             }
-            R.id.cbOffLine -> {
-                App.offLineFlag = cbOffLine.isChecked
+            R.id.cb_offLine -> {
+                VersionEntity.isOffline = cb_offLine.isChecked
             }
         }
     }
-    override fun onSuccess() {
+
+    override fun onDataSuccess(data:Map<String,Any>) {
+        ToastUtils.show(data["msg"])
         if (progressDialog.isShowing) progressDialog.dismiss()
-        startActivity<MainActivity>("UserBean" to App.userIdentityBean )
+
+//        val userDao = UserDao(this)
+//        userDao.addUser(App.sUserBean!!)
+
+        startActivity<MainActivity>()
     }
-    /**
-     *  The callback of the onError from the interface LoginView.
-     */
-    override fun onError(message: String?) {
+
+    override fun onDataFailure(data:Map<String,Any>) {
+        ToastUtils.show(data["msg"])
         if (progressDialog.isShowing) progressDialog.dismiss()
-        message?.let { myToast(message) }
     }
 
     /**
@@ -100,16 +92,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
          */
         return true
     }
-    /*
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        //Key of the menu.
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            // monitor or intercept key of the menu.
-            return false
-        }
-        return super.onKeyDown(keyCode, event)
-    }
-    */
 
     /**
      *  The callback of the return key from system.
@@ -120,7 +102,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginView {
             exitTime = System.currentTimeMillis()
         } else {
             finish()
-            System.exit(0)
+            exitProcess(0)
         }
     }
 }

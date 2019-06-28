@@ -17,7 +17,7 @@ class UrlUtils {
      * */
     fun getDevModelValue(context: Context, key: String): String {
         val property = Properties()
-        val input: InputStream = context.resources.openRawResource(R.raw.config)
+        val input: InputStream = context.resources.openRawResource(R.raw.mode_config)
         property.load(input)
         property.getProperty("BASE_URL_DEBUG")
         val appInfo: ApplicationInfo = context.packageManager.getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)

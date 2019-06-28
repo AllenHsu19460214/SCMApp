@@ -1,22 +1,25 @@
 package com.bjjc.scmapp.presenter.impl
 
 import android.content.Context
+import android.util.Log
 import com.bjjc.scmapp.app.App
-import com.bjjc.scmapp.model.bean.DeviceBean
-import com.bjjc.scmapp.model.bean.LoginBean
-import com.bjjc.scmapp.model.dao.DeviceDao
-import com.bjjc.scmapp.model.dao.UserDao
-import com.bjjc.scmapp.presenter.interf.LoginPresenter
-import com.bjjc.scmapp.ui.activity.MainActivity
+import com.bjjc.scmapp.model.bean.UriBean
+import com.bjjc.scmapp.model.bean.UserBean
+import com.bjjc.scmapp.model.entity.DeviceEntity
+import com.bjjc.scmapp.model.entity.NetEntity
+import com.bjjc.scmapp.model.entity.UserEntity.password
+import com.bjjc.scmapp.model.entity.UserEntity.username
+import com.bjjc.scmapp.model.entity.VersionEntity
+import com.bjjc.scmapp.presenter.base.LoginBasePresenter
+import com.bjjc.scmapp.ui.view.IView
 import com.bjjc.scmapp.util.CheckStringUtils
-import com.bjjc.scmapp.util.ToastUtils
+import com.bjjc.scmapp.util.MD5Utils
 import com.bjjc.scmapp.util.UIUtils
 import com.bjjc.scmapp.util.readFileUtils
-import com.bjjc.scmapp.view.LoginView
 import com.google.gson.Gson
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.uiThread
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -24,27 +27,94 @@ import retrofit2.Response
 /**
  * Created by Allen on 2019/01/04 13:14
  */
-class LoginPresenterImpl (): LoginPresenter,Callback<LoginBean> {
-    //================================================Field=============================================================================
+class LoginPresenterImpl(loginView: IView) : LoginBasePresenter(), Callback<String> {
+
     companion object {
-        lateinit var sLoginView: LoginView
+        //For async
+        lateinit var sLoginView: IView
+
     }
-    private val deviceDao: DeviceDao by lazy { DeviceDao() }
-    private val userDao: UserDao by lazy { UserDao() }
-    private lateinit var deviceBean: DeviceBean
-    private lateinit var context:Context
-    //================================================/Field=============================================================================
-    constructor( context: Context, loginView: LoginView) : this(){
-        this.context=context
-        sLoginView=loginView
+
+    private val TAG = LoginPresenterImpl::class.java.simpleName
+    private var context: Context
+
+    init {
+        sLoginView = loginView
+        context = loginView as Context
     }
 
     override fun login(username: String, password: String) {
         checkUserInfo(username, password)
     }
 
-    override fun initData() {
-        deviceBean = deviceDao.getDevice()
+    override fun onFailure(call: Call<String>, t: Throwable) {
+        doAsync {
+            Thread.sleep(2000)
+            uiThread {
+                t.message?.let {
+                    sLoginView.onDataFailure(mapOf("msg" to it))
+                }
+
+            }
+        }
+    }
+
+    override fun onResponse(call: Call<String>, response: Response<String>) {
+        if (response.isSuccessful) {
+            val result = response.body()
+            parseResult(result)
+        }
+    }
+
+    private fun parseResult(result: String?) {
+        val jsonObject = JSONObject(result)
+        val code = jsonObject.getString("code")
+        val msg = jsonObject.getString("msg")
+        if ("08" == code) {
+            Log.d(TAG, "$code==>$msg")
+            val key = jsonObject.getString("key")
+            val sf = jsonObject.getString("sf")
+            val userBean: UserBean = Gson().fromJson(sf, UserBean::class.java)
+            App.sKey = key
+            App.sUserBean = userBean
+            sLoginView.onDataSuccess(mapOf("msg" to msg))
+        } else {
+            Log.e(TAG, "$code==>$msg")
+            sLoginView.onDataFailure(mapOf("msg" to msg))
+        }
+    }
+
+    override fun getUri() {
+        NetEntity.serviceController.getUri(command = "2").enqueue(object :Callback<String>{
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                t.message?.let {
+                    sLoginView.onDataFailure(mapOf("msg" to it))
+                }
+            }
+
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.isSuccessful) {
+                    val result = response.body()
+                    parseUriResult(result)
+                }
+            }
+        })
+    }
+
+    private fun parseUriResult(result: String?) {
+        val jsonObject = JSONObject(result)
+        if (jsonObject.has("protocol")) {
+            val uriBean:UriBean = Gson().fromJson(result,UriBean::class.java)
+            App.sUriBean = uriBean
+        } else if (jsonObject.has("code")){
+            val code = jsonObject.getString("code")
+            val msg = jsonObject.getString("msg")
+            Log.e(TAG, "$code==>$msg")
+        }
+    }
+
+    override fun loadData() {
+        login(username, password)
     }
 
     /**
@@ -53,44 +123,34 @@ class LoginPresenterImpl (): LoginPresenter,Callback<LoginBean> {
     private fun checkUserInfo(username: String, password: String) {
         if (CheckStringUtils.checkUserName(username)) {
             if (CheckStringUtils.checkPassWord(password)) {
-                if (!App.offLineFlag) userDao.login(username, password, deviceBean) else loginInOffline()
+                if (!VersionEntity.isOffline) {
+                    NetEntity.serviceController
+                        .login(
+                            command = "1",
+                            username = username,
+                            password = MD5Utils.md5Encode(password),
+                            sbid = MD5Utils.md5Encode(DeviceEntity.imei),
+                            sign = DeviceEntity.sign,
+                            type = "PDA",
+                            sysIndex = "0"
+                        ).enqueue(this)
+                } else {
+                    checkUserInfoFromLocal()
+                }
             } else {
-                sLoginView.onError("请确保密码符合以下规则:\n(长度在6~20之间，只能包含字母、数字)")
+                val msg = "请确保密码符合以下规则:\n(长度在6~20之间，只能包含字母、数字)"
+                sLoginView.onDataFailure(mapOf("msg" to msg))
             }
         } else {
-            sLoginView.onError("请确保帐号符合以下规则:\n(以字母开头，长度在2-20之间，可以包含字母、数字和下划线)")
+            val msg = "请确保帐号符合以下规则:\n(以字母开头，长度在2-20之间，可以包含字母、数字和下划线)"
+            sLoginView.onDataFailure(mapOf("msg" to msg))
         }
     }
-    override fun onFailure(call: Call<LoginBean>, t: Throwable) {
-        doAsync {
-            Thread.sleep(2000)
-            uiThread {
-                sLoginView.onError(t.toString())
-            }
-        }
-    }
-
-    override fun onResponse(call: Call<LoginBean>, response: Response<LoginBean>) {
-        App.loginBean = response.body() as LoginBean
-        if (App.loginBean.code == "08") {
-            ToastUtils.showToastS(UIUtils.getContext(), App.loginBean.msg)
-            App.userIdentityBean = App.loginBean.sf
-            sLoginView.onSuccess()
-        } else {
-            sLoginView.onError(App.loginBean.msg)
-        }
-    }
-
 
     //======================================================Offline========================================================================
-    private fun loginInOffline() {
-        val loginBeanJson = readFileUtils.getFromAssets(context, "offline/login.json")
-        App.loginBean = Gson().fromJson<LoginBean>(loginBeanJson, LoginBean::class.java)
-        if (App.loginBean.code == "08") {
-            sLoginView.onError(App.loginBean.msg)
-            App.userIdentityBean = App.loginBean.sf
-            context.startActivity<MainActivity>("UserBean" to App.userIdentityBean)
-        }
+    private fun checkUserInfoFromLocal() {
+        val result= readFileUtils.getFromAssets(UIUtils.context, "offline/login.json")
+        parseResult(result)
     }
     //======================================================/Offline=======================================================================
 }

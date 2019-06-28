@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background"
+        android:orientation="vertical"
+        tools:context=".ui.activity.OutModeAty">
+    <include layout="@layout/toolbar"/>
+    <GridView
+            android:id="@+id/gvCenterOutMode"
+            android:layout_marginTop="15dp"
+            android:paddingLeft="26dp"
+            android:paddingRight="26dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:descendantFocusability="blocksDescendants"
+            android:verticalSpacing="4dp"
+            android:numColumns="2"
+            android:gravity="center"
+            android:scrollbars="none"
+            android:listSelector="@null"
+            tools:listitem="@layout/layout_adpitem_main_grid">
+    </GridView>
+</LinearLayout>

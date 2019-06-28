@@ -7,4 +7,5 @@
     <color name="black">#000000</color>
     <color name="red">#f41b1b</color>
     <color name="darker_gray">#AAAAAA</color>
+    <drawable name="transparent">#00000000</drawable>
 </resources>

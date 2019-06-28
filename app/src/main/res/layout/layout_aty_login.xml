@@ -116,7 +116,7 @@
             <CheckBox
                     android:visibility="invisible"
                     android:layout_marginEnd="20dp"
-                    android:id="@+id/cbOffLine"
+                    android:id="@+id/cb_offLine"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:button="@null"
@@ -141,7 +141,7 @@
                       android:layout_height="wrap_content"
                       android:orientation="vertical">
             <Button
-                    android:id="@+id/btnLoginSubmit"
+                    android:id="@+id/btn_login_submit"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"

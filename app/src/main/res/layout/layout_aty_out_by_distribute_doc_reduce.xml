@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.activity.OutByDistributeDocReduceAty">
+    <!--title-->
+    <include layout="@layout/toolbar"/>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="#e9f4f4"
+                  android:orientation="vertical">
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_gravity="center"
+                      android:paddingTop="10dp"
+                      android:paddingBottom="10dp"
+                      android:orientation="horizontal">
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:text="单号: "
+                      android:textSize="20sp"
+                      android:textColor="@color/black"/>
+            <TextView android:id="@+id/tvWaybillNumber"
+                    android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      tools:text="WLD2019020309345610501"
+                      android:textSize="20sp"
+                      android:textColor="@color/black"/>
+
+        </LinearLayout>
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="@color/black"/>
+        <TextView android:id="@+id/numReduce"
+                android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  android:text="0"
+                  android:layout_weight="3"
+                  android:textSize="200sp"
+                  android:gravity="center"
+                  android:background="#e9f4f4"
+                  android:textColor="@android:color/holo_red_dark"/>
+        <TextView android:layout_width="match_parent"
+                  android:paddingTop="30dp"
+                  android:layout_height="0dp"
+                  android:layout_weight="1"
+                  android:text="请扫描本单号中您要减掉的箱码!"
+                  android:background="@color/colorPrimaryDark"
+                  android:textSize="20sp"
+                  android:gravity="center_horizontal"
+                  android:textColor="@color/red"/>
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_gravity="bottom"
+                      android:background="@color/colorPrimaryDark"
+                      android:orientation="horizontal">
+            <Button
+                    android:visibility="gone"
+                    android:id="@+id/btnScan"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="扫描条码"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:layout_margin="3dp"
+                    android:background="@drawable/shape_rectangle_all_dark_blue"
+                    tools:visibility="visible"/>
+            <Button android:id="@+id/btnSubmit"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="提交"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:layout_margin="3dp"
+                    android:background="@drawable/shape_rectangle_all_dark_green"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

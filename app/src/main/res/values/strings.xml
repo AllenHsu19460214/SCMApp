@@ -56,19 +56,22 @@
     <string name="idCardCheckMsg">身份证格式不正确！</string>
     <string name="compNameTitle">选择所属公司</string>
     <string name="userJsCheckMsg">选择用户角色</string>
-    <!--CenterOutSendActivity-->
+    <!--OutByDistributionActivity-->
     <string name="searchByBillStatus">按以下单据状态查询:</string>
     <string name="billStatusApprove">已审确认</string>
     <string name="billStatusPass">已审通过</string>
     <string name="billStatusUndone">未出完</string>
     <string name="billStatusAll">显示全部</string>
-    <!--/CenterOutSendActivity-->
-    <!--CenterOutSendDetailActivity-->
+    <!--/OutByDistributionActivity-->
+    <!--OutByDistributeDocDetailAty-->
     <string name="wipeCache">清除缓存</string>
     <string name="wipeExceptionCode">清除异常码</string>
     <string name="reduceBox">减箱</string>
-    <!--/CenterOutSendDetailActivity-->
+    <!--/OutByDistributeDocDetailAty-->
     <!--MainActivity-->
     <string name="wipeCacheAll">清除全部缓存</string>
+    <string name="start">开始</string>
+    <string name="pause">暂停</string>
+    <string name="stop">停止</string>
     <!--/MainActivity-->
 </resources>

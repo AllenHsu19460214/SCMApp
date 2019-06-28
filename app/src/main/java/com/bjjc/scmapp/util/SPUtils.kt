@@ -1,5 +1,6 @@
 package com.bjjc.scmapp.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
@@ -12,31 +13,42 @@ import java.lang.reflect.Method
  * Created by Allen on 2019/01/10 10:31
  * SharedPreferences统一管理类
  */
+@SuppressLint("StaticFieldLeak")
 object SPUtils {
+    lateinit var context: Context
+    lateinit var sp: SharedPreferences
+    lateinit var editor: SharedPreferences.Editor
+
     /**
      * 保存在手机里面的文件名（自定义）
      */
-    private const val FILE_NAME = "share_data"
+    private const val FILE_NAME = "SP_data"
+
+    fun context(context: Context) :SPUtils{
+        context.let {
+            this.context = it
+            this.sp = it.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
+            this.editor = it.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE).edit()
+
+        }
+        return this
+    }
 
     /**
      * 保存数据的方法，我们需要拿到保存数据的具体类型，然后根据类型调用不同的保存方法
      *
-     * @param context
      * @param key
      * @param any
      */
-    fun put(context: Context, key: String, any: Any) {
+    fun put(key: String, data: Any) {
 
-        val sp = getSharedPreferences(context)
-        val editor = sp.edit()
-
-        when (any) {
-            is String -> editor.putString(key,any)
-            is Int -> editor.putInt(key, any)
-            is Boolean -> editor.putBoolean(key, any)
-            is Float -> editor.putFloat(key, any)
-            is Long -> editor.putLong(key, any)
-            else -> editor.putString(key, any.toString())
+        when (data) {
+            is String -> editor.putString(key, data)
+            is Int -> editor.putInt(key, data)
+            is Boolean -> editor.putBoolean(key, data)
+            is Float -> editor.putFloat(key, data)
+            is Long -> editor.putLong(key, data)
+            else -> editor.putString(key, data.toString())
         }
         SharedPreferencesCompat.apply(editor)
     }
@@ -45,14 +57,11 @@ object SPUtils {
     /**
      * 得到保存数据的方法，我们根据默认值得到保存的数据的具体类型，然后调用相对于的方法获取值
      *
-     * @param context
      * @param key
      * @param defaultAny
      * @return
      */
-    operator fun get(context: Context, key: String, defaultAny: Any): Any? {
-        val sp = getSharedPreferences(context)
-
+    fun get(key: String, defaultAny: Any): Any? {
         return when (defaultAny) {
             is String -> sp.getString(key, defaultAny)
             is Int -> sp.getInt(key, defaultAny)
@@ -69,9 +78,7 @@ object SPUtils {
      * @param context
      * @param key
      */
-    fun remove(context: Context, key: String) {
-        val sp = getSharedPreferences(context)
-        val editor = sp.edit()
+    fun remove(key: String) {
         editor.remove(key)
         SharedPreferencesCompat.apply(editor)
     }
@@ -81,14 +88,13 @@ object SPUtils {
      *
      * @param context
      */
-    fun clearAll(context: Context) {
-        val sp = getSharedPreferences(context)
-        val editor = sp.edit()
+    fun clearAll() {
         editor.clear()
         SharedPreferencesCompat.apply(editor)
     }
-    fun clearOrder(context: Context){
-        getAll(context).filter { it.key!="isNewApp"}.map { remove(context,it.key) }
+
+    fun clearOrder() {
+        getAll().filter { it.key != "isNewApp" }.map { remove(it.key) }
     }
 
     /**
@@ -98,8 +104,7 @@ object SPUtils {
      * @param key
      * @return
      */
-    fun contains(context: Context, key: String): Boolean {
-        val sp = getSharedPreferences(context)
+    fun contains(key: String): Boolean {
         return sp.contains(key)
     }
 
@@ -109,8 +114,7 @@ object SPUtils {
      * @param context
      * @return
      */
-    fun getAll(context: Context): Map<String, *> {
-        val sp = getSharedPreferences(context)
+    fun getAll(): Map<String, *> {
         return sp.all
     }
 

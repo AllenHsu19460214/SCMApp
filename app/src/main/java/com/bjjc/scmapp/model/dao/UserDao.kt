@@ -1,40 +1,17 @@
 package com.bjjc.scmapp.model.dao
 
-import com.bjjc.scmapp.app.App
-import com.bjjc.scmapp.model.bean.DeviceBean
-import com.bjjc.scmapp.presenter.impl.LoginPresenterImpl
-import com.bjjc.scmapp.util.MD5Utils
-import com.bjjc.scmapp.util.httpUtils.RetrofitUtils
-import com.bjjc.scmapp.util.httpUtils.ServiceApi
+import android.content.Context
+import com.bjjc.scmapp.model.bean.UserBean
+import com.bjjc.scmapp.model.db.DatabaseHelper
+
 
 /**
- * Created by Allen on 2019/04/11 10:39
+ * Created by Allen on 2019/06/21 12:56
  */
-class UserDao{
-    /*override fun onFailure(call: Call<LoginBean>, t: Throwable) {
-        doAsync {
-            Thread.sleep(2000)
-            uiThread {
-                LoginPresenterImpl.sCallback.onFailure(t)
-            }
-        }
+class UserDao(val context: Context){
+
+    private var userDao = DatabaseHelper.getInstance(context).getDao(UserBean::class.java)
+    fun addUser(userBean:UserBean){
+        userDao?.create(userBean)
     }
-
-    override fun onResponse(call: Call<LoginBean>, response: Response<LoginBean>) {
-       LoginPresenterImpl.sCallback.onResponse(response.body()as LoginBean)
-    }*/
-
-    fun login(username: String, password: String, deviceBean:DeviceBean){
-        RetrofitUtils.getRetrofit(App.base_url).create(ServiceApi::class.java)
-            .login(
-                "1",
-                username,
-                MD5Utils.md5Encode(password),
-                MD5Utils.md5Encode(deviceBean.imei),
-                deviceBean.sign,
-                "PDA",
-                "0"
-            ).enqueue(LoginPresenterImpl())
-    }
-
 }

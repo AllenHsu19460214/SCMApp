@@ -3,10 +3,12 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.bjjc.scmapp">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" tools:ignore="ProtectedPermissions"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -20,64 +22,70 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".ui.activity.TestListRefreshActivity">
+        <activity android:name=".ui.activity.TestListRefreshAty">
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>-->
         </activity>
-        <activity android:name=".ui.activity.GuideActivity">
+        <activity android:name=".ui.activity.GuideAty">
         </activity>
-        <activity android:name=".ui.activity.CenterOutSendReduceBoxActivity">
-        </activity> <!-- developmentMode，debug:debugMode，test:testMode，pro:productionMode -->
+        <activity android:name=".ui.activity.OutByDistributeDocReduceAty">
+        </activity>
+        <!-- developmentMode，debug:debugMode，test:testMode，pro:productionMode -->
         <meta-data
                 android:name="DEV_MODEL"
-                android:value="debug"/> <!-- MainActivity -->
+                android:value="debug"/>
+        <!-- MainActivity -->
         <activity android:name=".ui.activity.MainActivity">
-        </activity> <!-- LoginActivity -->
+        </activity>
+        <!-- LoginActivity -->
         <activity
                 android:name=".ui.activity.LoginActivity"
                 android:theme="@style/AppTheme.intrusiveMood">
-        </activity> <!-- SplashActivity -->
+        </activity>
+        <!-- SplashAty -->
         <activity
-                android:name=".ui.activity.SplashActivity"
+                android:name=".ui.activity.SplashAty"
                 android:theme="@style/AppTheme.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity> <!-- CenterOut -->
-        <activity android:name=".ui.activity.CenterOutModeActivity">
         </activity>
-        <activity android:name=".ui.activity.CenterOutSendActivity">
+        <!-- CenterOut -->
+        <activity android:name=".ui.activity.OutModeAty">
         </activity>
-        <activity android:name=".ui.activity.CenterOutActivity">
+        <activity android:name=".ui.activity.OutByDistributionActivity">
         </activity>
-        <activity android:name=".ui.activity.CenterOutTransferActivity">
+        <activity android:name=".ui.activity.OutFromCenterAty">
         </activity>
-        <activity android:name=".ui.activity.CenterOutReverseActivity">
+        <activity android:name=".ui.activity.OutByTransferDocAty">
+        </activity>
+        <activity android:name=".ui.activity.OutByReverseDocAty">
         </activity>
         <activity
-                android:name=".ui.activity.CenterOutSendDetailActivity"
+                android:name=".ui.activity.OutByDistributeDocDetailAty"
                 android:windowSoftInputMode="adjustPan|stateHidden">
-        </activity> <!-- CenterIn -->
-        <activity android:name=".ui.activity.CenterInModeActivity">
         </activity>
-        <activity android:name=".ui.activity.CenterInActivity">
+        <!-- CenterIn -->
+        <activity android:name=".ui.activity.InModeAty">
         </activity>
-        <activity android:name=".ui.activity.CenterInTransferActivity">
+        <activity android:name=".ui.activity.IntoCenterAty">
+        </activity>
+        <activity android:name=".ui.activity.InByTransferDocAty">
         </activity> <!-- Center -->
-        <activity android:name=".ui.activity.SearchActivity">
+        <activity android:name=".ui.activity.SearchProductAty">
         </activity>
-        <activity android:name=".ui.activity.InventoryActivity">
+        <activity android:name=".ui.activity.CheckStockAty">
         </activity>
-        <activity android:name=".ui.activity.StandingBookActivity">
+        <activity android:name=".ui.activity.StandingBookAty">
         </activity>
-        <activity android:name=".ui.activity.SettingActivity">
+        <activity android:name=".ui.activity.SettingAty">
         </activity>
-        <activity android:name=".ui.activity.AboutActivity">
+        <activity android:name=".ui.activity.AboutAty">
         </activity>
     </application>
 

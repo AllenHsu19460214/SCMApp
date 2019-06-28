@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.XXPermissions
+import com.hjq.toast.ToastUtils
 
 
 /**
@@ -45,8 +46,8 @@ object GpsUtils {
         }
         return null
     }
-    fun getGPSPointString():String?{
-       val location= getGPSContacts(UIUtils.getContext())
+    fun getGPSPointString(context: Context):String?{
+       val location= getGPSContacts(context )
         return location?.let { "${it.longitude},${it.latitude}" }
     }
     /**
@@ -60,7 +61,7 @@ object GpsUtils {
         return if (ok) {
             getLastKnownLocation(context)
         } else {
-            ToastUtils.showToastS(context, "GPS未开启或未开启相应权限!")
+            ToastUtils.show("GPS未开启或未开启相应权限!")
             null
         }
     }
